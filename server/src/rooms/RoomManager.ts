@@ -10,13 +10,18 @@ export default class RoomManager {
     this.rooms = new Map()
   }
 
-  joinRoom(socket: Socket, roomId: string, username: string): Room {
+  joinRoom(
+    socket: Socket,
+    roomId: string,
+    username: string,
+    pictureUrl: string
+  ): Room {
     let room = this.getRoomById(roomId)
     if (!room) {
       room = new Room(roomId)
       this.rooms.set(roomId, room)
     }
-    room.addPlayer(socket, username)
+    room.addPlayer(socket, username, pictureUrl)
     socket.join(room.id)
     room.notifyPlayerState(socket)
     console.log(`Player ${socket.id} joined room ${room.id}`)

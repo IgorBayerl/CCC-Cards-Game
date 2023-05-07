@@ -16,7 +16,7 @@ interface IGameContextValue {
   socket: Socket | undefined
   gameConfig: IGameConfig
   isCurrentUserLeader: boolean
-  joinRoom: (username: string, roomId: string) => void
+  joinRoom: (username: string, roomId: string, pictureUrl: string) => void
   leaveRoom: () => void
   setConfig: (config: IGameConfig) => void
   admCommand: (command: string) => void
@@ -24,7 +24,7 @@ interface IGameContextValue {
 
 interface IGameConfig {
   decks: string[]
-  rounds: number
+  scoreToWin: number
   roomSize: number
   timeLimit: number
 }
@@ -43,6 +43,7 @@ export interface IGameState {
 export interface IPlayer {
   id: string
   username: string
+  pictureUrl: string
   roundRole: 'player' | 'judge'
   score: number
 }
@@ -60,7 +61,7 @@ interface ISocketError {
 
 const defaultGameConfig: IGameConfig = {
   decks: [],
-  rounds: 3,
+  scoreToWin: 8,
   roomSize: 4,
   timeLimit: 60,
 }
@@ -70,6 +71,7 @@ const initialGameState: IGameState = {
   leader: {
     id: '',
     username: '',
+    pictureUrl: '',
     roundRole: 'player',
     score: 0,
   },
@@ -142,8 +144,8 @@ const GameProvider: React.FC<IGameProviderProps> = ({ children }) => {
     void router.push('/')
   }
 
-  const joinRoom = (username: string, roomId: string) => {
-    socket?.emit('room:joinRoom', { username, roomId })
+  const joinRoom = (username: string, roomId: string, pictureUrl: string) => {
+    socket?.emit('room:joinRoom', { username, roomId, pictureUrl })
   }
 
   const leaveRoom = () => {

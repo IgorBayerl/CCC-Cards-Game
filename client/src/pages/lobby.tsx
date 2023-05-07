@@ -38,6 +38,11 @@ export default function CreateRoom() {
     setConfig({ ...gameConfig, roomSize: newSize })
   }
 
+  const handleChangeScoreToWin = (value: string) => {
+    const newScoreToWin = parseInt(value)
+    setConfig({ ...gameConfig, scoreToWin: newScoreToWin })
+  }
+
   const handleChangeSelectedCards = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -65,6 +70,7 @@ export default function CreateRoom() {
   const roomInviteLink = `${window.location.origin}/?roomId=${roomId}`
 
   const roomSize = gameConfig?.roomSize?.toString() || '4'
+  const scoreToWin = gameConfig?.scoreToWin?.toString() || '10'
 
   return (
     <Layout>
@@ -86,8 +92,8 @@ export default function CreateRoom() {
             </ActionIcon>
           </div>
         </div>
-        <div className="flex flex-col sm:flex-row">
-          <div>
+        <div className="flex flex-col border sm:flex-row">
+          <div className="max-h-[30vh] min-w-fit overflow-y-scroll sm:max-h-[70vh]">
             <Select
               allowDeselect={false}
               value={roomSize}
@@ -104,23 +110,43 @@ export default function CreateRoom() {
               roomSize={gameConfig.roomSize}
             />
           </div>
-
-          <div className="grid grid-cols-1 gap-2 bg-yellow-400 p-3 md:grid-cols-2 lg:grid-cols-4 ">
-            {decks.length === 0 && (
-              <div className="text-center">No decks found</div>
-            )}
-            {decks.map((deck: IDeckConfigScreen) => (
-              <CheckBoxCard
-                key={deck.id}
-                id={deck.id}
-                selected={gameConfig.decks.includes(deck.id)}
-                onChange={handleChangeSelectedCards}
-              >
-                <div>{deck.language}</div>
-                <h1 className="my-0">{deck.name}</h1>
-                <p>{deck.description}</p>
-              </CheckBoxCard>
-            ))}
+          <div className="bg-green-600">
+            <div className="flex items-center">
+              <div className="px-4 py-2 text-center">Score to win</div>
+              <Select
+                allowDeselect={false}
+                value={scoreToWin}
+                onChange={handleChangeScoreToWin}
+                disabled={!isCurrentUserLeader}
+                data={Array.from({ length: 27 }, (_, i) => i + 4).map((i) => ({
+                  value: i.toString(),
+                  label: `${i} Points`,
+                }))}
+              />
+              {/* <div>Score to win: {gameConfig.scoreToWin}</div> */}
+            </div>
+            <div>
+              {/* <h1>Decks</h1> */}
+              {/* <p>Choose the decks you want to play with</p> */}
+              <div className="grid max-h-[70vh] grid-cols-1 items-stretch gap-2 overflow-y-scroll bg-yellow-400 p-3 md:grid-cols-2 lg:grid-cols-4">
+                {decks.length === 0 && (
+                  <div className="text-center">No decks found</div>
+                )}
+                {decks.map((deck: IDeckConfigScreen) => (
+                  <CheckBoxCard
+                    key={deck.id}
+                    id={deck.id}
+                    disabled={!isCurrentUserLeader}
+                    selected={gameConfig.decks.includes(deck.id)}
+                    onChange={handleChangeSelectedCards}
+                  >
+                    <div>{deck.language}</div>
+                    <h1 className="my-0">{deck.name}</h1>
+                    <p>{deck.description}</p>
+                  </CheckBoxCard>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
         <div>

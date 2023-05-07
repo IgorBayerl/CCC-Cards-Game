@@ -1,6 +1,6 @@
 import { type IPlayer } from '~/components/GameContext'
 import { GiCrownedSkull } from 'react-icons/gi'
-
+import Image from 'next/image'
 interface IProps {
   players: IPlayer[]
   leader: IPlayer | null
@@ -12,11 +12,20 @@ export default function PlayersList({ players, leader, roomSize }: IProps) {
 
   return (
     <>
-      <div className="flex w-full flex-col items-center justify-center gap-3 bg-red-200 p-3">
+      <div className="flex w-full flex-col items-center justify-center gap-3  p-3">
         <div className="w-full rounded-lg border-2 border-blue-800 p-3">
           {players.map((player, index) => (
             <div key={index}>
-              <div className="flex gap-3 text-2xl font-bold">
+              <div className="flex items-center gap-3 text-2xl font-bold">
+                {player.pictureUrl && (
+                  <Image
+                    src={player.pictureUrl}
+                    alt={`${player.username}'s picture`}
+                    width={60}
+                    height={60}
+                    className="rounded-full"
+                  />
+                )}
                 {player.username}{' '}
                 {player.id === leader?.id && <GiCrownedSkull size={30} />}
               </div>

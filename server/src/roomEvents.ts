@@ -2,24 +2,25 @@
 
 import { Socket } from 'socket.io'
 import RoomManager from './rooms/RoomManager'
-import { UsernameSchema } from './validation/roomEventsValidation'
+import { JoinRequestSchema } from './validation/roomEventsValidation'
 
 export const handleJoinRoom = (
   socket: Socket,
   roomManager: RoomManager,
-  username: string,
-  roomId: string
+  joinRequest: { roomId: string; username: string; pictureUrl: string }
 ) => {
-  const result = UsernameSchema.safeParse(username)
+  const result = JoinRequestSchema.safeParse(joinRequest)
 
   if (!result.success) {
     socket.emit('room:error', {
-      message: 'Invalid username',
+      message: 'Invalid join request',
       error: result.error.errors,
     })
+    socket.emit('join:error')
     return
   }
-  const room = roomManager.joinRoom(socket, roomId, username)
+  const { roomId, username, pictureUrl } = result.data
+  const room = roomManager.joinRoom(socket, roomId, username, pictureUrl)
   socket.emit('room:joinedRoom', roomId)
   room.notifyState(socket)
 }

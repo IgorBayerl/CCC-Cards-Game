@@ -50,11 +50,17 @@ app.get('/decks/:id', (req, res) => {
   }
 })
 
+interface IJoinRequest {
+  username: string
+  roomId: string
+  pictureUrl: string
+}
+
 io.on('connection', (socket) => {
   console.log('A user connected!')
 
-  socket.on('room:joinRoom', ({ username, roomId }) => {
-    handleJoinRoom(socket, roomManager, username, roomId)
+  socket.on('room:joinRoom', (joinRequest: IJoinRequest) => {
+    handleJoinRoom(socket, roomManager, joinRequest)
   })
 
   socket.on('room:leaveRoom', () => {
