@@ -14,7 +14,7 @@ import { SetConfigSchema } from './validation/gameEventsValidation'
 export const handleSetConfig = (
   socket: Socket,
   roomManager: RoomManager,
-  config: { roomSize: number; decks: IDeck[] }
+  config: { roomSize: number; decks: Array<string> }
 ) => {
   const result = SetConfigSchema.safeParse(config)
   if (!result.success) {

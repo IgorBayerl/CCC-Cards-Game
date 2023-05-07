@@ -13,7 +13,7 @@ export default class Room {
   leader: Player | null
 
   private roomSize: number
-  private decks: IDeck[]
+  private decks: Array<string>
 
   constructor(id: string) {
     this.id = id
@@ -23,7 +23,7 @@ export default class Room {
     this.decks = [] // Default decks
   }
 
-  setConfig(config: { roomSize: number; decks: IDeck[] }): void {
+  setConfig(config: { roomSize: number; decks: Array<string> }): void {
     this.roomSize = config.roomSize
     this.decks = config.decks
   }
@@ -56,6 +56,10 @@ export default class Room {
     const state = {
       players: this.players,
       leader: this.leader,
+      config: {
+        roomSize: this.roomSize,
+        decks: this.decks,
+      },
     }
     socket.to(this.id).emit('game:updateState', state)
   }
@@ -64,6 +68,10 @@ export default class Room {
     const state = {
       players: this.players,
       leader: this.leader,
+      config: {
+        roomSize: this.roomSize,
+        decks: this.decks,
+      },
     }
     socket.emit('game:updateState', state)
   }
