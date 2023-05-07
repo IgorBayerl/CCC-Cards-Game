@@ -1,7 +1,7 @@
 import { useGameContext } from '~/components/GameContext'
 import Loading from '~/components/Atoms/Loading'
 import PlayersList from '~/components/PlayersList'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import router from 'next/router'
 import Layout from '~/components/Atoms/Layout'
 import { ActionIcon, Button, Select } from '@mantine/core'
@@ -13,10 +13,14 @@ import CheckBoxCard from '~/components/Atoms/CheckBoxCard'
 import { type IDeckConfigScreen } from '~/models/Deck'
 
 export default function CreateRoom() {
-  const { roomId, gameState, leaveRoom, gameConfig, setConfig } =
-    useGameContext()
-
-  const [selectedDecksIds, setSelectedDecksIds] = useState<Array<string>>([])
+  const {
+    roomId,
+    gameState,
+    isCurrentUserLeader,
+    gameConfig,
+    leaveRoom,
+    setConfig,
+  } = useGameContext()
 
   const decksResponse = useQuery('get-decks', getDecks)
 
@@ -41,13 +45,11 @@ export default function CreateRoom() {
 
     let newSelectedDecksIds
     if (checked) {
-      newSelectedDecksIds = [...selectedDecksIds, id]
+      newSelectedDecksIds = [...gameConfig.decks, id]
     } else {
-      newSelectedDecksIds = selectedDecksIds.filter((deckId) => deckId !== id)
+      newSelectedDecksIds = gameConfig.decks.filter((deckId) => deckId !== id)
     }
-    setSelectedDecksIds(newSelectedDecksIds)
-
-    setConfig({ ...gameConfig, decks: selectedDecksIds })
+    setConfig({ ...gameConfig, decks: newSelectedDecksIds })
   }
 
   if (!roomId || decksResponse.isLoading) {
@@ -61,6 +63,8 @@ export default function CreateRoom() {
   const decks = decksResponse.data
 
   const roomInviteLink = `${window.location.origin}/?roomId=${roomId}`
+
+  const roomSize = gameConfig?.roomSize?.toString() || '4'
 
   return (
     <Layout>
@@ -86,18 +90,18 @@ export default function CreateRoom() {
           <div>
             <Select
               allowDeselect={false}
-              value={gameConfig.roomSize.toString()}
+              value={roomSize}
               onChange={handleChangeRoomSize}
-              data={[
-                { value: '4', label: '4 Players' },
-                { value: '6', label: '6 Players' },
-                { value: '7', label: '7 Players' },
-                { value: '9', label: '9 Players' },
-              ]}
+              disabled={!isCurrentUserLeader}
+              data={Array.from({ length: 17 }, (_, i) => i + 4).map((i) => ({
+                value: i.toString(),
+                label: `${i} Players`,
+              }))}
             />
             <PlayersList
               players={gameState.players}
               leader={gameState.leader}
+              roomSize={gameConfig.roomSize}
             />
           </div>
 
@@ -109,7 +113,7 @@ export default function CreateRoom() {
               <CheckBoxCard
                 key={deck.id}
                 id={deck.id}
-                value={selectedDecksIds.includes(deck.id)}
+                selected={gameConfig.decks.includes(deck.id)}
                 onChange={handleChangeSelectedCards}
               >
                 <div>{deck.language}</div>

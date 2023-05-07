@@ -4,9 +4,12 @@ import { GiCrownedSkull } from 'react-icons/gi'
 interface IProps {
   players: IPlayer[]
   leader: IPlayer | null
+  roomSize: number
 }
 
-export default function PlayersList({ players, leader }: IProps) {
+export default function PlayersList({ players, leader, roomSize }: IProps) {
+  const freeSpaces = Array(roomSize - players.length).fill(null)
+
   return (
     <>
       <div className="flex w-full flex-col items-center justify-center gap-3 bg-red-200 p-3">
@@ -20,6 +23,22 @@ export default function PlayersList({ players, leader }: IProps) {
               <hr
                 className={`m-3 border-2 border-blue-800 ${
                   index === players.length - 1 ? 'hidden' : ''
+                }`}
+              />
+            </div>
+          ))}
+          {freeSpaces.length !== 0 && (
+            <hr className="m-3 border-2 border-blue-800" />
+          )}
+          {freeSpaces.map((_, index) => (
+            <div
+              key={players.length + index}
+              className="text-2xl font-bold text-gray-400"
+            >
+              Empty Slot
+              <hr
+                className={`m-3 border-2 border-blue-800 ${
+                  index === freeSpaces.length - 1 ? 'hidden' : ''
                 }`}
               />
             </div>

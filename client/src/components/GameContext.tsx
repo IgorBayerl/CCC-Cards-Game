@@ -6,6 +6,7 @@ import {
   useEffect,
   useState,
 } from 'react'
+import { toast } from 'react-toastify'
 import { type Socket } from 'socket.io-client'
 import { useSocketContext } from '~/components/SocketContext'
 
@@ -14,7 +15,7 @@ interface IGameContextValue {
   roomId: string
   socket: Socket | undefined
   gameConfig: IGameConfig
-  setGameConfig: (config: IGameConfig) => void
+  isCurrentUserLeader: boolean
   joinRoom: (username: string, roomId: string) => void
   leaveRoom: () => void
   setConfig: (config: IGameConfig) => void
@@ -36,6 +37,7 @@ export interface IGameState {
   players: IPlayer[]
   leader: IPlayer
   roomStatus: 'waiting' | 'starting' | 'choosing_cards' | 'judging' | 'end'
+  config: IGameConfig
 }
 
 export interface IPlayer {
@@ -72,6 +74,7 @@ const initialGameState: IGameState = {
     score: 0,
   },
   roomStatus: 'waiting',
+  config: defaultGameConfig,
 }
 
 const GameContext = createContext<IGameContextValue>({
@@ -79,7 +82,7 @@ const GameContext = createContext<IGameContextValue>({
   roomId: '',
   socket: undefined,
   gameConfig: defaultGameConfig,
-  setGameConfig: () => undefined,
+  isCurrentUserLeader: false,
   joinRoom: () => undefined,
   leaveRoom: () => undefined,
   setConfig: () => undefined,
@@ -92,7 +95,7 @@ const GameProvider: React.FC<IGameProviderProps> = ({ children }) => {
   const { socket } = useSocketContext()
   const [gameState, setGameState] = useState(initialGameState)
   const [roomId, setRoomId] = useState<string>('')
-  const [gameConfig, setGameConfig] = useState<IGameConfig>(defaultGameConfig)
+  const [isCurrentUserLeader, setIsCurrentUserLeader] = useState(false)
 
   useEffect(() => {
     socket?.on('game:updateState', (newState: IGameState) => {
@@ -108,18 +111,35 @@ const GameProvider: React.FC<IGameProviderProps> = ({ children }) => {
     socket?.on('game:error', handleError)
     socket?.on('room:error', handleError)
 
+    socket?.on('disconnect', handleDisconnect)
+
     return () => {
       socket?.off('game:updateState')
       socket?.off('room:joinedRoom')
       socket?.off('game:error')
       socket?.off('room:error')
+      socket?.off('disconnect')
     }
   }, [socket])
 
+  useEffect(() => {
+    if (!socket || !gameState.leader) return
+    setIsCurrentUserLeader(gameState.leader.id === socket.id)
+  }, [socket, gameState])
+
   const handleError = (socketError: ISocketError) => {
     const { message, error } = socketError
-    console.log(message)
-    console.error(error)
+    console.log('SERVER:', message)
+    console.error('SERVER:', error)
+    toast.error(`Error: ${message}`)
+  }
+
+  const handleDisconnect = () => {
+    toast.error('You have been disconnected from the server.')
+
+    setRoomId('')
+    setGameState(initialGameState)
+    void router.push('/')
   }
 
   const joinRoom = (username: string, roomId: string) => {
@@ -133,7 +153,11 @@ const GameProvider: React.FC<IGameProviderProps> = ({ children }) => {
   }
 
   const setConfig = (config: IGameConfig) => {
-    setGameConfig(config)
+    console.log('game:setConfig', config)
+    setGameState((prevState) => ({
+      ...prevState,
+      config,
+    }))
     socket?.emit('game:setConfig', config)
   }
 
@@ -142,12 +166,14 @@ const GameProvider: React.FC<IGameProviderProps> = ({ children }) => {
     socket?.emit('game:admCommand', command)
   }
 
+  const gameConfig = gameState.config
+
   const value = {
     gameState,
     roomId,
     socket,
     gameConfig,
-    setGameConfig,
+    isCurrentUserLeader,
     joinRoom,
     leaveRoom,
     setConfig,

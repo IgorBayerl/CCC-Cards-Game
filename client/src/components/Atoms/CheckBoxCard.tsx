@@ -3,20 +3,20 @@ import { type ReactNode } from 'react'
 
 interface ICheckBoxCardProps {
   id: string
-  value: boolean
+  selected: boolean
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void
   children: ReactNode
 }
 
 export default function CheckBoxCard({
   id,
-  value,
+  selected,
   onChange,
   children,
 }: ICheckBoxCardProps) {
   const cardStyle = {
-    backgroundColor: value ? '#ffffff' : '#d6d6d6',
-    color: value ? '#2b2b2b' : '#303030',
+    backgroundColor: selected ? '#ffffff' : '#d6d6d6',
+    color: selected ? '#2b2b2b' : '#303030',
   }
 
   return (
@@ -25,7 +25,7 @@ export default function CheckBoxCard({
         <input
           id={id}
           type="checkbox"
-          checked={value}
+          checked={selected}
           onChange={onChange}
           hidden
         />
