@@ -1,28 +1,30 @@
 import { useState, useEffect } from 'react'
 
-const shuffleArray = (array: Array<any>) => {
+const shuffleArray = <T>(array: T[]): T[] => {
   let currentIndex = array.length
-  let temporaryValue, randomIndex
+  let temporaryValue: T, randomIndex: number
 
   while (currentIndex !== 0) {
     randomIndex = Math.floor(Math.random() * currentIndex)
     currentIndex--
 
-    temporaryValue = array[currentIndex]
-    array[currentIndex] = array[randomIndex]
+    temporaryValue = array[currentIndex] as T
+    array[currentIndex] = array[randomIndex] as T
     array[randomIndex] = temporaryValue
   }
 
   return array
 }
 
-type IUseShuffleArray = [any, () => void]
+type IUseShuffleArray<T> = [T, () => void]
 
-export const useShuffleArray = (inputArray: Array<any>): IUseShuffleArray => {
+export const useShuffleArray = <T>(inputArray: T[]): IUseShuffleArray<T> => {
   const [currentIndex, setCurrentIndex] = useState(
     Math.floor(Math.random() * inputArray.length)
   )
-  const [shuffledArray, setShuffledArray] = useState<Array<any>>([])
+  const [shuffledArray, setShuffledArray] = useState<T[]>(
+    shuffleArray([...inputArray])
+  )
 
   useEffect(() => {
     setShuffledArray(shuffleArray([...inputArray]))
@@ -33,5 +35,9 @@ export const useShuffleArray = (inputArray: Array<any>): IUseShuffleArray => {
     setCurrentIndex(nextIndex)
   }
 
-  return [shuffledArray[currentIndex], nextElement]
+  if (!shuffledArray[currentIndex]) {
+    throw new Error('Element not found in the shuffled array')
+  }
+
+  return [shuffledArray[currentIndex] as T, nextElement]
 }
