@@ -1,0 +1,3 @@
+/* @tailwind base; for some reason, this mess with @mantine styling*/ 
+@tailwind components;
+@tailwind utilities;

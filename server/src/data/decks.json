@@ -1,0 +1,62 @@
+[
+  {
+    "id": "1",
+    "name": "Example Deck 1",
+    "description": "An example deck containing sample questions and answers.",
+    "language": "en",
+    "cards": [
+      {
+        "id": "1",
+        "text": "What is the capital of France?",
+        "type": "question",
+        "spaces": 1
+      },
+      {
+        "id": "2",
+        "text": "Paris",
+        "type": "answer"
+      },
+      {
+        "id": "3",
+        "text": "What is the largest mammal?",
+        "type": "question",
+        "spaces": 1
+      },
+      {
+        "id": "4",
+        "text": "Blue Whale",
+        "type": "answer"
+      }
+    ]
+  },
+  {
+    "id": "2",
+    "name": "Example Deck 2",
+    "description": "Another example deck containing sample questions and answers.",
+    "language": "pt",
+    "cards": [
+      {
+        "id": "5",
+        "text": "What is the smallest planet in our solar system?",
+        "type": "question",
+        "spaces": 1
+      },
+      {
+        "id": "6",
+        "text": "Mercury",
+        "type": "answer"
+      },
+      {
+        "id": "7",
+        "text": "What is the largest ocean?",
+        "type": "question",
+        "spaces": 1
+      },
+      {
+        "id": "8",
+        "text": "Pacific Ocean",
+        "type": "answer"
+      }
+    ]
+  }
+]
