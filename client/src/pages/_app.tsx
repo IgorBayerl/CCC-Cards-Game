@@ -15,7 +15,7 @@ import { ReactQueryDevtools } from 'react-query/devtools'
 import 'react-toastify/dist/ReactToastify.css'
 import '~/styles/globals.css'
 
-const url = 'http://localhost:3365'
+const url = process.env.SERVER_URL || 'http://localhost:3365'
 
 const queryClient = new QueryClient()
 
