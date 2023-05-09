@@ -8,8 +8,8 @@ const shuffleArray = <T>(array: T[]): T[] => {
     randomIndex = Math.floor(Math.random() * currentIndex)
     currentIndex--
 
-    temporaryValue = array[currentIndex] as T
-    array[currentIndex] = array[randomIndex] as T
+    temporaryValue = array[currentIndex]!
+    array[currentIndex] = array[randomIndex]! 
     array[randomIndex] = temporaryValue
   }
 

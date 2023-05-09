@@ -1,9 +1,12 @@
 // src/gameEvents.ts
 
 import { Socket } from 'socket.io'
-import { IDeck } from './models/Deck' // Import the IDeck interface
+import { IGameConfig } from './models/Game'
 import RoomManager from './rooms/RoomManager'
-import { SetConfigSchema } from './validation/gameEventsValidation'
+import {
+  AdmCommandSchema,
+  SetConfigSchema,
+} from './validation/gameEventsValidation'
 
 /**
  * Handle the event of setting game configuration
@@ -14,7 +17,7 @@ import { SetConfigSchema } from './validation/gameEventsValidation'
 export const handleSetConfig = (
   socket: Socket,
   roomManager: RoomManager,
-  config: { roomSize: number; decks: Array<string>; scoreToWin: number }
+  config: IGameConfig
 ) => {
   const result = SetConfigSchema.safeParse(config)
   if (!result.success) {
@@ -33,15 +36,41 @@ export const handleSetConfig = (
   }
 }
 
+type AdmCommand = 'start' | 'next_round' | 'end'
+
 export const handleAdmCommand = (
   socket: Socket,
   roomManager: RoomManager,
-  command: string
+  command: AdmCommand
 ) => {
+  const result = AdmCommandSchema.safeParse(command)
+  if (!result.success) {
+    socket.emit('game:error', {
+      message: 'Invalid command',
+      error: result.error.errors,
+    })
+    return
+  }
+
   const roomId = Array.from(socket.rooms)[1]
   const room = roomManager.getRoomById(roomId)
   if (room && room.leader && room.leader.id === socket.id) {
     // Implement admin command logic here (e.g., start game)
+
+    //get the command type
+    //if command start game, validate if the room is ready to start (e.g., enough players, decks, etc.)
+
+    if (command === 'start') {
+      console.log('start game')
+      //will validate with zod
+      //if valid, call room.startGame()
+      //if not valid, emit error
+    }
+    // const actions = {
+    //   start: room.startGame
+    // }
+    // actions[command](socket)
+
     room.notifyState(socket)
   }
 }

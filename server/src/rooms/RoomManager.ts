@@ -33,7 +33,7 @@ export default class RoomManager {
       if (room.removePlayer(socket)) {
         console.log(`Player ${socket.id} left room ${room.id}`)
         socket.leave(room.id)
-        if (room.isEmpty()) {
+        if (room.isEmpty) {
           this.rooms.delete(room.id)
         } else {
           return room

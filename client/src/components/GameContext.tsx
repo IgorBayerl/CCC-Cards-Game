@@ -19,14 +19,16 @@ interface IGameContextValue {
   joinRoom: (username: string, roomId: string, pictureUrl: string) => void
   leaveRoom: () => void
   setConfig: (config: IGameConfig) => void
-  admCommand: (command: string) => void
+  admCommand: (command: AdmCommand) => void
 }
+
+type AdmCommand = 'start' | 'next_round' | 'end'
 
 interface IGameConfig {
   decks: string[]
   scoreToWin: number
   roomSize: number
-  timeLimit: number
+  time: number
 }
 
 interface IGameProviderProps {
@@ -63,7 +65,7 @@ const defaultGameConfig: IGameConfig = {
   decks: [],
   scoreToWin: 8,
   roomSize: 4,
-  timeLimit: 60,
+  time: 60,
 }
 
 const initialGameState: IGameState = {

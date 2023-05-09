@@ -20,7 +20,10 @@ export interface IDeck {
   name: string
   description: string
   language: string
-  cards: ICard[]
+  cards: {
+    questions: ICardQuestion[]
+    answers: ICardAnswer[]
+  }
 }
 
 export interface ICard {
@@ -29,10 +32,7 @@ export interface ICard {
 }
 
 export interface ICardQuestion extends ICard {
-  type: 'question'
   spaces: number
 }
 
-export interface ICardAnswer extends ICard {
-  type: 'answer'
-}
+export interface ICardAnswer extends ICard {}
