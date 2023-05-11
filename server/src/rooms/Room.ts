@@ -1,43 +1,32 @@
 // src/rooms/Room.ts
-import { Socket } from 'socket.io'
-import { IDeck } from '../models/Deck' // Import the IDeck interface
+import { type Server, Socket } from 'socket.io'
+import Player from './Player'
 
-interface Player {
-  id: string
-  username: string
-  pictureUrl: string
+export interface IRoomConfig {
+  roomSize: number
 }
 
 export default class Room {
   id: string
   players: Player[]
   leader: Player | null
+  protected roomSize: number
+  protected io: Server
 
-  private roomSize: number
-  private decks: Array<string>
-  private scoreToWin: number
-
-  constructor(id: string) {
+  constructor(id: string, io: Server, config: IRoomConfig = { roomSize: 8 }) {
+    this.io = io
     this.id = id
     this.players = []
     this.leader = null
-    this.roomSize = 4 // Default room size
-    this.decks = [] // Default decks
-    this.scoreToWin = 10 // Default score to win
+    this.roomSize = config.roomSize
   }
 
-  setConfig(config: {
-    roomSize: number
-    decks: Array<string>
-    scoreToWin: number
-  }): void {
+  setRoomConfig(config: IRoomConfig): void {
     this.roomSize = config.roomSize
-    this.decks = config.decks
-    this.scoreToWin = config.scoreToWin
   }
 
   addPlayer(socket: Socket, username: string, pictureUrl: string) {
-    const player = { id: socket.id, username, pictureUrl }
+    const player = new Player(socket.id, username, pictureUrl)
     this.players.push(player)
     if (!this.leader) {
       this.leader = player
@@ -56,33 +45,21 @@ export default class Room {
     return false
   }
 
-  isEmpty(): boolean {
+  notifyAll(event: string, data: any): void {
+    this.io.to(this.id).emit(event, data)
+  }
+
+  get isEmpty(): boolean {
     return this.players.length === 0
   }
 
-  notifyState(socket: Socket) {
-    const state = {
-      players: this.players,
-      leader: this.leader,
-      config: {
-        roomSize: this.roomSize,
-        decks: this.decks,
-        scoreToWin: this.scoreToWin,
-      },
-    }
-    socket.to(this.id).emit('game:updateState', state)
+  get isFull(): boolean {
+    return this.players.length === this.roomSize
   }
 
-  notifyPlayerState(socket: Socket): void {
-    const state = {
-      players: this.players,
-      leader: this.leader,
-      config: {
-        roomSize: this.roomSize,
-        decks: this.decks,
-        scoreToWin: this.scoreToWin,
-      },
+  get config(): IRoomConfig {
+    return {
+      roomSize: this.roomSize,
     }
-    socket.emit('game:updateState', state)
   }
 }

@@ -12,7 +12,7 @@ import { getDecks } from '~/api/deck'
 import CheckBoxCard from '~/components/Atoms/CheckBoxCard'
 import { type IDeckConfigScreen } from '~/models/Deck'
 
-export default function CreateRoom() {
+export default function LobbyPage() {
   const {
     roomId,
     gameState,
@@ -20,6 +20,7 @@ export default function CreateRoom() {
     gameConfig,
     leaveRoom,
     setConfig,
+    admCommand,
   } = useGameContext()
 
   const decksResponse = useQuery('get-decks', getDecks)
@@ -43,6 +44,11 @@ export default function CreateRoom() {
     setConfig({ ...gameConfig, scoreToWin: newScoreToWin })
   }
 
+  const handleChangeTimeToPlay = (value: string) => {
+    const newTimeToPlay = parseInt(value)
+    setConfig({ ...gameConfig, time: newTimeToPlay })
+  }
+
   const handleChangeSelectedCards = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -55,6 +61,10 @@ export default function CreateRoom() {
       newSelectedDecksIds = gameConfig.decks.filter((deckId) => deckId !== id)
     }
     setConfig({ ...gameConfig, decks: newSelectedDecksIds })
+  }
+
+  const handleStartGame = () => {
+    admCommand('start')
   }
 
   if (!roomId || decksResponse.isLoading) {
@@ -71,6 +81,7 @@ export default function CreateRoom() {
 
   const roomSize = gameConfig?.roomSize?.toString() || '4'
   const scoreToWin = gameConfig?.scoreToWin?.toString() || '10'
+  const timeToPlay = gameConfig?.time?.toString() || '60'
 
   return (
     <Layout>
@@ -93,7 +104,7 @@ export default function CreateRoom() {
           </div>
         </div>
         <div className="flex flex-col border sm:flex-row">
-          <div className="max-h-[30vh] min-w-fit overflow-y-scroll sm:max-h-[70vh]">
+          <div className="min-w-fit  bg-blue-700  ">
             <Select
               allowDeselect={false}
               value={roomSize}
@@ -123,12 +134,25 @@ export default function CreateRoom() {
                   label: `${i} Points`,
                 }))}
               />
+              <div className="px-4 py-2 text-center">Time</div>
+              <Select
+                allowDeselect={false}
+                value={timeToPlay}
+                onChange={handleChangeTimeToPlay}
+                disabled={!isCurrentUserLeader}
+                data={Array.from({ length: 10 }, (_, i) => (i + 3) * 10).map(
+                  (i) => ({
+                    value: i.toString(),
+                    label: `${i} Seconds`,
+                  })
+                )}
+              />
               {/* <div>Score to win: {gameConfig.scoreToWin}</div> */}
             </div>
             <div>
               {/* <h1>Decks</h1> */}
               {/* <p>Choose the decks you want to play with</p> */}
-              <div className="grid max-h-[70vh] grid-cols-1 items-stretch gap-2 overflow-y-scroll bg-yellow-400 p-3 md:grid-cols-2 lg:grid-cols-4">
+              <div className="grid max-h-[65vh] grid-cols-1 items-stretch gap-2 overflow-y-scroll bg-yellow-400 p-3 md:grid-cols-2 lg:grid-cols-4">
                 {decks.length === 0 && (
                   <div className="text-center">No decks found</div>
                 )}
@@ -146,12 +170,19 @@ export default function CreateRoom() {
                   </CheckBoxCard>
                 ))}
               </div>
+              <div className="flex items-center justify-evenly">
+                <CopyToClipboard text="Invite" content={roomInviteLink} />
+                <Button
+                  disabled={!isCurrentUserLeader}
+                  onClick={handleStartGame}
+                >
+                  Start Game
+                </Button>
+              </div>
             </div>
           </div>
         </div>
-        <div>
-          <CopyToClipboard text="Invite" content={roomInviteLink} />
-        </div>
+        <div>Footer</div>
       </div>
     </Layout>
   )

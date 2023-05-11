@@ -81,7 +81,7 @@ export function HeaderSimple({ links }: HeaderSimpleProps) {
   ))
 
   return (
-    <Header height={60} mb={120}>
+    <Header height={60}>
       <Container className={classes.header}>
         <div className="bg-red-200 px-2 py-1 text-xl">
           LOGO - Cyber Chaos Cards

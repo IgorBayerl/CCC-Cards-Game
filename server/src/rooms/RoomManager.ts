@@ -1,13 +1,14 @@
 // src/rooms/RoomManager.ts
 
-import { Socket } from 'socket.io'
-import Room from './Room'
+import { type Server, type Socket } from 'socket.io'
+import GameRoom from './GameRoom'
 
 export default class RoomManager {
-  rooms: Map<string, Room>
-
-  constructor() {
+  rooms: Map<string, GameRoom>
+  io: Server
+  constructor(io: Server) {
     this.rooms = new Map()
+    this.io = io
   }
 
   joinRoom(
@@ -15,10 +16,10 @@ export default class RoomManager {
     roomId: string,
     username: string,
     pictureUrl: string
-  ): Room {
+  ): GameRoom {
     let room = this.getRoomById(roomId)
     if (!room) {
-      room = new Room(roomId)
+      room = new GameRoom(roomId, this.io)
       this.rooms.set(roomId, room)
     }
     room.addPlayer(socket, username, pictureUrl)
@@ -33,7 +34,7 @@ export default class RoomManager {
       if (room.removePlayer(socket)) {
         console.log(`Player ${socket.id} left room ${room.id}`)
         socket.leave(room.id)
-        if (room.isEmpty()) {
+        if (room.isEmpty) {
           this.rooms.delete(room.id)
         } else {
           return room
@@ -43,7 +44,7 @@ export default class RoomManager {
     return null
   }
 
-  getRoomById(roomId: string): Room | undefined {
+  getRoomById(roomId: string): GameRoom | undefined {
     return this.rooms.get(roomId)
   }
 }

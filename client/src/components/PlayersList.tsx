@@ -12,11 +12,11 @@ export default function PlayersList({ players, leader, roomSize }: IProps) {
 
   return (
     <>
-      <div className="flex w-full flex-col items-center justify-center gap-3  p-3">
-        <div className="w-full rounded-lg border-2 border-blue-800 p-3">
+      <div className="flex w-full flex-col items-center justify-center gap-3 overflow-hidden  p-3">
+        <div className="flex w-full flex-row rounded-lg border-2  p-3 sm:flex-col">
           {players.map((player, index) => (
             <div key={index}>
-              <div className="flex items-center gap-3 text-2xl font-bold">
+              <div className="flex flex-col items-center gap-3 text-2xl font-bold sm:flex-row">
                 {player.pictureUrl && (
                   <Image
                     src={player.pictureUrl}
@@ -26,30 +26,20 @@ export default function PlayersList({ players, leader, roomSize }: IProps) {
                     className="rounded-full"
                   />
                 )}
-                {player.username}{' '}
-                {player.id === leader?.id && <GiCrownedSkull size={30} />}
+                <div className="flex">
+                  {player.username}{' '}
+                  {player.id === leader?.id && <GiCrownedSkull size={30} />}
+                </div>
               </div>
-              <hr
-                className={`m-3 border-2 border-blue-800 ${
-                  index === players.length - 1 ? 'hidden' : ''
-                }`}
-              />
             </div>
           ))}
-          {freeSpaces.length !== 0 && (
-            <hr className="m-3 border-2 border-blue-800" />
-          )}
+
           {freeSpaces.map((_, index) => (
             <div
               key={players.length + index}
               className="text-2xl font-bold text-gray-400"
             >
               Empty Slot
-              <hr
-                className={`m-3 border-2 border-blue-800 ${
-                  index === freeSpaces.length - 1 ? 'hidden' : ''
-                }`}
-              />
             </div>
           ))}
         </div>

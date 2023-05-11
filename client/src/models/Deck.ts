@@ -20,10 +20,5 @@ export interface ICard {
 }
 
 export interface ICardQuestion extends ICard {
-  type: 'question'
   spaces: number
-}
-
-export interface ICardAnswer extends ICard {
-  type: 'answer'
 }

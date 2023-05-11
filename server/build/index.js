@@ -49,8 +49,8 @@ app.get('/decks/:id', (req, res) => {
 });
 io.on('connection', (socket) => {
     console.log('A user connected!');
-    socket.on('room:joinRoom', ({ username, roomId }) => {
-        (0, roomEvents_1.handleJoinRoom)(socket, roomManager, username, roomId);
+    socket.on('room:joinRoom', (joinRequest) => {
+        (0, roomEvents_1.handleJoinRoom)(socket, roomManager, joinRequest);
     });
     socket.on('room:leaveRoom', () => {
         (0, roomEvents_1.handleLeaveRoom)(socket, roomManager);

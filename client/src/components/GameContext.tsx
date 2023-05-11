@@ -9,34 +9,44 @@ import {
 import { toast } from 'react-toastify'
 import { type Socket } from 'socket.io-client'
 import { useSocketContext } from '~/components/SocketContext'
+import { ICard, ICardQuestion } from '~/models/Deck'
 
 interface IGameContextValue {
+  myHand: IMyHand
   gameState: IGameState
   roomId: string
   socket: Socket | undefined
   gameConfig: IGameConfig
+  startingState: string
   isCurrentUserLeader: boolean
+  isCurrentUserJudge: boolean
   joinRoom: (username: string, roomId: string, pictureUrl: string) => void
   leaveRoom: () => void
   setConfig: (config: IGameConfig) => void
-  admCommand: (command: string) => void
+  admCommand: (command: AdmCommand) => void
 }
+
+type AdmCommand = 'start' | 'next_round' | 'end'
 
 interface IGameConfig {
   decks: string[]
   scoreToWin: number
   roomSize: number
-  timeLimit: number
+  time: number
 }
 
 interface IGameProviderProps {
   children: ReactNode
 }
 
-export interface IGameState {
+type TRoomStatus = 'waiting' | 'starting' | 'playing' | 'judging' | 'finished'
+
+interface IGameState {
   players: IPlayer[]
   leader: IPlayer
-  roomStatus: 'waiting' | 'starting' | 'choosing_cards' | 'judging' | 'end'
+  status: TRoomStatus
+  judge: IPlayer | null
+  currentQuestionCard: ICardQuestion | null
   config: IGameConfig
 }
 
@@ -48,12 +58,6 @@ export interface IPlayer {
   score: number
 }
 
-export interface IDrawing {
-  id: string
-  playerId: string
-  imageUrl: string
-}
-
 interface ISocketError {
   message: string
   error: Error
@@ -63,7 +67,7 @@ const defaultGameConfig: IGameConfig = {
   decks: [],
   scoreToWin: 8,
   roomSize: 4,
-  timeLimit: 60,
+  time: 60,
 }
 
 const initialGameState: IGameState = {
@@ -75,16 +79,31 @@ const initialGameState: IGameState = {
     roundRole: 'player',
     score: 0,
   },
-  roomStatus: 'waiting',
+  judge: null,
+  status: 'waiting',
+  currentQuestionCard: null,
   config: defaultGameConfig,
 }
 
+export interface IMyHand {
+  cards: ICard[]
+  selectedCard: Array<ICard>
+}
+
+const initialHandState: IMyHand = {
+  cards: [],
+  selectedCard: [],
+}
+
 const GameContext = createContext<IGameContextValue>({
+  myHand: initialHandState,
   gameState: initialGameState,
   roomId: '',
   socket: undefined,
   gameConfig: defaultGameConfig,
+  startingState: '',
   isCurrentUserLeader: false,
+  isCurrentUserJudge: false,
   joinRoom: () => undefined,
   leaveRoom: () => undefined,
   setConfig: () => undefined,
@@ -96,19 +115,22 @@ const useGameContext = () => useContext(GameContext)
 const GameProvider: React.FC<IGameProviderProps> = ({ children }) => {
   const { socket } = useSocketContext()
   const [gameState, setGameState] = useState(initialGameState)
+  const [startingState, setStartingState] = useState('')
+  const [myHand, setMyHand] = useState<IMyHand>(initialHandState)
   const [roomId, setRoomId] = useState<string>('')
   const [isCurrentUserLeader, setIsCurrentUserLeader] = useState(false)
+  const [isCurrentUserJudge, setIsCurrentUserJudge] = useState(false)
 
   useEffect(() => {
-    socket?.on('game:updateState', (newState: IGameState) => {
-      console.log('game:updateState', newState)
-      setGameState(newState)
-    })
+    socket?.on('game:updateState', handleChangeState)
 
     socket?.on('room:joinedRoom', (roomId: string) => {
       setRoomId(roomId)
-      void router.push('/lobby')
+      // void router.push('/lobby')
     })
+
+    socket?.on('game:updateCards', handleUpdateCards)
+    socket?.on('message:status', setStartingState)
 
     socket?.on('game:error', handleError)
     socket?.on('room:error', handleError)
@@ -118,6 +140,8 @@ const GameProvider: React.FC<IGameProviderProps> = ({ children }) => {
     return () => {
       socket?.off('game:updateState')
       socket?.off('room:joinedRoom')
+      socket?.off('game:updateCards')
+      socket?.off('message:status')
       socket?.off('game:error')
       socket?.off('room:error')
       socket?.off('disconnect')
@@ -127,7 +151,36 @@ const GameProvider: React.FC<IGameProviderProps> = ({ children }) => {
   useEffect(() => {
     if (!socket || !gameState.leader) return
     setIsCurrentUserLeader(gameState.leader.id === socket.id)
+    setIsCurrentUserJudge(gameState.judge?.id === socket.id)
   }, [socket, gameState])
+
+  const handleChangeState = (newState: IGameState) => {
+    console.log('game:updateState', newState)
+    if (newState.status === 'waiting') {
+      matchUrl('/lobby')
+    }
+    if (
+      newState.status === 'starting' ||
+      newState.status === 'playing' ||
+      newState.status === 'judging'
+    ) {
+      matchUrl('/game')
+    }
+
+    setGameState(newState)
+  }
+
+  const handleUpdateCards = (cards: ICard[]) => {
+    console.log('game:updateCards', cards)
+    setMyHand((prevState) => ({
+      ...prevState,
+      cards,
+    }))
+  }
+
+  const matchUrl = (path: string) => {
+    router.pathname !== path && void router.push(path)
+  }
 
   const handleError = (socketError: ISocketError) => {
     const { message, error } = socketError
@@ -171,11 +224,14 @@ const GameProvider: React.FC<IGameProviderProps> = ({ children }) => {
   const gameConfig = gameState.config
 
   const value = {
+    myHand,
     gameState,
     roomId,
     socket,
     gameConfig,
+    startingState,
     isCurrentUserLeader,
+    isCurrentUserJudge,
     joinRoom,
     leaveRoom,
     setConfig,
