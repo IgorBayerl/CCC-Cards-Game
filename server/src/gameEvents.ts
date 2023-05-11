@@ -61,10 +61,7 @@ export const handleAdmCommand = (
     //if command start game, validate if the room is ready to start (e.g., enough players, decks, etc.)
 
     if (command === 'start') {
-      console.log('start game')
-      //will validate with zod
-      //if valid, call room.startGame()
-      //if not valid, emit error
+      room.startGame(socket)
     }
     // const actions = {
     //   start: room.startGame

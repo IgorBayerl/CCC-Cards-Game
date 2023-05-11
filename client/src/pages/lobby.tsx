@@ -12,7 +12,7 @@ import { getDecks } from '~/api/deck'
 import CheckBoxCard from '~/components/Atoms/CheckBoxCard'
 import { type IDeckConfigScreen } from '~/models/Deck'
 
-export default function CreateRoom() {
+export default function LobbyPage() {
   const {
     roomId,
     gameState,

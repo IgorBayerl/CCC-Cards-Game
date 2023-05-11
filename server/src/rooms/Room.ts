@@ -1,13 +1,8 @@
 // src/rooms/Room.ts
-import { Socket } from 'socket.io'
+import { type Server, Socket } from 'socket.io'
+import Player from './Player'
 
-export interface Player {
-  id: string
-  username: string
-  pictureUrl: string
-}
-
-export interface RoomConfig {
+export interface IRoomConfig {
   roomSize: number
 }
 
@@ -15,21 +10,23 @@ export default class Room {
   id: string
   players: Player[]
   leader: Player | null
-  roomSize: number
+  protected roomSize: number
+  protected io: Server
 
-  constructor(id: string, config: RoomConfig = { roomSize: 8 }) {
+  constructor(id: string, io: Server, config: IRoomConfig = { roomSize: 8 }) {
+    this.io = io
     this.id = id
     this.players = []
     this.leader = null
     this.roomSize = config.roomSize
   }
 
-  setRoomConfig(config: RoomConfig): void {
+  setRoomConfig(config: IRoomConfig): void {
     this.roomSize = config.roomSize
   }
 
   addPlayer(socket: Socket, username: string, pictureUrl: string) {
-    const player = { id: socket.id, username, pictureUrl }
+    const player = new Player(socket.id, username, pictureUrl)
     this.players.push(player)
     if (!this.leader) {
       this.leader = player
@@ -48,6 +45,10 @@ export default class Room {
     return false
   }
 
+  notifyAll(event: string, data: any): void {
+    this.io.to(this.id).emit(event, data)
+  }
+
   get isEmpty(): boolean {
     return this.players.length === 0
   }
@@ -56,7 +57,7 @@ export default class Room {
     return this.players.length === this.roomSize
   }
 
-  get config(): RoomConfig {
+  get config(): IRoomConfig {
     return {
       roomSize: this.roomSize,
     }

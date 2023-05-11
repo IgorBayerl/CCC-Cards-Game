@@ -35,4 +35,6 @@ export interface ICardQuestion extends ICard {
   spaces: number
 }
 
+
+
 export interface ICardAnswer extends ICard {}

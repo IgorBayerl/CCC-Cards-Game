@@ -16,7 +16,7 @@ const profilePictures = [
   '/profile/profile_4.jpg',
 ]
 
-const IndexPage = () => {
+export default function Home() {
   const { gameState, joinRoom, socket } = useGameContext()
   const [pictureUrl, nextPicture] = useShuffleArray(profilePictures)
   const router = useRouter()
@@ -123,5 +123,3 @@ const IndexPage = () => {
     </Layout>
   )
 }
-
-export default IndexPage;

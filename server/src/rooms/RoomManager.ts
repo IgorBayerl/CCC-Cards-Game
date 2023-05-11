@@ -1,13 +1,14 @@
 // src/rooms/RoomManager.ts
 
-import { Socket } from 'socket.io'
+import { type Server, type Socket } from 'socket.io'
 import GameRoom from './GameRoom'
 
 export default class RoomManager {
   rooms: Map<string, GameRoom>
-
-  constructor() {
+  io: Server
+  constructor(io: Server) {
     this.rooms = new Map()
+    this.io = io
   }
 
   joinRoom(
@@ -18,7 +19,7 @@ export default class RoomManager {
   ): GameRoom {
     let room = this.getRoomById(roomId)
     if (!room) {
-      room = new GameRoom(roomId)
+      room = new GameRoom(roomId, this.io)
       this.rooms.set(roomId, room)
     }
     room.addPlayer(socket, username, pictureUrl)

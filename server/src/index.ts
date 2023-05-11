@@ -15,7 +15,6 @@ const io = new Server(server, {
     methods: ['GET', 'POST'],
   },
 })
-const roomManager = new RoomManager()
 
 app.use(cors())
 
@@ -55,6 +54,8 @@ interface IJoinRequest {
   roomId: string
   pictureUrl: string
 }
+
+const roomManager = new RoomManager(io)
 
 io.on('connection', (socket) => {
   console.log('A user connected!')
