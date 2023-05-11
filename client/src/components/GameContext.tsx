@@ -9,7 +9,7 @@ import {
 import { toast } from 'react-toastify'
 import { type Socket } from 'socket.io-client'
 import { useSocketContext } from '~/components/SocketContext'
-import { ICardAnswer, ICardQuestion } from '~/models/Deck'
+import { ICard, ICardQuestion } from '~/models/Deck'
 
 interface IGameContextValue {
   myHand: IMyHand
@@ -86,8 +86,8 @@ const initialGameState: IGameState = {
 }
 
 export interface IMyHand {
-  cards: ICardAnswer[]
-  selectedCard: Array<ICardAnswer>
+  cards: ICard[]
+  selectedCard: Array<ICard>
 }
 
 const initialHandState: IMyHand = {
@@ -170,7 +170,7 @@ const GameProvider: React.FC<IGameProviderProps> = ({ children }) => {
     setGameState(newState)
   }
 
-  const handleUpdateCards = (cards: ICardAnswer[]) => {
+  const handleUpdateCards = (cards: ICard[]) => {
     console.log('game:updateCards', cards)
     setMyHand((prevState) => ({
       ...prevState,
