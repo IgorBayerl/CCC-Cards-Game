@@ -4,7 +4,7 @@ import {
   IconBrandYoutube,
   IconBrandInstagram,
 } from '@tabler/icons-react'
-import { MantineLogo } from '@mantine/ds'
+import Image from 'next/image'
 
 const useStyles = createStyles((theme) => ({
   footer: {
@@ -38,7 +38,12 @@ export function FooterSocial() {
   return (
     <div className={classes.footer}>
       <Container className={classes.inner}>
-        <MantineLogo size={28} />
+        <Image
+          src="/icon_light.svg"
+          alt="Cyber Chaos Cards logo"
+          height={40}
+          width={200}
+        />
         <Group spacing={0} className={classes.links} position="right" noWrap>
           <ActionIcon size="lg">
             <IconBrandTwitter size="1.05rem" stroke={1.5} />

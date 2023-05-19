@@ -9,8 +9,11 @@ const useStyles = createStyles((theme) => ({
     alignItems: 'flex-start',
     backgroundSize: 'cover',
     backgroundPosition: 'center',
-    aspectRatio: '1/1',
-    backgroundColor: theme.colors.dark[5],
+    aspectRatio: '16/12',
+    backgroundColor:
+      theme.colorScheme === 'dark'
+        ? theme.colors.dark[6]
+        : theme.colors.gray[0],
     padding: theme.spacing.md,
     borderRadius: theme.radius.md,
   },
@@ -18,14 +21,14 @@ const useStyles = createStyles((theme) => ({
   title: {
     fontFamily: theme.fontFamily,
     fontWeight: 900,
-    color: theme.white,
+    // color: theme.white,
     lineHeight: 1.2,
     fontSize: rem(32),
     marginTop: theme.spacing.xs,
   },
 
   category: {
-    color: theme.white,
+    // color: theme.white,
     opacity: 0.7,
     fontWeight: 700,
     textTransform: 'uppercase',

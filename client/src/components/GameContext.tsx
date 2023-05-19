@@ -9,9 +9,12 @@ import {
 import { toast } from 'react-toastify'
 import { type Socket } from 'socket.io-client'
 import { useSocketContext } from '~/components/SocketContext'
+import { TPlayerStatus } from '~/lib/playerUtils'
 import { ICard, ICardQuestion } from '~/models/Deck'
 
 interface IGameContextValue {
+  myId: string
+  myStatus: TPlayerStatus
   myHand: IMyHand
   gameState: IGameState
   roomId: string
@@ -41,7 +44,7 @@ interface IGameProviderProps {
 
 type TRoomStatus = 'waiting' | 'starting' | 'playing' | 'judging' | 'finished'
 
-interface IGameState {
+export interface IGameState {
   players: IPlayer[]
   leader: IPlayer
   status: TRoomStatus
@@ -56,6 +59,7 @@ export interface IPlayer {
   pictureUrl: string
   roundRole: 'player' | 'judge'
   score: number
+  status: TPlayerStatus
 }
 
 interface ISocketError {
@@ -78,6 +82,7 @@ const initialGameState: IGameState = {
     pictureUrl: '',
     roundRole: 'player',
     score: 0,
+    status: 'pending',
   },
   judge: null,
   status: 'waiting',
@@ -96,6 +101,8 @@ const initialHandState: IMyHand = {
 }
 
 const GameContext = createContext<IGameContextValue>({
+  myId: '',
+  myStatus: 'pending',
   myHand: initialHandState,
   gameState: initialGameState,
   roomId: '',
@@ -120,13 +127,13 @@ const GameProvider: React.FC<IGameProviderProps> = ({ children }) => {
   const [roomId, setRoomId] = useState<string>('')
   const [isCurrentUserLeader, setIsCurrentUserLeader] = useState(false)
   const [isCurrentUserJudge, setIsCurrentUserJudge] = useState(false)
+  const [myId, setMyId] = useState<string>('')
 
   useEffect(() => {
     socket?.on('game:updateState', handleChangeState)
 
     socket?.on('room:joinedRoom', (roomId: string) => {
       setRoomId(roomId)
-      // void router.push('/lobby')
     })
 
     socket?.on('game:updateCards', handleUpdateCards)
@@ -152,6 +159,7 @@ const GameProvider: React.FC<IGameProviderProps> = ({ children }) => {
     if (!socket || !gameState.leader) return
     setIsCurrentUserLeader(gameState.leader.id === socket.id)
     setIsCurrentUserJudge(gameState.judge?.id === socket.id)
+    setMyId(socket.id)
   }, [socket, gameState])
 
   const handleChangeState = (newState: IGameState) => {
@@ -224,6 +232,8 @@ const GameProvider: React.FC<IGameProviderProps> = ({ children }) => {
   const gameConfig = gameState.config
 
   const value = {
+    myId,
+    myStatus: gameState.players.find((p) => p.id === myId)?.status || 'none',
     myHand,
     gameState,
     roomId,

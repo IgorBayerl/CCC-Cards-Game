@@ -2,8 +2,8 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { v4 as uuidv4 } from "uuid";
 import { useGameContext } from '~/components/GameContext'
-import Layout from '~/components/Atoms/Layout'
-import { ActionIcon, Button, TextInput } from '@mantine/core'
+import Layout from '~/components/Layout/Layout'
+import { ActionIcon, Button, createStyles, TextInput } from '@mantine/core'
 import { IconPlayerPlay, IconReload } from '@tabler/icons-react'
 import { TutorialCarousel } from '~/components/Atoms/TutorialCarousel'
 import Image from 'next/image'
@@ -16,10 +16,62 @@ const profilePictures = [
   '/profile/profile_4.jpg',
 ]
 
+const useStyles = createStyles((theme) => ({
+  containerCard: {
+    backgroundColor:
+      theme.colorScheme === 'dark'
+        ? theme.colors.dark[5]
+        : theme.colors.gray[2],
+    borderRadius: theme.radius.md,
+    marginTop: theme.spacing.md,
+    marginBottom: theme.spacing.md,
+    padding: theme.spacing.md,
+    display: 'flex',
+    width: '100%',
+    maxWidth: '80%',
+    flexDirection: 'row',
+    gap: theme.spacing.md,
+    [theme.fn.smallerThan('md')]: {
+      flexDirection: 'column',
+    },
+    [theme.fn.smallerThan('sm')]: {
+      borderRadius: 0,
+      marginTop: 0,
+      marginBottom: 0,
+      maxWidth: '100%',
+      backgroundColor: 'transparent',
+    },
+  },
+  // "w-full p-5 lg:max-w-md xl:max-w-lg "
+  carrouselContainer: {
+    width: '100%',
+    padding: theme.spacing.md,
+    maxWidth: '30rem',
+    [theme.fn.smallerThan('md')]: {
+      padding: 0,
+      maxWidth: '100%',
+    },
+  },
+
+  formContainer: {
+    display: 'flex',
+    width: '100%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: theme.spacing.md,
+    [theme.fn.smallerThan('xl')]: {
+      flexDirection: 'column',
+      aspectRatio: 'auto',
+    },
+  },
+}))
+
 export default function Home() {
   const { gameState, joinRoom, socket } = useGameContext()
   const [pictureUrl, nextPicture] = useShuffleArray(profilePictures)
   const router = useRouter()
+  const { classes } = useStyles()
 
   const [username, setUsername] = useState('')
 
@@ -77,8 +129,10 @@ export default function Home() {
 
   return (
     <Layout>
-      <div className="flex w-full max-w-[80%] flex-col bg-red-200 lg:flex-row">
-        <div className="flex aspect-[16/9] flex-1 flex-col items-center justify-center gap-6  p-5 lg:aspect-auto xl:flex-row">
+      <div className={classes.containerCard}>
+        {/* <div className=" flex w-full max-w-[80%] flex-col lg:flex-row"> */}
+        <div className={classes.formContainer}>
+          {/* <div className="flex aspect-[16/9] flex-1 flex-col items-center justify-center gap-6  lg:aspect-auto xl:flex-row"> */}
           <div className=" flex justify-center ">
             <div className="relative ">
               <Image
@@ -98,7 +152,7 @@ export default function Home() {
               </ActionIcon>
             </div>
           </div>
-          <div className="flex w-full flex-1 flex-col gap-3  p-5">
+          <div className="flex w-full flex-1 flex-col gap-3">
             <TextInput
               label="Username"
               type="text"
@@ -116,7 +170,7 @@ export default function Home() {
             </Button>
           </div>
         </div>
-        <div className="w-full  p-5 lg:max-w-md xl:max-w-lg ">
+        <div className={classes.carrouselContainer}>
           <TutorialCarousel />
         </div>
       </div>

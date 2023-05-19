@@ -3,14 +3,52 @@ import Loading from '~/components/Atoms/Loading'
 import PlayersList from '~/components/PlayersList'
 import { useEffect } from 'react'
 import router from 'next/router'
-import Layout from '~/components/Atoms/Layout'
-import { ActionIcon, Button, Select } from '@mantine/core'
+import Layout from '~/components/Layout/Layout'
+import { createStyles, Button, Select } from '@mantine/core'
 import { IconArrowBack, IconVolume, IconVolumeOff } from '@tabler/icons-react'
 import { CopyToClipboard } from '~/components/Atoms/CopyToClipboard'
 import { useQuery } from 'react-query'
 import { getDecks } from '~/api/deck'
 import CheckBoxCard from '~/components/Atoms/CheckBoxCard'
 import { type IDeckConfigScreen } from '~/models/Deck'
+import MuteButton from '~/components/Atoms/MuteButton'
+import ContainerHeader from '~/components/Layout/ContainerHeader'
+import ContainerFooter from '~/components/Layout/ContainerFooter'
+
+const useStyles = createStyles((theme) => ({
+  containerCard: {
+    backgroundColor:
+      theme.colorScheme === 'dark'
+        ? theme.colors.dark[5]
+        : theme.colors.gray[2],
+    borderRadius: theme.radius.md,
+    marginTop: theme.spacing.md,
+    marginBottom: theme.spacing.md,
+    marginRight: theme.spacing.md,
+    marginLeft: theme.spacing.md,
+    padding: theme.spacing.md,
+    display: 'flex',
+    width: '100%',
+    flexDirection: 'column',
+    // [theme.fn.smallerThan('md')]: {
+    //   flexDirection: 'column',
+    // },
+    [theme.fn.smallerThan('sm')]: {
+      borderRadius: 0,
+      margin: 0,
+      padding: 0,
+      maxWidth: '100%',
+      backgroundColor: 'transparent',
+    },
+  },
+  gameContainer: {
+    flexGrow: 1,
+    borderRadius: theme.radius.md,
+    border: `3px solid ${
+      theme.colorScheme === 'dark' ? theme.colors.dark[4] : theme.colors.gray[4]
+    }`,
+  },
+}))
 
 export default function LobbyPage() {
   const {
@@ -22,8 +60,10 @@ export default function LobbyPage() {
     setConfig,
     admCommand,
   } = useGameContext()
-
+  const { classes } = useStyles()
+  // TODO: change this to a getStaticProps with revalidate of 1 hour
   const decksResponse = useQuery('get-decks', getDecks)
+  const status = gameState.status
 
   const handleLeaveRoom = () => {
     void router.push('/')
@@ -85,27 +125,12 @@ export default function LobbyPage() {
 
   return (
     <Layout>
-      <div className="flex w-full flex-col bg-purple-300">
-        <div className=" flex justify-between bg-red-400">
-          <Button
-            leftIcon={<IconArrowBack size="1rem" />}
-            onClick={handleLeaveRoom}
-          >
-            Leave Room
-          </Button>
-          Logo
-          <div>
-            <ActionIcon variant="outline" color="blue">
-              <IconVolume />
-            </ActionIcon>
-            <ActionIcon variant="outline" color="blue">
-              <IconVolumeOff />
-            </ActionIcon>
-          </div>
-        </div>
+      <div className={classes.containerCard}>
+        <ContainerHeader />
         <div className="flex flex-col border sm:flex-row">
-          <div className="min-w-fit  bg-blue-700  ">
+          <div className="flex min-w-fit flex-col gap-5">
             <Select
+              className="mx-2"
               allowDeselect={false}
               value={roomSize}
               onChange={handleChangeRoomSize}
@@ -121,7 +146,7 @@ export default function LobbyPage() {
               roomSize={gameConfig.roomSize}
             />
           </div>
-          <div className="bg-green-600">
+          <div className={classes.gameContainer}>
             <div className="flex items-center">
               <div className="px-4 py-2 text-center">Score to win</div>
               <Select
@@ -152,7 +177,7 @@ export default function LobbyPage() {
             <div>
               {/* <h1>Decks</h1> */}
               {/* <p>Choose the decks you want to play with</p> */}
-              <div className="grid max-h-[65vh] grid-cols-1 items-stretch gap-2 overflow-y-scroll bg-yellow-400 p-3 md:grid-cols-2 lg:grid-cols-4">
+              <div className="grid max-h-[65vh] grid-cols-1 items-stretch gap-2  p-3 md:grid-cols-2 lg:grid-cols-4">
                 {decks.length === 0 && (
                   <div className="text-center">No decks found</div>
                 )}
@@ -182,7 +207,7 @@ export default function LobbyPage() {
             </div>
           </div>
         </div>
-        <div>Footer</div>
+        <ContainerFooter />
       </div>
     </Layout>
   )

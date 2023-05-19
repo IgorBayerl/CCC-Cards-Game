@@ -3,9 +3,15 @@ import { Server } from 'socket.io'
 import { createServer } from 'http'
 import RoomManager from './rooms/RoomManager'
 import { handleJoinRoom, handleLeaveRoom } from './roomEvents'
-import { handleSetConfig, handleAdmCommand } from './gameEvents'
+import {
+  handleSetConfig,
+  handleAdmCommand,
+  handlePlayerSelection,
+  handleJudgeSelection,
+} from './gameEvents'
 import cors from 'cors'
 import decks from './data/decks.json'
+import { ICardAnswer } from './models/Deck'
 
 const app = express()
 const server = createServer(app)
@@ -74,6 +80,16 @@ io.on('connection', (socket) => {
 
   socket.on('game:setConfig', (config) => {
     handleSetConfig(socket, roomManager, config)
+  })
+
+  // TODO: implement this on the frontend
+  socket.on('game:playerSelection', (selectedCards: ICardAnswer[]) => {
+    handlePlayerSelection(socket, roomManager, selectedCards)
+  })
+
+  // TODO: implement this on the frontend
+  socket.on('game:judgeSelection', (winningPlayerId: string) => {
+    handleJudgeSelection(socket, roomManager, winningPlayerId)
   })
 
   socket.on('disconnect', () => {

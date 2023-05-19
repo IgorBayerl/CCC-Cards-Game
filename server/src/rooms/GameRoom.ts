@@ -3,7 +3,7 @@ import { type Server, type Socket } from 'socket.io'
 import { ICardAnswer, ICardQuestion } from '../models/Deck'
 import { getDeckById, shuffleCards } from '../lib/deckUtils'
 import Room from './Room'
-import GamePlayer from './GamePlayer'
+import GamePlayer, { TPlayerStatus } from './GamePlayer'
 import Player from './Player'
 
 interface IGameState {
@@ -13,6 +13,13 @@ interface IGameState {
   judge: Player | null
   currentQuestionCard: ICardQuestion | null
   config: IGameConfig
+}
+
+interface IGameRound {
+  questionCard: ICardQuestion
+  answerCards: { [playerId: string]: ICardAnswer[] }
+  judge: Player
+  winner: Player | null
 }
 
 interface IGameConfig {
@@ -30,6 +37,8 @@ export default class GameRoom extends Room {
   private scoreToWin: number
   private time: number
 
+  private rounds: IGameRound[] = []
+
   private status: TRoomStatus = 'waiting'
   private judge: Player | null = null
   private currentJudgeIndex: number | null = null
@@ -40,7 +49,13 @@ export default class GameRoom extends Room {
   constructor(
     id: string,
     io: Server,
-    config: IGameConfig = { roomSize: 8, decks: [], scoreToWin: 8, time: 60 }
+    // TODO: Remove this default decks in the future
+    config: IGameConfig = {
+      roomSize: 6,
+      decks: ['1', '2', '4', '5'],
+      scoreToWin: 8,
+      time: 60,
+    }
   ) {
     super(id, io, { roomSize: config.roomSize })
     this.players = []
@@ -55,6 +70,13 @@ export default class GameRoom extends Room {
     if (!this.leader) {
       this.leader = player
     }
+
+    // Give the player cards if the game has already started
+    if (this.status !== 'waiting' && this.status !== 'starting') {
+      this.giveCardsToPlayer(player)
+      const socketId = player.socketId
+      this.io.to(socketId).emit('game:updateCards', player.cards)
+    }
   }
 
   setConfig(config: IGameConfig): void {
@@ -62,6 +84,25 @@ export default class GameRoom extends Room {
     this.decks = config.decks
     this.scoreToWin = config.scoreToWin
     this.time = config.time
+  }
+
+  giveCardsToPlayer(player: GamePlayer): void {
+    for (let i = 0; i < 6; i++) {
+      const cardIndex =
+        (i + player.cards.length) % this.availableAnswerCards.length
+      player.cards.push(this.availableAnswerCards[cardIndex])
+    }
+    // Shuffle the player's cards
+    player.cards = shuffleCards(player.cards)
+  }
+
+  addRound(questionCard: ICardQuestion, judge: Player): void {
+    this.rounds.push({
+      questionCard,
+      answerCards: {},
+      judge,
+      winner: null,
+    })
   }
 
   // Rest of your methods...
@@ -86,7 +127,10 @@ export default class GameRoom extends Room {
     this.availableAnswerCards = []
     for (let deckID of this.decks) {
       const deck = getDeckById(deckID)
-      if (!deck) continue
+      if (!deck) {
+        console.error(`Deck with id ${deckID} not found.`)
+        continue
+      }
       this.availableQuestionCards.push(...deck.cards.questions)
       this.availableAnswerCards.push(...deck.cards.answers)
     }
@@ -101,7 +145,7 @@ export default class GameRoom extends Room {
     console.log('>>> giving 6 cards to each player...')
     this.startingStatusUpdate('>>> giving 6 cards to each player...')
     for (let player of this.players) {
-      player.cards = this.availableAnswerCards.splice(0, 6)
+      this.giveCardsToPlayer(player)
     }
     this.notifyPlayerCards()
 
@@ -110,18 +154,93 @@ export default class GameRoom extends Room {
     this.startingStatusUpdate('>>> giving a question card to the judge...')
     this.currentQuestionCard = this.availableQuestionCards.pop() || null
 
+    // Set the player statuses
+    for (let player of this.players) {
+      player.status = player === this.judge ? 'waiting' : 'pending'
+    }
+
     // setTimeout(() => {
     this.status = 'playing'
+    this.updatePlayerStatuses()
     this.notifyStateAll(socket)
     // }, 4000)
   }
-
   nextRound(): void {
     // Select the next player as a judge
     if (this.players.length > 0 && this.currentJudgeIndex !== null) {
       this.currentJudgeIndex =
         (this.currentJudgeIndex + 1) % this.players.length
       this.judge = this.players[this.currentJudgeIndex]
+      this.updatePlayerStatuses()
+
+      // Reset hasSubmittedCards for all players
+      this.players.forEach((player) => (player.hasSubmittedCards = false))
+    } else {
+      console.error(
+        'Cannot select a judge, no players available or current judge index is null'
+      )
+    }
+  }
+
+  updatePlayerStatuses(): void {
+    switch (this.status) {
+      case 'waiting':
+      case 'starting':
+        this.setAllPlayersStatus('waiting')
+        break
+      case 'playing':
+        this.updatePlayingStatus()
+        break
+      case 'judging':
+        this.updateJudgingStatus()
+        break
+      case 'finished':
+        this.updateFinishedStatus()
+        break
+    }
+  }
+  setAllPlayersStatus(status: TPlayerStatus): void {
+    this.players.forEach((player) => (player.status = status))
+  }
+
+  updatePlayingStatus(): void {
+    this.players.forEach((player) => {
+      player.status =
+        player === this.judge ? 'waiting' : this.getCardStatus(player)
+    })
+  }
+
+  getCardStatus(player: GamePlayer): TPlayerStatus {
+    // Return 'pending' if the player has not submitted cards, 'done' otherwise.
+    return player.hasSubmittedCards ? 'done' : 'pending'
+  }
+
+  updateJudgingStatus(): void {
+    this.players.forEach((player) => {
+      player.status = player === this.judge ? 'judge' : 'done'
+    })
+  }
+
+  updateFinishedStatus(): void {
+    let winner = this.getWinner()
+    this.players.forEach((player) => {
+      player.status = player === winner ? 'winner' : 'none'
+    })
+  }
+  getWinner(): GamePlayer {
+    return this.players.reduce((prev, current) =>
+      prev.score > current.score ? prev : current
+    )
+  }
+
+  checkForWinner(): void {
+    for (let player of this.players) {
+      if (player.score >= this.scoreToWin) {
+        this.status = 'finished'
+        this.updatePlayerStatuses()
+        console.log(`${player.username} has won the game!`)
+        break
+      }
     }
   }
 
@@ -131,6 +250,8 @@ export default class GameRoom extends Room {
         id: player.id,
         username: player.username,
         pictureUrl: player.pictureUrl,
+        score: player.score,
+        status: player.status,
       }
     })
   }
@@ -148,6 +269,70 @@ export default class GameRoom extends Room {
         scoreToWin: this.scoreToWin,
         time: this.time,
       },
+    }
+  }
+
+  get currentStatus(): TRoomStatus {
+    return this.status
+  }
+
+  get currentJudge(): Player | null {
+    return this.judge
+  }
+
+  get winningScore(): number {
+    return this.scoreToWin
+  }
+
+  get gameRounds(): IGameRound[] {
+    return this.rounds
+  }
+
+  judgeSelection(winningPlayerId: string, socket: Socket): void {
+    // Find the winning player and increment their score.
+    const winningPlayer = this.players.find((p) => p.id === winningPlayerId)
+    if (winningPlayer) {
+      winningPlayer.score++
+
+      // Store the winner for the round
+      if (this.rounds.length > 0) {
+        this.rounds[this.rounds.length - 1].winner = winningPlayer
+      }
+
+      // If the winning player has reached the score to win, update the game state to 'finished'.
+      if (winningPlayer.score === this.scoreToWin) {
+        this.status = 'finished'
+      } else {
+        // Otherwise, start the next round.
+        this.status = 'playing'
+        this.nextRound()
+      }
+
+      // Update player statuses
+      this.updatePlayerStatuses()
+
+      // Notify the game room of the state change
+      this.notifyState(socket)
+    }
+  }
+
+  playerSelection(selectedCards: ICardAnswer[], socket: Socket): void {
+    // Find the player and update their cards.
+    const player = this.players.find((p) => p.socketId === socket.id)
+    if (player && this.rounds.length > 0) {
+      player.cards = selectedCards
+
+      // // Store the selected cards for the round
+      // this.rounds[this.rounds.length - 1].answerCards[player.id] = selectedCards
+
+      // Mark the player as having submitted cards
+      player.hasSubmittedCards = true
+
+      // Update player statuses
+      this.updatePlayerStatuses()
+
+      // Notify the game room of the state change
+      this.notifyState(socket)
     }
   }
 

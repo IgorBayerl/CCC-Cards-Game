@@ -1,3 +1,30 @@
 /* @tailwind base; for some reason, this mess with @mantine styling*/ 
 @tailwind components;
 @tailwind utilities;
+
+
+.leader-crown {
+  transform: rotate(-33deg);
+  position: absolute;
+  top: -10px;
+  left: -8px;
+}
+
+.leader-crown:hover {
+  animation: jumping-crown 0.5s ease-in-out forwards ;
+}
+
+@keyframes jumping-crown {
+  0% {
+    transform: rotate(-33deg) translate(0, 0) scale(1);
+  }
+  25% {
+    transform: rotate(-25deg) translate(0px, -8px)  scale(1.1);
+  }
+  50% {
+    transform: rotate(-25deg) translate(3px, -2px) scale(1);
+  }
+  100% {
+    transform: rotate(-33deg) translate(0, 0) scale(1);
+  }
+}

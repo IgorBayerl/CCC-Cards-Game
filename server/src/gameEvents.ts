@@ -1,6 +1,7 @@
 // src/gameEvents.ts
 
 import { Socket } from 'socket.io'
+import { ICardAnswer } from './models/Deck'
 import { IGameConfig } from './models/Game'
 import RoomManager from './rooms/RoomManager'
 import {
@@ -71,3 +72,29 @@ export const handleAdmCommand = (
     room.notifyState(socket)
   }
 }
+
+export const handleJudgeSelection = (
+  socket: Socket,
+  roomManager: RoomManager,
+  winningPlayerId: string
+) => {
+  const roomId = Array.from(socket.rooms)[1]
+  const room = roomManager.getRoomById(roomId)
+  if (room && room.currentJudge && room.currentJudge.id === socket.id) {
+    room.judgeSelection(winningPlayerId, socket)
+  }
+}
+
+export const handlePlayerSelection = (
+  socket: Socket,
+  roomManager: RoomManager,
+  selectedCards: ICardAnswer[]
+) => {
+  const roomId = Array.from(socket.rooms)[1]
+  const room = roomManager.getRoomById(roomId)
+  if (room) {
+    room.playerSelection(selectedCards, socket)
+  }
+}
+
+

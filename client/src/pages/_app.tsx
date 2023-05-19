@@ -19,8 +19,10 @@ const url = process.env.NEXT_PUBLIC_GAME_SERVER || 'http://localhost:3365'
 
 const queryClient = new QueryClient()
 
+
+
 const MyApp: AppType = ({ Component, pageProps }) => {
-  const [colorScheme, setColorScheme] = useState<ColorScheme>('light')
+  const [colorScheme, setColorScheme] = useState<ColorScheme>('dark')
   const toggleColorScheme = (value?: ColorScheme) =>
     setColorScheme(value || (colorScheme === 'dark' ? 'light' : 'dark'))
 
@@ -32,6 +34,7 @@ const MyApp: AppType = ({ Component, pageProps }) => {
           name="viewport"
           content="minimum-scale=1, initial-scale=1, width=device-width"
         />
+        <link rel="icon" type="image/x-icon" href="icon_dark.ico" />
       </Head>
       <ToastContainer />
       <QueryClientProvider client={queryClient}>
@@ -42,7 +45,9 @@ const MyApp: AppType = ({ Component, pageProps }) => {
           <MantineProvider
             withGlobalStyles
             withNormalizeCSS
-            theme={{ colorScheme }}
+            theme={{
+              colorScheme,
+            }}
           >
             <SocketProvider url={url}>
               <GameProvider>
@@ -51,7 +56,7 @@ const MyApp: AppType = ({ Component, pageProps }) => {
             </SocketProvider>
           </MantineProvider>
         </ColorSchemeProvider>
-        <ReactQueryDevtools />
+        {/* <ReactQueryDevtools /> */}
       </QueryClientProvider>
     </>
   )

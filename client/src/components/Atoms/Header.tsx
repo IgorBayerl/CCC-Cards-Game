@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { createStyles, Header, Container, Group, rem } from '@mantine/core'
 import { ThemeSwitcher } from './ThemeSwitcher'
 import ConnectionStatus from './ConnectionStatus'
+import Image from 'next/image'
 
 const useStyles = createStyles((theme) => ({
   header: {
@@ -83,9 +84,12 @@ export function HeaderSimple({ links }: HeaderSimpleProps) {
   return (
     <Header height={60}>
       <Container className={classes.header}>
-        <div className="bg-red-200 px-2 py-1 text-xl">
-          LOGO - Cyber Chaos Cards
-        </div>
+        <Image
+          src="/logo_light.svg"
+          alt="Cyber Chaos Cards logo"
+          width={200}
+          height={40}
+        />
 
         <Group spacing={5} className={classes.links}>
           {items}

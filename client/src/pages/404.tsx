@@ -9,7 +9,7 @@ import {
   rem,
 } from '@mantine/core'
 import Link from 'next/link'
-import Layout from '~/components/Atoms/Layout'
+import Layout from '~/components/Layout/Layout'
 
 const useStyles = createStyles((theme) => ({
   title: {
