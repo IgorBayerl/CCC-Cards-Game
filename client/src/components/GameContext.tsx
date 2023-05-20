@@ -167,12 +167,11 @@ const GameProvider: React.FC<IGameProviderProps> = ({ children }) => {
     if (newState.status === 'waiting') {
       matchUrl('/lobby')
     }
-    if (
-      newState.status === 'starting' ||
-      newState.status === 'playing' ||
-      newState.status === 'judging'
-    ) {
+    if (newState.status === 'starting' || newState.status === 'playing') {
       matchUrl('/game')
+    }
+    if (newState.status === 'judging') {
+      matchUrl('/judging')
     }
 
     setGameState(newState)

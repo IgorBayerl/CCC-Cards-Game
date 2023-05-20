@@ -8,6 +8,7 @@ import {
   handleAdmCommand,
   handlePlayerSelection,
   handleJudgeSelection,
+  handleRequestNextCard,
 } from './gameEvents'
 import cors from 'cors'
 import decks from './data/decks.json'
@@ -85,6 +86,10 @@ io.on('connection', (socket) => {
   // TODO: implement this on the frontend
   socket.on('game:playerSelection', (selectedCards: ICardAnswer[]) => {
     handlePlayerSelection(socket, roomManager, selectedCards)
+  })
+
+  socket.on('game:requestNextCard', () => {
+    handleRequestNextCard(socket, roomManager)
   })
 
   // TODO: implement this on the frontend

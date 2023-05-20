@@ -97,4 +97,15 @@ export const handlePlayerSelection = (
   }
 }
 
+export const handleRequestNextCard = (
+  socket: Socket,
+  roomManager: RoomManager
+) => {
+  const roomId = Array.from(socket.rooms)[1]
+  const room = roomManager.getRoomById(roomId)
+  if (room && room.currentJudge && room.currentJudge.id === socket.id) {
+    room.requestNextCard(socket)
+  }
+}
+
 

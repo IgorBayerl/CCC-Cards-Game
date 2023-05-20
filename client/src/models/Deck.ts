@@ -23,4 +23,7 @@ export interface ICardQuestion extends ICard {
   spaces: number
 }
 
-export interface ICardAnswer extends ICard {}
+export interface ICardAnswer {
+  id: string
+  text: string
+}

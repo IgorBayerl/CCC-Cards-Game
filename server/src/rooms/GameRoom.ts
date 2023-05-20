@@ -20,8 +20,8 @@ interface IGameRound {
   answerCards: { [playerId: string]: ICardAnswer[] }
   judge: Player
   winner: Player | null
+  currentJudgedPlayerIndex: number
 }
-
 
 interface IGameConfig {
   roomSize: number
@@ -103,7 +103,50 @@ export default class GameRoom extends Room {
       answerCards: {},
       judge,
       winner: null,
+      currentJudgedPlayerIndex: 0, // Initialize to 0
     })
+  }
+
+  getNextPlayerCards(): { cards: ICardAnswer[] | null; hasNext: boolean } {
+    if (this.rounds.length > 0) {
+      const round = this.rounds[this.rounds.length - 1]
+      const playerIds = Object.keys(round.answerCards)
+
+      if (round.currentJudgedPlayerIndex < playerIds.length) {
+        const currentPlayerId = playerIds[round.currentJudgedPlayerIndex]
+        round.currentJudgedPlayerIndex++ // Move to the next player
+        const hasNext = round.currentJudgedPlayerIndex < playerIds.length
+        return {
+          cards: round.answerCards[currentPlayerId],
+          hasNext,
+        }
+      }
+    }
+
+    return { cards: null, hasNext: false }
+  }
+
+  getAllCards(): { [playerId: string]: ICardAnswer[] } {
+    if (this.rounds.length > 0) {
+      const round = this.rounds[this.rounds.length - 1]
+      return round.answerCards
+    }
+
+    return {}
+  }
+
+  requestNextCard(socket: Socket): void {
+    const { cards: nextCards, hasNext } = this.getNextPlayerCards()
+    if (nextCards) {
+      socket.emit('game:updateCards', { cards: nextCards, hasNext })
+    } else {
+      socket.emit('game:allCards', this.getAllCards())
+      socket.emit('game:error', {
+        message: 'Invalid configuration',
+        error: 'Invalid configuration',
+      })
+      console.error('No next cards available.')
+    }
   }
 
   // Rest of your methods...
@@ -229,7 +272,7 @@ export default class GameRoom extends Room {
 
   updateJudgingStatus(): void {
     this.players.forEach((player) => {
-      player.status = player === this.judge ? 'judge' : 'done'
+      player.status = player === this.judge ? 'judge' : 'waiting'
     })
   }
 
@@ -359,6 +402,7 @@ export default class GameRoom extends Room {
       )
       if (allPlayersSubmitted) {
         this.status = 'judging'
+        this.updatePlayerStatuses()
       }
 
       // Notify the game room of the state change
