@@ -23,6 +23,7 @@ export interface ICardQuestion extends ICard {
   spaces: number
 }
 
+// I tried to extend the ICard with no changes, but the vercel build failed (this is just to get a more descriptive name)
 export interface ICardAnswer {
   id: string
   text: string

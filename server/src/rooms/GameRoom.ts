@@ -107,7 +107,10 @@ export default class GameRoom extends Room {
     })
   }
 
-  getNextPlayerCards(): { cards: ICardAnswer[] | null; hasNext: boolean } {
+  getNextPlayerCards(): {
+    cards: { [playerId: string]: ICardAnswer[] } | null
+    hasNext: boolean
+  } {
     if (this.rounds.length > 0) {
       const round = this.rounds[this.rounds.length - 1]
       const playerIds = Object.keys(round.answerCards)
@@ -116,10 +119,15 @@ export default class GameRoom extends Room {
         const currentPlayerId = playerIds[round.currentJudgedPlayerIndex]
         round.currentJudgedPlayerIndex++ // Move to the next player
         const hasNext = round.currentJudgedPlayerIndex < playerIds.length
-        return {
-          cards: round.answerCards[currentPlayerId],
-          hasNext,
+
+        // Return an object mapping player IDs to card arrays
+        const cards: { [playerId: string]: ICardAnswer[] } = {}
+        for (let i = 0; i < round.currentJudgedPlayerIndex; i++) {
+          const playerId = playerIds[i]
+          cards[playerId] = round.answerCards[playerId]
         }
+
+        return { cards, hasNext }
       }
     }
 
@@ -138,14 +146,16 @@ export default class GameRoom extends Room {
   requestNextCard(socket: Socket): void {
     const { cards: nextCards, hasNext } = this.getNextPlayerCards()
     if (nextCards) {
-      socket.emit('game:updateCards', { cards: nextCards, hasNext })
+      // Emit the entire 'cards' object instead of just the array for the next player
+      socket.emit('game:updateResultCards', { cards: nextCards, hasNext })
     } else {
-      socket.emit('game:allCards', this.getAllCards())
-      socket.emit('game:error', {
-        message: 'Invalid configuration',
-        error: 'Invalid configuration',
+      // When no next cards are available, emit all the cards with hasNext set to false
+      const allCards = this.getAllCards()
+      this.broadcast('game:updateResultCards', {
+        cards: allCards,
+        hasNext: false,
       })
-      console.error('No next cards available.')
+      console.log('All cards have been sent.')
     }
   }
 
@@ -344,6 +354,10 @@ export default class GameRoom extends Room {
   }
 
   judgeSelection(winningPlayerId: string, socket: Socket): void {
+    const winningPlayerName = this.players.find(
+      (p) => p.id === winningPlayerId
+    )?.username
+    console.log('>>> judge selection', winningPlayerName) //BUG: this winningPlayerName is  undefined
     // Find the winning player and increment their score.
     const winningPlayer = this.players.find((p) => p.id === winningPlayerId)
     if (winningPlayer) {
@@ -363,11 +377,7 @@ export default class GameRoom extends Room {
         this.nextRound()
       }
 
-      // Update player statuses
-      this.updatePlayerStatuses()
-
-      // Notify the game room of the state change
-      this.notifyState(socket)
+      this.broadcastState()
     }
   }
 
@@ -412,9 +422,19 @@ export default class GameRoom extends Room {
     }
   }
 
+  // TODO: change all the places that call notifyStateAll to broadcastState
   notifyStateAll(socket: Socket): void {
     this.notifyState(socket)
     this.notifyPlayerState(socket)
+  }
+
+  broadcast(messageType: string, content: any): void {
+    const roomId = this.id // Assuming the GameRoom class has an `id` property representing the room id
+    this.io.to(roomId).emit(messageType, content)
+  }
+
+  broadcastState(): void {
+    this.io.to(this.id).emit('game:updateState', this.state)
   }
 
   notifyState(socket: Socket) {

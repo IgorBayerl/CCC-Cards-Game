@@ -7,8 +7,8 @@ import {
   handleSetConfig,
   handleAdmCommand,
   handlePlayerSelection,
-  handleJudgeSelection,
   handleRequestNextCard,
+  handleJudgeDecision,
 } from './gameEvents'
 import cors from 'cors'
 import decks from './data/decks.json'
@@ -93,8 +93,8 @@ io.on('connection', (socket) => {
   })
 
   // TODO: implement this on the frontend
-  socket.on('game:judgeSelection', (winningPlayerId: string) => {
-    handleJudgeSelection(socket, roomManager, winningPlayerId)
+  socket.on('game:judgeDecision', (winningPlayerId: string) => {
+    handleJudgeDecision(socket, roomManager, winningPlayerId)
   })
 
   socket.on('disconnect', () => {

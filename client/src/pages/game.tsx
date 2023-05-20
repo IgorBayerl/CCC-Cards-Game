@@ -153,9 +153,11 @@ export default function Game() {
             )}
           </div>
 
-          <div className={classes.confirmButton}>
-            <Button onClick={handleConfirm}>Confirm</Button>
-          </div>
+          {!isCurrentUserJudge && (
+            <div className={classes.confirmButton}>
+              <Button onClick={handleConfirm}>Confirm</Button>
+            </div>
+          )}
         </div>
       </InGameLayout>
     </Layout>

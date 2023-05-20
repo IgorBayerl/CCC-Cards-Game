@@ -10,10 +10,16 @@ import Image from 'next/image'
 import { useShuffleArray } from '~/hooks/useShuffleArray'
 
 const profilePictures = [
-  '/profile/profile_1.jpg',
-  '/profile/profile_2.jpg',
-  '/profile/profile_3.jpg',
-  '/profile/profile_4.jpg',
+  '/profile/profile_1.webp',
+  '/profile/profile_2.webp',
+  '/profile/profile_3.webp',
+  '/profile/profile_4.webp',
+  '/profile/profile_5.webp',
+  '/profile/profile_6.webp',
+  '/profile/profile_7.webp',
+  '/profile/profile_8.webp',
+  '/profile/profile_9.webp',
+  '/profile/profile_10.webp',
 ]
 
 const useStyles = createStyles((theme) => ({

@@ -73,7 +73,7 @@ export const handleAdmCommand = (
   }
 }
 
-export const handleJudgeSelection = (
+export const handleJudgeDecision = (
   socket: Socket,
   roomManager: RoomManager,
   winningPlayerId: string

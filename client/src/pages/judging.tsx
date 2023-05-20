@@ -9,7 +9,7 @@ import {
 } from '@mantine/core'
 import InGameLayout from '~/components/Layout/InGameLayout'
 import GameCard from '~/components/Atoms/GameCard'
-import { ICard } from '~/models/Deck'
+import { ICard, ICardAnswer } from '~/models/Deck'
 import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 
@@ -77,45 +77,99 @@ const useStyles = createStyles((theme, _params, getRef) => {
         colorScheme === 'dark' ? theme.colors.dark[4] : theme.colors.gray[4]
       }`,
     },
+    selectedGroup: {
+      border: `2px solid ${theme.colors.blue[6]}`, // Adjust the color and border thickness as you need
+    },
   }
 })
 
+interface IUpdateResultCards {
+  hasNext: boolean
+  cards: { [playerId: string]: ICardAnswer[] }
+}
+
 export default function Judging() {
-  const { myHand, socket, gameState, startingState, playerSelectCards } =
-    useGameContext()
+  const {
+    myHand,
+    socket,
+    gameState,
+    startingState,
+    playerSelectCards,
+    isCurrentUserJudge,
+  } = useGameContext()
   const myCards = myHand.cards
 
   const { currentQuestionCard } = gameState
   const { classes } = useStyles()
 
+  const [resultCards, setResultCards] = useState<IUpdateResultCards>({
+    hasNext: false,
+    cards: {},
+  })
+  const [selectedGroup, setSelectedGroup] = useState<{
+    playerId: string
+    cards: ICardAnswer[]
+  } | null>(null)
+  const [seeAllResults, setSeeAllResults] = useState(false)
+
+  const hasNext = resultCards.hasNext
+  const cards = resultCards.cards
+  const lastCards = Object.values(cards).pop()
+
+  const seeGoToAllResultsBtn = !hasNext && !seeAllResults
+  const seeNextBtn = hasNext && !seeAllResults
+  const seeIndividualResults = !seeAllResults
+  const seeConfirmBtn = seeAllResults
+  const enableConfirmBtn = selectedGroup !== null
+
   useEffect(() => {
-    socket?.on('game:updateCards', (updatedCards) => {
-      console.log('game:updateCards', updatedCards)
-      // setCards(updatedCards)
+    socket?.on('game:updateResultCards', (resultCards: IUpdateResultCards) => {
+      console.log('game:updateResultCards', resultCards)
+      // setResultCards(updatedCards)
+      setResultCards(resultCards)
     })
-    socket?.on('game:allCards', (nextCard) => {
-      console.log('game:allCards', nextCard)
-    })
+
     return () => {
-      socket?.off('game:updateCards')
-      socket?.off('game:allCards')
+      socket?.off('game:updateResultCards')
     }
   }, [socket])
 
-  const handleConfirm = () => {
-    console.log('confirming')
-    // if (selectedCards.length === gameState.currentQuestionCard?.spaces) {
-    //   playerSelectCards(selectedCards)
-    //   toast.success('Cards selected')
-    //   return
-    // }
+  const handleGroupClick = (playerId: string, group: ICardAnswer[]) => {
+    setSelectedGroup({ playerId, cards: group })
+  }
 
-    // toast.error('You must select the correct number of cards')
+  const sendDecision = () => {
+    if (selectedGroup) {
+      socket?.emit('game:judgeDecision', selectedGroup)
+      setSelectedGroup(null)
+    } else {
+      toast.error('You must select a group of cards')
+    }
+  }
+  const handleConfirm = () => {
+    if (selectedGroup) {
+      console.log(
+        'Confirming selection of group:',
+        selectedGroup.cards,
+        'from player:',
+        selectedGroup.playerId
+      )
+      toast.success(`${selectedGroup.playerId} Wins`)
+      sendDecision()
+      setSelectedGroup(null) // Clear the selection
+    } else {
+      toast.error('You must select a group of cards')
+    }
   }
 
   const handleNextCard = () => {
     console.log('>> next card')
     socket?.emit('game:requestNextCard')
+  }
+
+  const handleSeeResults = () => {
+    setSeeAllResults(true)
+    console.log('>> see results')
   }
 
   if (gameState.status === 'starting') {
@@ -141,12 +195,63 @@ export default function Judging() {
             </div>
 
             {/* TODO: add a visualization with each card */}
-          </div>
+            {/* {JSON.stringify(selectedGroup)} */}
+            {/* {JSON.stringify(resultCards)} */}
+            {seeIndividualResults &&
+              lastCards?.map((card) => (
+                <div key={card.id} className={classes.playerCards}>
+                  <GameCard cardInfo={card} selected={false} />
+                </div>
+              ))}
 
-          <div className={classes.confirmButton}>
-            <Button onClick={handleConfirm}>Confirm</Button>
-            <Button onClick={handleNextCard}>Next</Button>
+            <div className="flex  gap-3">
+              {
+                // all results
+                seeAllResults &&
+                  Object.entries(cards).map(([playerId, cardList]) => (
+                    <div
+                      className={`flex flex-col gap-5  ${
+                        selectedGroup && selectedGroup.playerId === playerId
+                          ? classes.selectedGroup
+                          : ''
+                      }`}
+                      onClick={() => handleGroupClick(playerId, cardList)}
+                    >
+                      {cardList.map((card) => (
+                        <div key={card.id} className={classes.playerCards}>
+                          <GameCard cardInfo={card} selected={false} />
+                        </div>
+                      ))}
+                    </div>
+                  ))
+              }
+            </div>
           </div>
+          {isCurrentUserJudge && (
+            <div className={classes.confirmButton}>
+              <Button onClick={handleNextCard}>Next</Button>
+              {seeGoToAllResultsBtn && (
+                <Button
+                  onClick={handleSeeResults}
+                  variant="outline"
+                  color="teal"
+                  leftIcon={
+                    <ActionIcon variant="outline" color="teal" radius="xl">
+                      🏆
+                    </ActionIcon>
+                  }
+                >
+                  See all results
+                </Button>
+              )}
+              {seeNextBtn && <Button onClick={handleNextCard}>Next</Button>}
+              {seeConfirmBtn && (
+                <Button disabled={!enableConfirmBtn} onClick={handleConfirm}>
+                  Confirm
+                </Button>
+              )}
+            </div>
+          )}
         </div>
       </InGameLayout>
     </Layout>
