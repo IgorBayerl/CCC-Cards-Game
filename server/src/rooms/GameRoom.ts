@@ -22,6 +22,7 @@ interface IGameRound {
   winner: Player | null
 }
 
+
 interface IGameConfig {
   roomSize: number
   decks: Array<string>
@@ -154,6 +155,11 @@ export default class GameRoom extends Room {
     this.startingStatusUpdate('>>> giving a question card to the judge...')
     this.currentQuestionCard = this.availableQuestionCards.pop() || null
 
+    // Add a round here
+    if (this.judge && this.currentQuestionCard) {
+      this.addRound(this.currentQuestionCard, this.judge)
+    }
+
     // Set the player statuses
     for (let player of this.players) {
       player.status = player === this.judge ? 'waiting' : 'pending'
@@ -179,6 +185,12 @@ export default class GameRoom extends Room {
       console.error(
         'Cannot select a judge, no players available or current judge index is null'
       )
+    }
+
+    // Add a round here
+    this.currentQuestionCard = this.availableQuestionCards.pop() || null
+    if (this.judge && this.currentQuestionCard) {
+      this.addRound(this.currentQuestionCard, this.judge)
     }
   }
 
@@ -317,13 +329,23 @@ export default class GameRoom extends Room {
   }
 
   playerSelection(selectedCards: ICardAnswer[], socket: Socket): void {
+    console.log('>>> player Selection')
     // Find the player and update their cards.
     const player = this.players.find((p) => p.socketId === socket.id)
     if (player && this.rounds.length > 0) {
-      player.cards = selectedCards
+      console.log(
+        `Player ${player.username} has submitted their cards: ${selectedCards
+          .map((card) => card.text)
+          .join(', ')}.`
+      )
 
-      // // Store the selected cards for the round
-      // this.rounds[this.rounds.length - 1].answerCards[player.id] = selectedCards
+      // Remove the selected cards from the player's hand
+      player.cards = player.cards.filter(
+        (card) => !selectedCards.includes(card)
+      )
+
+      // Store the selected cards for the round
+      this.rounds[this.rounds.length - 1].answerCards[player.id] = selectedCards
 
       // Mark the player as having submitted cards
       player.hasSubmittedCards = true
@@ -331,8 +353,18 @@ export default class GameRoom extends Room {
       // Update player statuses
       this.updatePlayerStatuses()
 
+      // Check if all players have submitted their cards
+      const allPlayersSubmitted = this.players.every(
+        (p) => p === this.judge || p.hasSubmittedCards
+      )
+      if (allPlayersSubmitted) {
+        this.status = 'judging'
+      }
+
       // Notify the game room of the state change
       this.notifyState(socket)
+      // Notify the player of their updated status
+      this.notifyPlayerState(socket)
     }
   }
 

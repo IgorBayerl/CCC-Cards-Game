@@ -10,7 +10,7 @@ import { toast } from 'react-toastify'
 import { type Socket } from 'socket.io-client'
 import { useSocketContext } from '~/components/SocketContext'
 import { TPlayerStatus } from '~/lib/playerUtils'
-import { ICard, ICardQuestion } from '~/models/Deck'
+import { ICard, ICardAnswer, ICardQuestion } from '~/models/Deck'
 
 interface IGameContextValue {
   myId: string
@@ -27,6 +27,7 @@ interface IGameContextValue {
   leaveRoom: () => void
   setConfig: (config: IGameConfig) => void
   admCommand: (command: AdmCommand) => void
+  playerSelectCards: (cards: ICardAnswer[]) => void
 }
 
 type AdmCommand = 'start' | 'next_round' | 'end'
@@ -92,12 +93,10 @@ const initialGameState: IGameState = {
 
 export interface IMyHand {
   cards: ICard[]
-  selectedCard: Array<ICard>
 }
 
 const initialHandState: IMyHand = {
   cards: [],
-  selectedCard: [],
 }
 
 const GameContext = createContext<IGameContextValue>({
@@ -115,6 +114,7 @@ const GameContext = createContext<IGameContextValue>({
   leaveRoom: () => undefined,
   setConfig: () => undefined,
   admCommand: (_) => undefined,
+  playerSelectCards: (_) => undefined,
 })
 
 const useGameContext = () => useContext(GameContext)
@@ -229,6 +229,16 @@ const GameProvider: React.FC<IGameProviderProps> = ({ children }) => {
     socket?.emit('game:admCommand', command)
   }
 
+  // Player Actions
+  const playerSelectCards = (cards: ICardAnswer[]) => {
+    // Ensure that the `socket` is connected before emitting the event.
+    if (!socket) return
+
+    // Emit the event to the server.
+    console.log('game:playerSelection', cards)
+    socket.emit('game:playerSelection', cards)
+  }
+
   const gameConfig = gameState.config
 
   const value = {
@@ -246,6 +256,7 @@ const GameProvider: React.FC<IGameProviderProps> = ({ children }) => {
     leaveRoom,
     setConfig,
     admCommand,
+    playerSelectCards,
   }
 
   return <GameContext.Provider value={value}>{children}</GameContext.Provider>

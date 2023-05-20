@@ -24,6 +24,7 @@ const useStyles = createStyles((theme) => ({
     top: -10,
     left: -8,
     rotate: '-33deg',
+    filter: 'drop-shadow(5px 5px 5px #000000)',
   },
 }))
 

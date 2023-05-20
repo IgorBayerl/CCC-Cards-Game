@@ -9,6 +9,9 @@ import {
 } from '@mantine/core'
 import InGameLayout from '~/components/Layout/InGameLayout'
 import GameCard from '~/components/Atoms/GameCard'
+import { ICard } from '~/models/Deck'
+import { useState } from 'react'
+import { toast } from 'react-toastify'
 
 const useStyles = createStyles((theme, _params, getRef) => {
   const { colorScheme } = useMantineTheme()
@@ -78,15 +81,40 @@ const useStyles = createStyles((theme, _params, getRef) => {
 })
 
 export default function Game() {
-  const { myHand, isCurrentUserJudge, gameState, startingState } =
-    useGameContext()
-
+  const {
+    myHand,
+    isCurrentUserJudge,
+    gameState,
+    startingState,
+    playerSelectCards,
+  } = useGameContext()
   const myCards = myHand.cards
-  const selectedCards = myHand.selectedCard
+
+  const [selectedCards, setSelectedCards] = useState<Array<ICard>>([])
 
   const { currentQuestionCard } = gameState
-
   const { classes } = useStyles()
+
+  const handleCardClick = (card: ICard) => {
+    if (selectedCards.includes(card)) {
+      setSelectedCards(selectedCards.filter((c) => c !== card))
+    } else if (
+      gameState.currentQuestionCard &&
+      selectedCards.length < gameState.currentQuestionCard.spaces
+    ) {
+      setSelectedCards([...selectedCards, card])
+    }
+  }
+
+  const handleConfirm = () => {
+    if (selectedCards.length === gameState.currentQuestionCard?.spaces) {
+      playerSelectCards(selectedCards)
+      toast.success('Cards selected')
+      return
+    }
+
+    toast.error('You must select the correct number of cards')
+  }
 
   if (gameState.status === 'starting') {
     return (
@@ -95,6 +123,7 @@ export default function Game() {
       </Layout>
     )
   }
+
   return (
     <Layout>
       <InGameLayout>
@@ -102,27 +131,34 @@ export default function Game() {
           <div className={classes.cardContainer}>
             <div className={classes.questionContainer}>
               {currentQuestionCard && (
-                <GameCard cardInfo={currentQuestionCard} selected={true} />
+                <GameCard cardInfo={currentQuestionCard} selected={false} />
               )}
             </div>
+            {/* <div className="bg-red-200">{JSON.stringify(selectedCards)}</div> */}
             {!isCurrentUserJudge && (
               <div className={classes.playerCards}>
-                {myCards.map((card) => (
-                  <GameCard
-                    key={card.id}
-                    cardInfo={card}
-                    selected={selectedCards.includes(card)}
-                  />
-                ))}
+                {myCards.map((card, index) => {
+                  const cardIndex = selectedCards.indexOf(card)
+                  return (
+                    <GameCard
+                      key={index}
+                      cardInfo={card}
+                      selected={cardIndex !== -1}
+                      number={cardIndex !== -1 ? cardIndex + 1 : undefined}
+                      onClick={() => handleCardClick(card)}
+                    />
+                  )
+                })}
               </div>
             )}
           </div>
 
           <div className={classes.confirmButton}>
-            <Button>Confirm</Button>
+            <Button onClick={handleConfirm}>Confirm</Button>
           </div>
         </div>
       </InGameLayout>
     </Layout>
   )
 }
+

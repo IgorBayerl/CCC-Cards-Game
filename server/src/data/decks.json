@@ -7,24 +7,42 @@
     "cards": {
       "questions": [
         {
-          "id": "1",
-          "text": "What is the capital of France?",
-          "spaces": 1
+          "id": "Q1",
+          "text": "The capital of ___ is ___.",
+          "spaces": 2
         },
         {
-          "id": "3",
-          "text": "What is the largest mammal?",
-          "spaces": 1
+          "id": "Q2",
+          "text": "The ___ mammal is the ___.",
+          "spaces": 2
+        },
+        {
+          "id": "Q3",
+          "text": "The highest mountain in ___ is ___.",
+          "spaces": 2
+        },
+        {
+          "id": "Q4",
+          "text": "___ is known for ___.",
+          "spaces": 2
         }
       ],
       "answers": [
         {
-          "id": "2",
-          "text": "Paris"
+          "id": "A1",
+          "text": "France"
         },
         {
-          "id": "4",
+          "id": "A2",
           "text": "Blue Whale"
+        },
+        {
+          "id": "A3",
+          "text": "Australia"
+        },
+        {
+          "id": "A4",
+          "text": "Kangaroos"
         }
       ]
     }
@@ -37,24 +55,42 @@
     "cards": {
       "questions": [
         {
-          "id": "5",
-          "text": "What is the smallest planet in our solar system?",
+          "id": "Q9",
+          "text": "O menor planeta do nosso sistema solar é ___.",
           "spaces": 1
         },
         {
-          "id": "7",
-          "text": "What is the largest ocean?",
+          "id": "Q10",
+          "text": "O maior oceano é ___.",
           "spaces": 1
+        },
+        {
+          "id": "Q11",
+          "text": "O Brasil é conhecido pelo ___.",
+          "spaces": 1
+        },
+        {
+          "id": "Q12",
+          "text": "O prato tradicional do ___ é o ___.",
+          "spaces": 2
         }
       ],
       "answers": [
         {
-          "id": "6",
-          "text": "Mercury"
+          "id": "A13",
+          "text": "Mercúrio"
         },
         {
-          "id": "8",
-          "text": "Pacific Ocean"
+          "id": "A14",
+          "text": "Oceano Pacífico"
+        },
+        {
+          "id": "A15",
+          "text": "Futebol"
+        },
+        {
+          "id": "A16",
+          "text": "Feijoada"
         }
       ]
     }
@@ -62,29 +98,47 @@
   {
     "id": "3",
     "name": "Example Deck 3",
-    "description": "A deck about world geography.",
+    "description": "An example deck containing sample questions and answers.",
     "language": "en",
     "cards": {
       "questions": [
         {
-          "id": "9",
-          "text": "What is the tallest mountain in the world?",
-          "spaces": 1
+          "id": "Q1",
+          "text": "The capital of ___ is ___.",
+          "spaces": 2
         },
         {
-          "id": "11",
-          "text": "Which continent is the Sahara Desert located in?",
-          "spaces": 1
+          "id": "Q2",
+          "text": "The ___ mammal is the ___.",
+          "spaces": 2
+        },
+        {
+          "id": "Q3",
+          "text": "The highest mountain in ___ is ___.",
+          "spaces": 2
+        },
+        {
+          "id": "Q4",
+          "text": "___ is known for ___.",
+          "spaces": 2
         }
       ],
       "answers": [
         {
-          "id": "10",
-          "text": "Mount Everest"
+          "id": "A1",
+          "text": "France"
         },
         {
-          "id": "12",
-          "text": "Africa"
+          "id": "A2",
+          "text": "Blue Whale"
+        },
+        {
+          "id": "A3",
+          "text": "Australia"
+        },
+        {
+          "id": "A4",
+          "text": "Kangaroos"
         }
       ]
     }
@@ -92,89 +146,47 @@
   {
     "id": "4",
     "name": "Example Deck 4",
-    "description": "A deck about famous landmarks.",
-    "language": "en",
+    "description": "Another example deck containing sample questions and answers.",
+    "language": "pt",
     "cards": {
       "questions": [
         {
-          "id": "13",
-          "text": "In which country is the Eiffel Tower located?",
+          "id": "Q9",
+          "text": "O menor planeta do nosso sistema solar é ___.",
           "spaces": 1
         },
         {
-          "id": "15",
-          "text": "In which city can you find the Statue of Liberty?",
+          "id": "Q10",
+          "text": "O maior oceano é ___.",
           "spaces": 1
+        },
+        {
+          "id": "Q11",
+          "text": "O Brasil é conhecido pelo ___.",
+          "spaces": 1
+        },
+        {
+          "id": "Q12",
+          "text": "O prato tradicional do ___ é o ___.",
+          "spaces": 2
         }
       ],
       "answers": [
         {
-          "id": "14",
-          "text": "France"
+          "id": "A13",
+          "text": "Mercúrio"
         },
         {
-          "id": "16",
-          "text": "New York City"
-        }
-      ]
-    }
-  },
-  {
-    "id": "5",
-    "name": "Example Deck 5",
-    "description": "A deck about science and technology.",
-    "language": "en",
-    "cards": {
-      "questions": [
-        {
-          "id": "17",
-          "text": "Who is known as the father of modern physics?",
-          "spaces": 1
+          "id": "A14",
+          "text": "Oceano Pacífico"
         },
         {
-          "id": "19",
-          "text": "What does HTTP stand for in website addresses?",
-          "spaces": 1
-        }
-      ],
-      "answers": [
-        {
-          "id": "18",
-          "text": "Albert Einstein"
+          "id": "A15",
+          "text": "Futebol"
         },
         {
-          "id": "20",
-          "text": "Hypertext Transfer Protocol"
-        }
-      ]
-    }
-  },
-  {
-    "id": "6",
-    "name": "Example Deck 6",
-    "description": "A deck about sports.",
-    "language": "en",
-    "cards": {
-      "questions": [
-        {
-          "id": "21",
-          "text": "Which sport is played with a shuttlecock?",
-          "spaces": 1
-        },
-        {
-          "id": "23",
-          "text": "In which sport can you score a touchdown?",
-          "spaces": 1
-        }
-      ],
-      "answers": [
-        {
-          "id": "22",
-          "text": "Badminton"
-        },
-        {
-          "id": "24",
-          "text": "American Football"
+          "id": "A16",
+          "text": "Feijoada"
         }
       ]
     }

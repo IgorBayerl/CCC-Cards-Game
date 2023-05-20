@@ -5,6 +5,8 @@ import { ICard, ICardQuestion } from '~/models/Deck'
 interface IGameCardProps {
   cardInfo: ICardQuestion | ICard
   selected: boolean
+  onClick?: () => void
+  number?: number
 }
 
 const useStyles = createStyles((theme) => ({
@@ -45,22 +47,46 @@ const useStyles = createStyles((theme) => ({
       theme.colorScheme === 'dark' ? theme.colors.dark[4] : theme.colors.gray[4]
     }`,
   },
+  selectedCard: {
+    border: `2px solid ${theme.colors.blue[6]}`,
+    transform: 'scale(1.1)',
+  },
+  orderCircle: {
+    position: 'absolute',
+    top: theme.spacing.xs,
+    right: theme.spacing.xs,
+    height: 20,
+    width: 20,
+    borderRadius: '50%',
+    backgroundColor: theme.colors.blue[6],
+    color: theme.colors.gray[0],
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    fontSize: theme.fontSizes.sm,
+  },
 }))
 
-export default function GameCard({ cardInfo, selected }: IGameCardProps) {
+export default function GameCard({
+  cardInfo,
+  selected,
+  onClick,
+  number,
+}: IGameCardProps) {
   const isQuestion = 'spaces' in cardInfo
   const { classes } = useStyles()
 
   const cardStyles = classNames(
     classes.container,
     isQuestion ? classes.questionCard : classes.answerCard,
-    selected ? classes.cardSizePortraitSelected : classes.cardSizePortrait,
-    selected ? classes.cardBorder : ''
+    classes.cardSizePortrait,
+    selected ? classes.selectedCard : ''
   )
 
   const { id, text } = cardInfo
   return (
-    <div className={cardStyles}>
+    <div className={cardStyles} onClick={onClick}>
+      {selected && <div className={classes.orderCircle}>{number}</div>}
       {/* <div>{id}</div> */}
       <div>{text}</div>
     </div>
