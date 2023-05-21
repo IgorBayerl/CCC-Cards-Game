@@ -140,7 +140,7 @@ export default function Judging() {
 
   const sendDecision = () => {
     if (selectedGroup) {
-      socket?.emit('game:judgeDecision', selectedGroup)
+      socket?.emit('game:judgeDecision', selectedGroup.playerId)
       setSelectedGroup(null)
     } else {
       toast.error('You must select a group of cards')
@@ -230,7 +230,6 @@ export default function Judging() {
           </div>
           {isCurrentUserJudge && (
             <div className={classes.confirmButton}>
-              <Button onClick={handleNextCard}>Next</Button>
               {seeGoToAllResultsBtn && (
                 <Button
                   onClick={handleSeeResults}
@@ -245,7 +244,7 @@ export default function Judging() {
                   See all results
                 </Button>
               )}
-              {seeNextBtn && <Button onClick={handleNextCard}>Next</Button>}
+              <Button onClick={handleNextCard}>Next</Button>
               {seeConfirmBtn && (
                 <Button disabled={!enableConfirmBtn} onClick={handleConfirm}>
                   Confirm

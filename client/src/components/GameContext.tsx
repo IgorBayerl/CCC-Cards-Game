@@ -173,6 +173,9 @@ const GameProvider: React.FC<IGameProviderProps> = ({ children }) => {
     if (newState.status === 'judging') {
       matchUrl('/judging')
     }
+    if (newState.status === 'finished') {
+      matchUrl('/end')
+    }
 
     setGameState(newState)
   }

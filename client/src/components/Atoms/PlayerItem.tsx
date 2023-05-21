@@ -34,6 +34,7 @@ export default function PlayerItem({ player, leader }: IPlayerItemProps) {
   const itsMe = player.id === myId
   const status = getPlayerStatus(player, gameState)
   const showStatus = shouldShowPlayerStatus(gameState)
+  const score = player.score
 
   return (
     <div className="flex w-full max-w-full items-center gap-2">
@@ -47,6 +48,7 @@ export default function PlayerItem({ player, leader }: IPlayerItemProps) {
       />
       <div className="flex w-full max-w-full items-center justify-between overflow-hidden ">
         <div className={classes.username}>
+          <div className="text-xs font-bold capitalize ">{score}</div>
           <div className="truncate">{player.username}</div>
           {showStatus && <StatusIndicatorText status={status} />}
         </div>
@@ -94,8 +96,6 @@ function StatusIndicatorText({ status }: IStatusIndicatorProps) {
   if (!textByStatus[status]) return null
 
   return (
-    <div className="text-xs font-bold capitalize text-gray-400">
-      {textByStatus[status]}
-    </div>
+    <div className="text-xs font-bold capitalize ">{textByStatus[status]}</div>
   )
 }

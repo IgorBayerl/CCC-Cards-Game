@@ -44,6 +44,7 @@ export default class GameRoom extends Room {
   private judge: Player | null = null
   private currentJudgeIndex: number | null = null
   private currentQuestionCard: ICardQuestion | null = null
+
   private availableQuestionCards: ICardQuestion[] = []
   private availableAnswerCards: ICardAnswer[] = []
 
@@ -147,7 +148,7 @@ export default class GameRoom extends Room {
     const { cards: nextCards, hasNext } = this.getNextPlayerCards()
     if (nextCards) {
       // Emit the entire 'cards' object instead of just the array for the next player
-      socket.emit('game:updateResultCards', { cards: nextCards, hasNext })
+      this.broadcast('game:updateResultCards', { cards: nextCards, hasNext })
     } else {
       // When no next cards are available, emit all the cards with hasNext set to false
       const allCards = this.getAllCards()
@@ -241,7 +242,7 @@ export default class GameRoom extends Room {
     }
 
     // Add a round here
-    this.currentQuestionCard = this.availableQuestionCards.pop() || null
+    this.currentQuestionCard = this.availableQuestionCards.pop() || null // BUG: running out of question cards stop the game
     if (this.judge && this.currentQuestionCard) {
       this.addRound(this.currentQuestionCard, this.judge)
     }
@@ -354,10 +355,11 @@ export default class GameRoom extends Room {
   }
 
   judgeSelection(winningPlayerId: string, socket: Socket): void {
+    console.log('>>> judge selection', winningPlayerId)
     const winningPlayerName = this.players.find(
       (p) => p.id === winningPlayerId
     )?.username
-    console.log('>>> judge selection', winningPlayerName) //BUG: this winningPlayerName is  undefined
+    console.log('>>> judge selection', winningPlayerName)
     // Find the winning player and increment their score.
     const winningPlayer = this.players.find((p) => p.id === winningPlayerId)
     if (winningPlayer) {
