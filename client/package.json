@@ -31,6 +31,7 @@
     "@tiptap/react": "^2.0.3",
     "@tiptap/starter-kit": "^2.0.3",
     "axios": "^1.4.0",
+    "embla-carousel-autoplay": "^8.0.0-rc04",
     "embla-carousel-react": "^8.0.0-rc03",
     "next": "^13.2.4",
     "react": "18.2.0",

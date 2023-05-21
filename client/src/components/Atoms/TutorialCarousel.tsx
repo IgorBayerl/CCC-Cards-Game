@@ -1,5 +1,7 @@
 import { Carousel } from '@mantine/carousel'
 import { createStyles, Text, Title, rem } from '@mantine/core'
+import Autoplay from 'embla-carousel-autoplay'
+import { useRef } from 'react'
 
 const useStyles = createStyles((theme) => ({
   card: {
@@ -62,7 +64,8 @@ const data = [
   {
     image:
       'https://images.unsplash.com/photo-1508193638397-1c4234db14d8?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=400&q=80',
-    title: 'Best forests to visit in North America',
+    title: '1. Calling is better',
+    description: 'Invoice your friends to a voice call (e.g. Discord, Zoom)',
     category: 'nature',
   },
   {
@@ -98,6 +101,7 @@ const data = [
 ]
 
 export function TutorialCarousel() {
+  const autoplay = useRef(null) //BUG: fix this shit
   const slides = data.map((item) => (
     <Carousel.Slide key={item.title}>
       <Card {...item} />
@@ -112,8 +116,11 @@ export function TutorialCarousel() {
       slideGap="xl"
       align="start"
       slidesToScroll={1}
-      draggable={false}
+      draggable={true}
       withIndicators
+      // plugins={[autoplay.current]}
+      // onMouseEnter={autoplay.current.stop}
+      // onMouseLeave={autoplay.current.reset}
       styles={{
         indicator: {
           width: rem(12),

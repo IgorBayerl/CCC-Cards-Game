@@ -210,6 +210,7 @@ export default function Judging() {
                 seeAllResults &&
                   Object.entries(cards).map(([playerId, cardList]) => (
                     <div
+                      key={playerId}
                       className={`flex flex-col gap-5  ${
                         selectedGroup && selectedGroup.playerId === playerId
                           ? classes.selectedGroup
