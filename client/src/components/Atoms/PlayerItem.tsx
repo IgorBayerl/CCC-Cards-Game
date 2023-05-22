@@ -48,7 +48,9 @@ export default function PlayerItem({ player, leader }: IPlayerItemProps) {
       />
       <div className="flex w-full max-w-full items-center justify-between overflow-hidden ">
         <div className={classes.username}>
-          <div className="text-xs font-bold capitalize ">{score}</div>
+          <div className="text-xs font-bold capitalize ">
+            {showStatus && score}
+          </div>
           <div className="truncate">{player.username}</div>
           {showStatus && <StatusIndicatorText status={status} />}
         </div>

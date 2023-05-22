@@ -165,7 +165,7 @@ export default function LobbyPage() {
                 value={timeToPlay}
                 onChange={handleChangeTimeToPlay}
                 disabled={!isCurrentUserLeader}
-                data={Array.from({ length: 10 }, (_, i) => (i + 3) * 10).map(
+                data={Array.from({ length: 6 }, (_, i) => (i + 1) * 10).map(
                   (i) => ({
                     value: i.toString(),
                     label: `${i} Seconds`,

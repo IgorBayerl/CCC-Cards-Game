@@ -12,6 +12,7 @@ import GameCard from '~/components/Atoms/GameCard'
 import { ICard } from '~/models/Deck'
 import { useState } from 'react'
 import { toast } from 'react-toastify'
+import { CountdownCircleTimer } from 'react-countdown-circle-timer'
 
 const useStyles = createStyles((theme, _params, getRef) => {
   const { colorScheme } = useMantineTheme()
@@ -86,6 +87,7 @@ export default function Game() {
     isCurrentUserJudge,
     gameState,
     startingState,
+    myId,
     playerSelectCards,
   } = useGameContext()
   const myCards = myHand.cards
@@ -95,7 +97,10 @@ export default function Game() {
   const { currentQuestionCard } = gameState
   const { classes } = useStyles()
 
+  const myStatus = gameState.players.find((p) => p.id === myId)?.status
+
   const handleCardClick = (card: ICard) => {
+    if (myStatus !== 'pending') return
     if (selectedCards.includes(card)) {
       setSelectedCards(selectedCards.filter((c) => c !== card))
     } else if (
@@ -104,6 +109,57 @@ export default function Game() {
     ) {
       setSelectedCards([...selectedCards, card])
     }
+  }
+
+  const time = gameState.config.time
+
+  const renderTime = ({ remainingTime }: { remainingTime: number }) => {
+    if (remainingTime === 0) {
+      return <div className="timer">Too late!</div>
+    }
+    return (
+      <div className="timer">
+        <div className="value">{remainingTime}</div>
+        <div className="text">seconds</div>
+      </div>
+    )
+  }
+
+  const handleTimeout = () => {
+    console.log('Timeout triggered')
+    if (isCurrentUserJudge) {
+      console.log('isCurrentUserJudge is true, returning')
+      return
+    }
+    if (!gameState.currentQuestionCard?.spaces) {
+      console.log('No cards are required, returning')
+      return
+    }
+    if (selectedCards.length === gameState.currentQuestionCard?.spaces) {
+      console.log(
+        'The user has already selected the required number of cards, returning'
+      )
+      return
+    }
+
+    // Randomly select cards
+    const cardsToSelect =
+      gameState.currentQuestionCard?.spaces - selectedCards.length
+    const unselectedCards = myCards.filter(
+      (card) => !selectedCards.includes(card)
+    )
+    const randomCards = unselectedCards
+      .sort(() => 0.5 - Math.random())
+      .slice(0, cardsToSelect)
+
+    // Add randomly selected cards to the selected ones and submit
+    const finalSelectedCards = [...selectedCards, ...randomCards]
+    setSelectedCards(finalSelectedCards)
+    // wait 1 second to submit
+    setTimeout(() => {
+      playerSelectCards(finalSelectedCards)
+      toast.success('Cards selected')
+    }, 1000)
   }
 
   const handleConfirm = () => {
@@ -115,6 +171,11 @@ export default function Game() {
 
     toast.error('You must select the correct number of cards')
   }
+
+  const canConfirm =
+    selectedCards.length === gameState.currentQuestionCard?.spaces &&
+    !isCurrentUserJudge &&
+    myStatus === 'pending'
 
   if (gameState.status === 'starting') {
     return (
@@ -129,12 +190,26 @@ export default function Game() {
       <InGameLayout>
         <div className={classes.gameContainer}>
           <div className={classes.cardContainer}>
+            <CountdownCircleTimer
+              isPlaying
+              duration={time}
+              colors={['#004777', '#F7B801', '#A30000', '#A30000']}
+              colorsTime={[7, 5, 2, 0]}
+              onComplete={handleTimeout}
+            >
+              {renderTime}
+            </CountdownCircleTimer>
             <div className={classes.questionContainer}>
               {currentQuestionCard && (
                 <GameCard cardInfo={currentQuestionCard} selected={false} />
               )}
             </div>
             {/* <div className="bg-red-200">{JSON.stringify(selectedCards)}</div> */}
+            {isCurrentUserJudge && (
+              <div className="flex justify-center">
+                <h2>Just wait the other players</h2>
+              </div>
+            )}
             {!isCurrentUserJudge && (
               <div className={classes.playerCards}>
                 {myCards.map((card, index) => {
@@ -155,7 +230,9 @@ export default function Game() {
 
           {!isCurrentUserJudge && (
             <div className={classes.confirmButton}>
-              <Button onClick={handleConfirm}>Confirm</Button>
+              <Button onClick={handleConfirm} disabled={!canConfirm}>
+                Confirm
+              </Button>
             </div>
           )}
         </div>

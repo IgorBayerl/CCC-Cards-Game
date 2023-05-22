@@ -4,7 +4,7 @@ import { ICard, ICardQuestion } from '~/models/Deck'
 
 interface IGameCardProps {
   cardInfo: ICardQuestion | ICard
-  selected: boolean
+  selected?: boolean
   onClick?: () => void
   number?: number
 }
@@ -69,7 +69,7 @@ const useStyles = createStyles((theme) => ({
 
 export default function GameCard({
   cardInfo,
-  selected,
+  selected = false,
   onClick,
   number,
 }: IGameCardProps) {

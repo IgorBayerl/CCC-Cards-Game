@@ -43,7 +43,13 @@ interface IGameProviderProps {
   children: ReactNode
 }
 
-type TRoomStatus = 'waiting' | 'starting' | 'playing' | 'judging' | 'finished'
+type TRoomStatus =
+  | 'waiting'
+  | 'starting'
+  | 'playing'
+  | 'judging'
+  | 'results'
+  | 'finished'
 
 export interface IGameState {
   players: IPlayer[]
@@ -51,7 +57,16 @@ export interface IGameState {
   status: TRoomStatus
   judge: IPlayer | null
   currentQuestionCard: ICardQuestion | null
+  lastRound: IGameRound | null
   config: IGameConfig
+}
+
+export interface IGameRound {
+  questionCard: ICardQuestion
+  answerCards: { [playerId: string]: ICardAnswer[] }
+  judge: IPlayer
+  winner: IPlayer | null
+  currentJudgedPlayerIndex: number
 }
 
 export interface IPlayer {
@@ -88,6 +103,7 @@ const initialGameState: IGameState = {
   judge: null,
   status: 'waiting',
   currentQuestionCard: null,
+  lastRound: null,
   config: defaultGameConfig,
 }
 
@@ -97,6 +113,15 @@ export interface IMyHand {
 
 const initialHandState: IMyHand = {
   cards: [],
+}
+
+const statusToUrl = {
+  waiting: '/lobby',
+  starting: '/game',
+  playing: '/game',
+  judging: '/judging',
+  results: '/results',
+  finished: '/end',
 }
 
 const GameContext = createContext<IGameContextValue>({
@@ -164,17 +189,10 @@ const GameProvider: React.FC<IGameProviderProps> = ({ children }) => {
 
   const handleChangeState = (newState: IGameState) => {
     console.log('game:updateState', newState)
-    if (newState.status === 'waiting') {
-      matchUrl('/lobby')
-    }
-    if (newState.status === 'starting' || newState.status === 'playing') {
-      matchUrl('/game')
-    }
-    if (newState.status === 'judging') {
-      matchUrl('/judging')
-    }
-    if (newState.status === 'finished') {
-      matchUrl('/end')
+
+    const newPath = statusToUrl[newState.status]
+    if (newPath && router.pathname !== newPath) {
+      void router.push(newPath)
     }
 
     setGameState(newState)

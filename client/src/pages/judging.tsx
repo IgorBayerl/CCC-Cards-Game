@@ -12,8 +12,9 @@ import GameCard from '~/components/Atoms/GameCard'
 import { ICard, ICardAnswer } from '~/models/Deck'
 import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
+import { CountdownCircleTimer } from 'react-countdown-circle-timer'
 
-const useStyles = createStyles((theme, _params, getRef) => {
+const useStyles = createStyles((theme) => {
   const { colorScheme } = useMantineTheme()
 
   return {
@@ -102,8 +103,12 @@ export default function Judging() {
   const { currentQuestionCard } = gameState
   const { classes } = useStyles()
 
+  const [timerId, setTimerId] = useState<ReturnType<typeof setTimeout> | null>(
+    null
+  )
+
   const [resultCards, setResultCards] = useState<IUpdateResultCards>({
-    hasNext: false,
+    hasNext: true,
     cards: {},
   })
   const [selectedGroup, setSelectedGroup] = useState<{
@@ -112,7 +117,9 @@ export default function Judging() {
   } | null>(null)
   const [seeAllResults, setSeeAllResults] = useState(false)
 
-  const hasNext = resultCards.hasNext
+  const [resetKey, setResetKey] = useState(0)
+
+  const hasNext = resultCards.hasNext === true
   const cards = resultCards.cards
   const lastCards = Object.values(cards).pop()
 
@@ -125,12 +132,19 @@ export default function Judging() {
   useEffect(() => {
     socket?.on('game:updateResultCards', (resultCards: IUpdateResultCards) => {
       console.log('game:updateResultCards', resultCards)
-      // setResultCards(updatedCards)
+      setResetKey((prevKey) => prevKey + 1)
       setResultCards(resultCards)
     })
 
+    socket?.on('game:showAllCards', (resultCards: IUpdateResultCards) => {
+      console.log('game:showAllCards', resultCards)
+      setResetKey((prevKey) => prevKey + 1)
+      setSeeAllResults(true)
+      setResultCards(resultCards)
+    })
     return () => {
       socket?.off('game:updateResultCards')
+      socket?.off('game:showAllCards')
     }
   }, [socket])
 
@@ -154,7 +168,6 @@ export default function Judging() {
         'from player:',
         selectedGroup.playerId
       )
-      toast.success(`${selectedGroup.playerId} Wins`)
       sendDecision()
       setSelectedGroup(null) // Clear the selection
     } else {
@@ -169,16 +182,62 @@ export default function Judging() {
 
   const handleSeeResults = () => {
     setSeeAllResults(true)
+    socket?.emit('game:seeAllRoundAnswers')
     console.log('>> see results')
   }
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      handleTimerTimeout()
+    }, 10000)
+    setTimerId(timer)
+  }, [])
 
-  if (gameState.status === 'starting') {
+  useEffect(() => {
+    return () => {
+      if (timerId !== null) {
+        clearTimeout(timerId)
+      }
+    }
+  }, [timerId])
+
+  const handleTimerTimeout = () => {
+    if (!isCurrentUserJudge) return
+    if (seeNextBtn) {
+      handleNextCard()
+      return
+    }
+
+    if (seeGoToAllResultsBtn) {
+      handleSeeResults()
+      return
+    }
+    if (seeConfirmBtn) {
+      // TODO: select a random group
+      resultCards.cards
+      const randomPlayerId = Object.keys(resultCards.cards)[0]!
+      const randomGroup = resultCards.cards[randomPlayerId]!
+      handleGroupClick(randomPlayerId, randomGroup)
+
+      // TODO: wait for a second and then confirm
+      setTimeout(() => {
+        handleConfirm() //BUG: this is throwing the you must select a group error, but it is selecting a group
+      }, 1000)
+    }
+  }
+
+  const renderTime = ({ remainingTime }: { remainingTime: number }) => {
+    if (remainingTime === 0) {
+      return <div className="timer">Too late!</div>
+    }
     return (
-      <Layout>
-        <h1 className={classes.startingMessage}>{startingState}</h1>
-      </Layout>
+      <div className="timer">
+        <div className="value">{remainingTime}</div>
+        <div className="text">seconds</div>
+      </div>
     )
   }
+
+  const time = 10 // 10 seconds
 
   // TODO: add a timer
   // TODO: change the layout to look more like a chat than a card game
@@ -187,6 +246,16 @@ export default function Judging() {
       <InGameLayout>
         <div className={classes.gameContainer}>
           <h1>Judging</h1>
+          <CountdownCircleTimer
+            isPlaying
+            key={resetKey}
+            duration={time}
+            colors={['#004777', '#F7B801', '#A30000', '#A30000']}
+            colorsTime={[7, 5, 2, 0]}
+            onComplete={handleTimerTimeout}
+          >
+            {renderTime}
+          </CountdownCircleTimer>
           <div className={classes.cardContainer}>
             <div className={classes.questionContainer}>
               {currentQuestionCard && (
@@ -194,9 +263,6 @@ export default function Judging() {
               )}
             </div>
 
-            {/* TODO: add a visualization with each card */}
-            {/* {JSON.stringify(selectedGroup)} */}
-            {/* {JSON.stringify(resultCards)} */}
             {seeIndividualResults &&
               lastCards?.map((card) => (
                 <div key={card.id} className={classes.playerCards}>
@@ -204,7 +270,7 @@ export default function Judging() {
                 </div>
               ))}
 
-            <div className="flex  gap-3">
+            <div className="flex justify-center gap-3">
               {
                 // all results
                 seeAllResults &&
@@ -244,7 +310,7 @@ export default function Judging() {
                   See all results
                 </Button>
               )}
-              <Button onClick={handleNextCard}>Next</Button>
+              {seeNextBtn && <Button onClick={handleNextCard}>Next</Button>}
               {seeConfirmBtn && (
                 <Button disabled={!enableConfirmBtn} onClick={handleConfirm}>
                   Confirm

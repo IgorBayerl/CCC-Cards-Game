@@ -64,12 +64,14 @@ export const handleAdmCommand = (
     if (command === 'start') {
       room.startGame(socket)
     }
+
+    if (command === 'next_round') {
+      room.nextRound()
+    }
     // const actions = {
     //   start: room.startGame
     // }
     // actions[command](socket)
-
-    room.notifyState(socket)
   }
 }
 
@@ -108,4 +110,14 @@ export const handleRequestNextCard = (
   }
 }
 
+export const handleSeeAllRoundAnswers = (
+  socket: Socket,
+  roomManager: RoomManager
+) => {
+  const roomId = Array.from(socket.rooms)[1]
+  const room = roomManager.getRoomById(roomId)
+  if (room && room.currentJudge && room.currentJudge.id === socket.id) {
+    room.seeAllRoundAnswers(socket)
+  }
+}
 

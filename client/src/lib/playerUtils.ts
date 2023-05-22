@@ -31,6 +31,7 @@ export function shouldShowPlayerStatus(gameState: IGameState): boolean {
     playing: true,
     judging: true,
     finished: true,
+    results: true,
   }
   return statusRelation[gameState.status]
 }

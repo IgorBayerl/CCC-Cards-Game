@@ -88,7 +88,7 @@ interface IUpdateResultCards {
   cards: { [playerId: string]: ICardAnswer[] }
 }
 
-export default function Judging() {
+export default function End() {
   const {
     myHand,
     socket,

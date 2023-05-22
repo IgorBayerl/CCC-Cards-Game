@@ -12,6 +12,7 @@ interface IGameState {
   status: TRoomStatus
   judge: Player | null
   currentQuestionCard: ICardQuestion | null
+  lastRound: IGameRound | null
   config: IGameConfig
 }
 
@@ -30,7 +31,13 @@ interface IGameConfig {
   time: number
 }
 
-type TRoomStatus = 'waiting' | 'starting' | 'playing' | 'judging' | 'finished'
+type TRoomStatus =
+  | 'waiting'
+  | 'starting'
+  | 'playing'
+  | 'judging'
+  | 'results'
+  | 'finished'
 
 export default class GameRoom extends Room {
   players: GamePlayer[]
@@ -56,7 +63,7 @@ export default class GameRoom extends Room {
       roomSize: 6,
       decks: ['1', '2', '4', '5'],
       scoreToWin: 8,
-      time: 60,
+      time: 20,
     }
   ) {
     super(id, io, { roomSize: config.roomSize })
@@ -160,7 +167,11 @@ export default class GameRoom extends Room {
     }
   }
 
-  // Rest of your methods...
+  seeAllRoundAnswers(socket: Socket): void {
+    const allCards = this.getAllCards()
+    this.broadcast('game:showAllCards', { cards: allCards, hasNext: false })
+  }
+
   startGame(socket: Socket): void {
     console.log('>>> starting game...')
 
@@ -222,7 +233,7 @@ export default class GameRoom extends Room {
     // setTimeout(() => {
     this.status = 'playing'
     this.updatePlayerStatuses()
-    this.notifyStateAll(socket)
+    this.broadcastState()
     // }, 4000)
   }
   nextRound(): void {
@@ -231,7 +242,6 @@ export default class GameRoom extends Room {
       this.currentJudgeIndex =
         (this.currentJudgeIndex + 1) % this.players.length
       this.judge = this.players[this.currentJudgeIndex]
-      this.updatePlayerStatuses()
 
       // Reset hasSubmittedCards for all players
       this.players.forEach((player) => (player.hasSubmittedCards = false))
@@ -240,12 +250,15 @@ export default class GameRoom extends Room {
         'Cannot select a judge, no players available or current judge index is null'
       )
     }
+    this.status = 'playing'
+    this.updatePlayerStatuses()
 
     // Add a round here
     this.currentQuestionCard = this.availableQuestionCards.pop() || null // BUG: running out of question cards stop the game
     if (this.judge && this.currentQuestionCard) {
       this.addRound(this.currentQuestionCard, this.judge)
     }
+    this.broadcastState()
   }
 
   updatePlayerStatuses(): void {
@@ -293,6 +306,7 @@ export default class GameRoom extends Room {
       player.status = player === winner ? 'winner' : 'none'
     })
   }
+
   getWinner(): GamePlayer {
     return this.players.reduce((prev, current) =>
       prev.score > current.score ? prev : current
@@ -329,6 +343,7 @@ export default class GameRoom extends Room {
       status: this.status,
       judge: this.judge,
       currentQuestionCard: this.currentQuestionCard,
+      lastRound: this.lastRound,
       config: {
         roomSize: this.roomSize,
         decks: this.decks,
@@ -336,6 +351,10 @@ export default class GameRoom extends Room {
         time: this.time,
       },
     }
+  }
+
+  get lastRound(): IGameRound | null {
+    return this.rounds.length > 0 ? this.rounds[this.rounds.length - 1] : null
   }
 
   get currentStatus(): TRoomStatus {
@@ -362,25 +381,24 @@ export default class GameRoom extends Room {
     console.log('>>> judge selection', winningPlayerName)
     // Find the winning player and increment their score.
     const winningPlayer = this.players.find((p) => p.id === winningPlayerId)
-    if (winningPlayer) {
-      winningPlayer.score++
+    if (!winningPlayer) return
 
-      // Store the winner for the round
-      if (this.rounds.length > 0) {
-        this.rounds[this.rounds.length - 1].winner = winningPlayer
-      }
+    winningPlayer.score++
 
-      // If the winning player has reached the score to win, update the game state to 'finished'.
-      if (winningPlayer.score === this.scoreToWin) {
-        this.status = 'finished'
-      } else {
-        // Otherwise, start the next round.
-        this.status = 'playing'
-        this.nextRound()
-      }
-
-      this.broadcastState()
+    // Store the winner for the round
+    if (this.rounds.length > 0) {
+      this.rounds[this.rounds.length - 1].winner = winningPlayer
     }
+
+    // If the winning player has reached the score to win, update the game state to 'finished'.
+    if (winningPlayer.score === this.scoreToWin) {
+      this.status = 'finished'
+      this.broadcastState()
+      return
+    }
+
+    this.status = 'results'
+    this.broadcastState()
   }
 
   playerSelection(selectedCards: ICardAnswer[], socket: Socket): void {

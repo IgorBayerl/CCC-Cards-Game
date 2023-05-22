@@ -9,6 +9,7 @@ import {
   handlePlayerSelection,
   handleRequestNextCard,
   handleJudgeDecision,
+  handleSeeAllRoundAnswers,
 } from './gameEvents'
 import cors from 'cors'
 import decks from './data/decks.json'
@@ -90,6 +91,10 @@ io.on('connection', (socket) => {
 
   socket.on('game:requestNextCard', () => {
     handleRequestNextCard(socket, roomManager)
+  })
+
+  socket.on('game:seeAllRoundAnswers', () => {
+    handleSeeAllRoundAnswers(socket, roomManager)
   })
 
   // TODO: implement this on the frontend
