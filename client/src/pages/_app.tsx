@@ -14,6 +14,7 @@ import { ReactQueryDevtools } from 'react-query/devtools'
 
 import 'react-toastify/dist/ReactToastify.css'
 import '~/styles/globals.css'
+import { AudioProvider } from '~/components/AudioContext'
 
 const url = process.env.NEXT_PUBLIC_GAME_SERVER || 'http://localhost:3365'
 
@@ -51,7 +52,9 @@ const MyApp: AppType = ({ Component, pageProps }) => {
           >
             <SocketProvider url={url}>
               <GameProvider>
-                <Component {...pageProps} />
+                <AudioProvider>
+                  <Component {...pageProps} />
+                </AudioProvider>
               </GameProvider>
             </SocketProvider>
           </MantineProvider>

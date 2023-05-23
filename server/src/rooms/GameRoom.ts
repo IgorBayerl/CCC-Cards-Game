@@ -54,6 +54,7 @@ export default class GameRoom extends Room {
 
   private availableQuestionCards: ICardQuestion[] = []
   private availableAnswerCards: ICardAnswer[] = []
+  private usedQuestionCards: ICardQuestion[] = []
 
   constructor(
     id: string,
@@ -142,6 +143,25 @@ export default class GameRoom extends Room {
     return { cards: null, hasNext: false }
   }
 
+  getNextQuestionCard(): ICardQuestion | null {
+    // If there are no cards left in availableQuestionCards,
+    // shuffle the usedQuestionCards and make them the new availableQuestionCards.
+    if (this.availableQuestionCards.length === 0) {
+      this.availableQuestionCards = shuffleCards(this.usedQuestionCards)
+      this.usedQuestionCards = []
+    }
+
+    // Get the next card and remove it from the availableQuestionCards.
+    const nextCard = this.availableQuestionCards.pop() || null
+
+    // If a card was retrieved, add it to the used cards.
+    if (nextCard) {
+      this.usedQuestionCards.push(nextCard)
+    }
+
+    return nextCard
+  }
+
   getAllCards(): { [playerId: string]: ICardAnswer[] } {
     if (this.rounds.length > 0) {
       const round = this.rounds[this.rounds.length - 1]
@@ -218,7 +238,7 @@ export default class GameRoom extends Room {
     // Give a question card to the judge
     console.log('>>> giving a question card to the judge...')
     this.startingStatusUpdate('>>> giving a question card to the judge...')
-    this.currentQuestionCard = this.availableQuestionCards.pop() || null
+    this.currentQuestionCard = this.getNextQuestionCard()
 
     // Add a round here
     if (this.judge && this.currentQuestionCard) {
@@ -254,7 +274,7 @@ export default class GameRoom extends Room {
     this.updatePlayerStatuses()
 
     // Add a round here
-    this.currentQuestionCard = this.availableQuestionCards.pop() || null // BUG: running out of question cards stop the game
+    this.currentQuestionCard = this.getNextQuestionCard()
     if (this.judge && this.currentQuestionCard) {
       this.addRound(this.currentQuestionCard, this.judge)
     }
@@ -391,11 +411,11 @@ export default class GameRoom extends Room {
     }
 
     // If the winning player has reached the score to win, update the game state to 'finished'.
-    if (winningPlayer.score === this.scoreToWin) {
-      this.status = 'finished'
-      this.broadcastState()
-      return
-    }
+    // if (winningPlayer.score === this.scoreToWin) { // TODO: move this in a place where it will be shown after the round results
+    //   this.status = 'finished'
+    //   this.broadcastState()
+    //   return
+    // }
 
     this.status = 'results'
     this.broadcastState()

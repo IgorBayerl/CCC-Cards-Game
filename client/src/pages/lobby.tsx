@@ -14,6 +14,9 @@ import { type IDeckConfigScreen } from '~/models/Deck'
 import MuteButton from '~/components/Atoms/MuteButton'
 import ContainerHeader from '~/components/Layout/ContainerHeader'
 import ContainerFooter from '~/components/Layout/ContainerFooter'
+import { toast } from 'react-toastify'
+import useSound from 'use-sound'
+import { useAudio } from '~/components/AudioContext'
 
 const useStyles = createStyles((theme) => ({
   containerCard: {
@@ -63,7 +66,10 @@ export default function LobbyPage() {
   const { classes } = useStyles()
   // TODO: change this to a getStaticProps with revalidate of 1 hour
   const decksResponse = useQuery('get-decks', getDecks)
-  const status = gameState.status
+
+  const [playSwitchOn] = useSound('/sounds/switch-on.mp3')
+  const [playSwitchOff] = useSound('/sounds/switch-off.mp3')
+  const { isMuted } = useAudio()
 
   const handleLeaveRoom = () => {
     void router.push('/')
@@ -94,6 +100,8 @@ export default function LobbyPage() {
   ) => {
     const { checked, id } = event.target
 
+    if (!isMuted) checked ? playSwitchOn() : playSwitchOff()
+
     let newSelectedDecksIds
     if (checked) {
       newSelectedDecksIds = [...gameConfig.decks, id]
@@ -104,6 +112,12 @@ export default function LobbyPage() {
   }
 
   const handleStartGame = () => {
+    //verify if there are enough players
+    if (gameState.players.length < 2) {
+      toast.error('You need at least 2 players to start the game, sorry!')
+      return
+    }
+
     admCommand('start')
   }
 

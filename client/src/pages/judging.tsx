@@ -149,6 +149,7 @@ export default function Judging() {
   }, [socket])
 
   const handleGroupClick = (playerId: string, group: ICardAnswer[]) => {
+    if (!isCurrentUserJudge) return
     setSelectedGroup({ playerId, cards: group })
   }
 

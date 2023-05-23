@@ -99,18 +99,28 @@ export default function End() {
   } = useGameContext()
   const myCards = myHand.cards
 
-  const { currentQuestionCard } = gameState
+  const { players } = gameState
+  // find the player with the highest score
+
+  const winner = players.reduce(
+    (prev, current) => (prev.score > current.score ? prev : current),
+    { score: -Infinity, username: 'No players' }
+  )
+
   const { classes } = useStyles()
 
-  // function handleStartNewGame(){
-
-  // }
+  function handleStartNewGame() {
+    // TODO: implement this
+    // socket?.emit('start-new-game')
+  }
 
   return (
     <Layout>
       <InGameLayout>
         <div className={classes.gameContainer}>
           <h1>End</h1>
+          {winner.username}
+          <Button onClick={handleStartNewGame}>Start New Game</Button>
         </div>
       </InGameLayout>
     </Layout>

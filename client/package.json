@@ -41,6 +41,7 @@
     "react-query": "^3.39.3",
     "react-toastify": "^9.1.2",
     "socket.io-client": "^4.6.1",
+    "use-sound": "^4.0.1",
     "uuid": "^9.0.0",
     "zod": "^3.21.4"
   },

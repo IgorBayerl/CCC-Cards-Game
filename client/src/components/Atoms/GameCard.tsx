@@ -1,4 +1,5 @@
 import { createStyles } from '@mantine/core'
+import React from 'react'
 import { classNames } from '~/lib/utils'
 import { ICard, ICardQuestion } from '~/models/Deck'
 
@@ -65,6 +66,9 @@ const useStyles = createStyles((theme) => ({
     justifyContent: 'center',
     fontSize: theme.fontSizes.sm,
   },
+  highlight: {
+    color: theme.colors.blue[6], // replace with your desired color
+  },
 }))
 
 export default function GameCard({
@@ -92,3 +96,44 @@ export default function GameCard({
     </div>
   )
 }
+
+interface IGameCardResultProps {
+  question: string
+  answers: string[]
+}
+
+export const GameCardResult: React.FC<IGameCardResultProps> = ({
+  question,
+  answers,
+}) => {
+  const answersIterator: Iterator<string> = answers[Symbol.iterator]()
+
+  const { classes } = useStyles()
+  const processedQuestion = question.split('___').map((part, index) => {
+    const iteratorResult = answersIterator.next()
+    if (!iteratorResult.done) {
+      const answer = iteratorResult.value
+      return (
+        <React.Fragment key={index}>
+          {part}
+          <span className={classes.highlight}>{answer}</span>
+        </React.Fragment>
+      )
+    }
+    return part
+  })
+
+  const cardStyles = classNames(
+    classes.container,
+    classes.answerCard,
+    classes.cardSizePortrait
+  )
+
+  return (
+    <div className={cardStyles}>
+      <p>{processedQuestion}</p>
+    </div>
+  )
+}
+
+

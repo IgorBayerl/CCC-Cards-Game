@@ -8,11 +8,12 @@ import {
   useMantineTheme,
 } from '@mantine/core'
 import InGameLayout from '~/components/Layout/InGameLayout'
-import GameCard from '~/components/Atoms/GameCard'
+import GameCard, { GameCardResult } from '~/components/Atoms/GameCard'
 import { ICard, ICardAnswer } from '~/models/Deck'
 import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 import { CountdownCircleTimer } from 'react-countdown-circle-timer'
+import Image from 'next/image'
 
 const useStyles = createStyles((theme, _params, getRef) => {
   const { colorScheme } = useMantineTheme()
@@ -30,6 +31,7 @@ const useStyles = createStyles((theme, _params, getRef) => {
       justifyContent: 'space-between',
       gap: theme.spacing.md,
       borderRadius: theme.radius.md,
+      position: 'relative',
     },
     cardContainer: {
       display: 'flex',
@@ -145,7 +147,6 @@ export default function Results() {
     return (
       <div className="timer">
         <div className="value">{remainingTime}</div>
-        <div className="text">seconds</div>
       </div>
     )
   }
@@ -164,41 +165,60 @@ export default function Results() {
     <Layout>
       <InGameLayout>
         <div className={classes.gameContainer}>
-          <h1>Results</h1>
-          {/* Countdown timer */}
-          <CountdownCircleTimer
-            isPlaying
-            duration={time}
-            colors={['#004777', '#F7B801', '#A30000', '#A30000']}
-            colorsTime={[7, 5, 2, 0]}
-            onComplete={() => {
-              handleGoToNextRound()
-            }}
-          >
-            {renderTime}
-          </CountdownCircleTimer>
-          <div>
-            <div>
-              <h2>Winner</h2>
+          <div className="flex flex-col items-center gap-3 ">
+            <div className=" flex w-full justify-between  p-3">
+              <h1>Round winner!</h1>
+              <CountdownCircleTimer
+                isPlaying
+                size={70}
+                duration={time}
+                colors={['#004777', '#F7B801', '#A30000', '#A30000']}
+                colorsTime={[7, 5, 2, 0]}
+                onComplete={() => {
+                  handleGoToNextRound()
+                }}
+              >
+                {renderTime}
+              </CountdownCircleTimer>
+            </div>
+            <div className="flex flex-col items-center gap-10  lg:flex-row">
               <div>
-                <img src={winner?.pictureUrl} alt={winner?.username} />
-                <h3>{winner?.username}</h3>
+                <div>
+                  <div className="flex flex-col items-center">
+                    <Image
+                      src={winner?.pictureUrl || ''}
+                      alt={winner?.username || ''}
+                      width={100}
+                      height={100}
+                      className="rounded-full"
+                    />
+                    <h3>{winner?.username}</h3>
+                  </div>
+                </div>
+              </div>
+              <div className="flex items-center gap-3">
+                <GameCardResult
+                  question={lastRoundQuestionCard.text}
+                  answers={
+                    lastRoundWinnerAnswers?.map((card) => card.text) || []
+                  }
+                />
+                {/* <div className={classes.questionContainer}>
+                  {<GameCard cardInfo={lastRoundQuestionCard} />}
+                </div>
+                <div className={classes.playerCards}>
+                  {lastRoundWinnerAnswers?.map((card) => (
+                    <GameCard key={card.id} cardInfo={card} />
+                  ))}
+                </div> */}
               </div>
             </div>
+            {isCurrentUserLeader && (
+              <div className={classes.confirmButton}>
+                <Button onClick={handleGoToNextRound}>Next Round</Button>
+              </div>
+            )}
           </div>
-          <div className={classes.questionContainer}>
-            {<GameCard cardInfo={lastRoundQuestionCard} />}
-          </div>
-          <div className={classes.playerCards}>
-            {lastRoundWinnerAnswers?.map((card) => (
-              <GameCard key={card.id} cardInfo={card} />
-            ))}
-          </div>
-          {isCurrentUserLeader && (
-            <div className={classes.confirmButton}>
-              <Button onClick={handleGoToNextRound}>Next Round</Button>
-            </div>
-          )}
         </div>
       </InGameLayout>
     </Layout>

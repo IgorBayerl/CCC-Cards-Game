@@ -13,6 +13,8 @@ import { ICard } from '~/models/Deck'
 import { useState } from 'react'
 import { toast } from 'react-toastify'
 import { CountdownCircleTimer } from 'react-countdown-circle-timer'
+import useSound from 'use-sound'
+import { useAudio } from '~/components/AudioContext'
 
 const useStyles = createStyles((theme, _params, getRef) => {
   const { colorScheme } = useMantineTheme()
@@ -92,6 +94,10 @@ export default function Game() {
   } = useGameContext()
   const myCards = myHand.cards
 
+  const [playSwitchOn] = useSound('/sounds/switch-on.mp3')
+  const [playSwitchOff] = useSound('/sounds/switch-off.mp3')
+  const { isMuted } = useAudio()
+
   const [selectedCards, setSelectedCards] = useState<Array<ICard>>([])
 
   const { currentQuestionCard } = gameState
@@ -101,13 +107,19 @@ export default function Game() {
 
   const handleCardClick = (card: ICard) => {
     if (myStatus !== 'pending') return
+
+    // if (!isMuted) checked ? playSwitchOn() : playSwitchOff()
+    // find the substitute for checked
+
     if (selectedCards.includes(card)) {
       setSelectedCards(selectedCards.filter((c) => c !== card))
+      if (!isMuted) playSwitchOff()
     } else if (
       gameState.currentQuestionCard &&
       selectedCards.length < gameState.currentQuestionCard.spaces
     ) {
       setSelectedCards([...selectedCards, card])
+      if (!isMuted) playSwitchOn()
     }
   }
 
