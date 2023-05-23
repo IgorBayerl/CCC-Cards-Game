@@ -66,37 +66,44 @@ const data = [
       'https://images.unsplash.com/photo-1508193638397-1c4234db14d8?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=400&q=80',
     title: '1. Calling is better',
     description: 'Invoice your friends to a voice call (e.g. Discord, Zoom)',
-    category: 'nature',
+    category: 'How to play',
   },
   {
     image:
       'https://images.unsplash.com/photo-1559494007-9f5847c49d94?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=400&q=80',
-    title: 'Hawaii beaches review: better than you think',
-    category: 'beach',
+    title: 'One card with blank spaces will be selected.',
+    category: 'How to play',
   },
   {
     image:
       'https://images.unsplash.com/photo-1608481337062-4093bf3ed404?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=400&q=80',
-    title: 'Mountains at night: 12 best locations to enjoy the view',
-    category: 'nature',
+    title:
+      'You should select other cards to fill the blank spaces in the funniest way.',
+    category: 'How to play',
   },
   {
     image:
       'https://images.unsplash.com/photo-1507272931001-fc06c17e4f43?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=400&q=80',
     title: 'Aurora in Norway: when to visit for best experience',
-    category: 'nature',
+    category: 'How to play',
   },
   {
     image:
       'https://images.unsplash.com/photo-1510798831971-661eb04b3739?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=400&q=80',
-    title: 'Best places to visit this winter',
-    category: 'tourism',
+    title: 'The judge of the round will select the funniest card.',
+    category: 'How to play',
   },
   {
     image:
       'https://images.unsplash.com/photo-1582721478779-0ae163c05a60?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=400&q=80',
-    title: 'Active volcanos reviews: travel at your own risk',
-    category: 'nature',
+    title: 'Laugh with your friends and have fun!',
+    category: 'How to play',
+  },
+  {
+    image:
+      'https://images.unsplash.com/photo-1582721478779-0ae163c05a60?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=400&q=80',
+    title: 'Make new friends!',
+    category: 'How to play',
   },
 ]
 
