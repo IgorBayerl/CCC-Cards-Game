@@ -87,7 +87,7 @@ export default function GameCard({
     selected ? classes.selectedCard : ''
   )
 
-  const { id, text } = cardInfo
+  const { text } = cardInfo
   return (
     <div className={cardStyles} onClick={onClick}>
       {selected && <div className={classes.orderCircle}>{number}</div>}

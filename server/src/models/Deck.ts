@@ -27,7 +27,6 @@ export interface IDeck {
 }
 
 export interface ICard {
-  id: string
   text: string
 }
 

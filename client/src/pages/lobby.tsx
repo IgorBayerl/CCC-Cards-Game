@@ -5,13 +5,11 @@ import { useEffect } from 'react'
 import router from 'next/router'
 import Layout from '~/components/Layout/Layout'
 import { createStyles, Button, Select } from '@mantine/core'
-import { IconArrowBack, IconVolume, IconVolumeOff } from '@tabler/icons-react'
 import { CopyToClipboard } from '~/components/Atoms/CopyToClipboard'
 import { useQuery } from 'react-query'
 import { getDecks } from '~/api/deck'
 import CheckBoxCard from '~/components/Atoms/CheckBoxCard'
 import { type IDeckConfigScreen } from '~/models/Deck'
-import MuteButton from '~/components/Atoms/MuteButton'
 import ContainerHeader from '~/components/Layout/ContainerHeader'
 import ContainerFooter from '~/components/Layout/ContainerFooter'
 import { toast } from 'react-toastify'
@@ -210,13 +208,23 @@ export default function LobbyPage() {
                 ))}
               </div>
               <div className="flex items-center justify-evenly">
-                <CopyToClipboard text="Invite" content={roomInviteLink} />
-                <Button
-                  disabled={!isCurrentUserLeader}
-                  onClick={handleStartGame}
-                >
-                  Start Game
-                </Button>
+                {isCurrentUserLeader && (
+                  <>
+                    <CopyToClipboard text="Invite" content={roomInviteLink} />
+                    <Button
+                      disabled={!isCurrentUserLeader}
+                      onClick={handleStartGame}
+                    >
+                      Start Game
+                    </Button>
+                  </>
+                )}
+                {!isCurrentUserLeader && (
+                  <>
+                    <div>Loading... </div> Waiting for the host to setup and
+                    start the game.
+                  </>
+                )}
               </div>
             </div>
           </div>

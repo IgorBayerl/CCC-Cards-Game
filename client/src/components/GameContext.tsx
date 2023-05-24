@@ -206,9 +206,6 @@ const GameProvider: React.FC<IGameProviderProps> = ({ children }) => {
     }))
   }
 
-  const matchUrl = (path: string) => {
-    router.pathname !== path && void router.push(path)
-  }
 
   const handleError = (socketError: ISocketError) => {
     const { message, error } = socketError

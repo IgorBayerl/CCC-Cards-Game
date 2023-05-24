@@ -12,8 +12,21 @@ import {
   handleSeeAllRoundAnswers,
 } from './gameEvents'
 import cors from 'cors'
-import decks from './data/decks.json'
+// import decks from './data/decks.json'
+import fs from 'fs'
+import path from 'path'
 import { ICardAnswer } from './models/Deck'
+
+// Read and parse all deck JSON files
+const decksDirectory = path.join(__dirname, './data/decks')
+const deckFiles = fs.readdirSync(decksDirectory)
+const decks = deckFiles.map((file) => {
+  const deck = JSON.parse(fs.readFileSync(path.join(decksDirectory, file), 'utf-8'))
+  const [language, _rest, id] = file.split('_')
+  deck.id = id.split('.')[0] // remove .json extension
+  deck.language = language
+  return deck
+})
 
 const app = express()
 const server = createServer(app)
@@ -84,7 +97,6 @@ io.on('connection', (socket) => {
     handleSetConfig(socket, roomManager, config)
   })
 
-  // TODO: implement this on the frontend
   socket.on('game:playerSelection', (selectedCards: ICardAnswer[]) => {
     handlePlayerSelection(socket, roomManager, selectedCards)
   })
@@ -97,7 +109,6 @@ io.on('connection', (socket) => {
     handleSeeAllRoundAnswers(socket, roomManager)
   })
 
-  // TODO: implement this on the frontend
   socket.on('game:judgeDecision', (winningPlayerId: string) => {
     handleJudgeDecision(socket, roomManager, winningPlayerId)
   })

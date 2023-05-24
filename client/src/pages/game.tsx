@@ -15,6 +15,7 @@ import { toast } from 'react-toastify'
 import { CountdownCircleTimer } from 'react-countdown-circle-timer'
 import useSound from 'use-sound'
 import { useAudio } from '~/components/AudioContext'
+import TimerScreen from '~/components/Layout/TimerScreen'
 
 const useStyles = createStyles((theme, _params, getRef) => {
   const { colorScheme } = useMantineTheme()
@@ -123,19 +124,7 @@ export default function Game() {
     }
   }
 
-  const time = gameState.config.time
-
-  const renderTime = ({ remainingTime }: { remainingTime: number }) => {
-    if (remainingTime === 0) {
-      return <div className="timer">Too late!</div>
-    }
-    return (
-      <div className="timer">
-        <div className="value">{remainingTime}</div>
-        <div className="text">seconds</div>
-      </div>
-    )
-  }
+  const time = 99999 || gameState.config.time
 
   const handleTimeout = () => {
     console.log('Timeout triggered')
@@ -168,10 +157,10 @@ export default function Game() {
     const finalSelectedCards = [...selectedCards, ...randomCards]
     setSelectedCards(finalSelectedCards)
     // wait 1 second to submit
-    setTimeout(() => {
-      playerSelectCards(finalSelectedCards)
-      toast.success('Cards selected')
-    }, 1000)
+    // setTimeout(() => {
+    playerSelectCards(finalSelectedCards)
+    toast.success('Cards selected')
+    // }, 1000)
   }
 
   const handleConfirm = () => {
@@ -200,54 +189,51 @@ export default function Game() {
   return (
     <Layout>
       <InGameLayout>
-        <div className={classes.gameContainer}>
-          <div className={classes.cardContainer}>
-            <CountdownCircleTimer
-              isPlaying
-              duration={time}
-              colors={['#004777', '#F7B801', '#A30000', '#A30000']}
-              colorsTime={[7, 5, 2, 0]}
-              onComplete={handleTimeout}
-            >
-              {renderTime}
-            </CountdownCircleTimer>
-            <div className={classes.questionContainer}>
-              {currentQuestionCard && (
-                <GameCard cardInfo={currentQuestionCard} selected={false} />
+        <TimerScreen
+          subtitle="Choose the best fit card(s)"
+          time={time}
+          handleTimeout={handleTimeout}
+        >
+          <div className={classes.gameContainer}>
+            <div className={classes.cardContainer}>
+              <div className={classes.questionContainer}>
+                {currentQuestionCard && (
+                  <GameCard cardInfo={currentQuestionCard} selected={false} />
+                )}
+              </div>
+
+              {isCurrentUserJudge && (
+                <div className="flex justify-center">
+                  <h2>Just wait the other players</h2>
+                </div>
+              )}
+              {!isCurrentUserJudge && (
+                <div className={classes.playerCards}>
+                  {myCards.map((card, index) => {
+                    const cardIndex = selectedCards.indexOf(card)
+                    return (
+                      <GameCard
+                        key={index}
+                        cardInfo={card}
+                        selected={cardIndex !== -1}
+                        number={cardIndex !== -1 ? cardIndex + 1 : undefined}
+                        onClick={() => handleCardClick(card)}
+                      />
+                    )
+                  })}
+                </div>
               )}
             </div>
-            {/* <div className="bg-red-200">{JSON.stringify(selectedCards)}</div> */}
-            {isCurrentUserJudge && (
-              <div className="flex justify-center">
-                <h2>Just wait the other players</h2>
-              </div>
-            )}
+
             {!isCurrentUserJudge && (
-              <div className={classes.playerCards}>
-                {myCards.map((card, index) => {
-                  const cardIndex = selectedCards.indexOf(card)
-                  return (
-                    <GameCard
-                      key={index}
-                      cardInfo={card}
-                      selected={cardIndex !== -1}
-                      number={cardIndex !== -1 ? cardIndex + 1 : undefined}
-                      onClick={() => handleCardClick(card)}
-                    />
-                  )
-                })}
+              <div className={classes.confirmButton}>
+                <Button onClick={handleConfirm} disabled={!canConfirm}>
+                  Confirm
+                </Button>
               </div>
             )}
           </div>
-
-          {!isCurrentUserJudge && (
-            <div className={classes.confirmButton}>
-              <Button onClick={handleConfirm} disabled={!canConfirm}>
-                Confirm
-              </Button>
-            </div>
-          )}
-        </div>
+        </TimerScreen>
       </InGameLayout>
     </Layout>
   )

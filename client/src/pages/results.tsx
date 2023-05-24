@@ -14,6 +14,7 @@ import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 import { CountdownCircleTimer } from 'react-countdown-circle-timer'
 import Image from 'next/image'
+import TimerScreen from '~/components/Layout/TimerScreen'
 
 const useStyles = createStyles((theme, _params, getRef) => {
   const { colorScheme } = useMantineTheme()
@@ -102,53 +103,47 @@ export default function Results() {
   const lastRoundQuestionCard = lastRoundResults?.questionCard as ICard
   const lastRoundWinnerAnswers = lastRoundResults?.answerCards[winner?.id || '']
 
-  const time = 10 // 10 seconds on the screen before going to the next round
+  const time = 99999 // 10 seconds on the screen before going to the next round
 
-  const [timerId, setTimerId] = useState<ReturnType<typeof setTimeout> | null>(
-    null
-  )
+  // const [timerId, setTimerId] = useState<ReturnType<typeof setTimeout> | null>(
+  //   null
+  // )
 
   // Cleanup function to clear the timer when the component unmounts
-  useEffect(() => {
-    return () => {
-      if (timerId !== null) {
-        clearTimeout(timerId)
-      }
-    }
-  }, [timerId])
+  // useEffect(() => {
+  //   return () => {
+  //     if (timerId !== null) {
+  //       clearTimeout(timerId)
+  //     }
+  //   }
+  // }, [timerId])
 
-  const startTimer = () => {
-    // Clear the old timer if it exists
-    if (timerId !== null) {
-      clearTimeout(timerId)
-    }
+  // const startTimer = () => {
+  //   // Clear the old timer if it exists
+  //   if (timerId !== null) {
+  //     clearTimeout(timerId)
+  //   }
 
-    // Convert the time to milliseconds
-    const timeout = time * 1000
+  //   // Convert the time to milliseconds
+  //   const timeout = time * 1000
 
-    const id = setTimeout(() => {
-      handleGoToNextRound()
-    }, timeout)
+  //   const id = setTimeout(() => {
+  //     handleGoToNextRound()
+  //   }, timeout)
 
-    // Store the timer id so it can be cleared later
-    setTimerId(id)
-  }
+  //   // Store the timer id so it can be cleared later
+  //   setTimerId(id)
+  // }
 
   // Start the timer when the component mounts or time changes
-  useEffect(() => {
-    startTimer()
-  }, [time])
+  // useEffect(() => {
+  //   startTimer()
+  // }, [time])
 
   // function handleStartNewGame(){
-  const renderTime = ({ remainingTime }: { remainingTime: number }) => {
-    if (remainingTime === 0) {
-      return <div className="timer">Too late!</div>
-    }
-    return (
-      <div className="timer">
-        <div className="value">{remainingTime}</div>
-      </div>
-    )
+
+  function handleTimeout() {
+    handleGoToNextRound()
   }
 
   if (!gameState.lastRound) {
@@ -164,46 +159,36 @@ export default function Results() {
   return (
     <Layout>
       <InGameLayout>
-        <div className={classes.gameContainer}>
-          <div className="flex flex-col items-center gap-3 ">
-            <div className=" flex w-full justify-between  p-3">
-              <h1>Round winner!</h1>
-              <CountdownCircleTimer
-                isPlaying
-                size={70}
-                duration={time}
-                colors={['#004777', '#F7B801', '#A30000', '#A30000']}
-                colorsTime={[7, 5, 2, 0]}
-                onComplete={() => {
-                  handleGoToNextRound()
-                }}
-              >
-                {renderTime}
-              </CountdownCircleTimer>
-            </div>
-            <div className="flex flex-col items-center gap-10  lg:flex-row">
-              <div>
+        <TimerScreen
+          subtitle="Round winner!"
+          time={time}
+          handleTimeout={handleTimeout}
+        >
+          <div className={classes.gameContainer}>
+            <div className="flex flex-col items-center gap-3 ">
+              <div className="flex flex-col items-center gap-10  lg:flex-row">
                 <div>
-                  <div className="flex flex-col items-center">
-                    <Image
-                      src={winner?.pictureUrl || ''}
-                      alt={winner?.username || ''}
-                      width={100}
-                      height={100}
-                      className="rounded-full"
-                    />
-                    <h3>{winner?.username}</h3>
+                  <div>
+                    <div className="flex flex-col items-center">
+                      <Image
+                        src={winner?.pictureUrl || ''}
+                        alt={winner?.username || ''}
+                        width={100}
+                        height={100}
+                        className="rounded-full"
+                      />
+                      <h3>{winner?.username}</h3>
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div className="flex items-center gap-3">
-                <GameCardResult
-                  question={lastRoundQuestionCard.text}
-                  answers={
-                    lastRoundWinnerAnswers?.map((card) => card.text) || []
-                  }
-                />
-                {/* <div className={classes.questionContainer}>
+                <div className="flex items-center gap-3">
+                  <GameCardResult
+                    question={lastRoundQuestionCard.text}
+                    answers={
+                      lastRoundWinnerAnswers?.map((card) => card.text) || []
+                    }
+                  />
+                  {/* <div className={classes.questionContainer}>
                   {<GameCard cardInfo={lastRoundQuestionCard} />}
                 </div>
                 <div className={classes.playerCards}>
@@ -211,15 +196,16 @@ export default function Results() {
                     <GameCard key={card.id} cardInfo={card} />
                   ))}
                 </div> */}
+                </div>
               </div>
+              {isCurrentUserLeader && (
+                <div className={classes.confirmButton}>
+                  <Button onClick={handleGoToNextRound}>Next Round</Button>
+                </div>
+              )}
             </div>
-            {isCurrentUserLeader && (
-              <div className={classes.confirmButton}>
-                <Button onClick={handleGoToNextRound}>Next Round</Button>
-              </div>
-            )}
           </div>
-        </div>
+        </TimerScreen>
       </InGameLayout>
     </Layout>
   )

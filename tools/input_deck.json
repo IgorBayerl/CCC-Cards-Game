@@ -1,0 +1,1300 @@
+{
+  "name": "Cartas Contra Tugas Base",
+  "description": "O baralho original, o nosso primeiro baralho.",
+  "watermark": "Cartas Contra Tugas Base",
+  "expansion": false,
+  "blackCards": [
+      {
+          "text": "Desculpe senhor, vejo aqui no menu que o restaurante tem ___ na ementa. Isso tem glúten?",
+          "pick": 1
+      },
+      {
+          "text": "No dia do Senhor gosto de ___.",
+          "pick": 1
+      },
+      {
+          "text": "O próximo livro do José Rodrigues dos Santos chamar-se-á ___.",
+          "pick": 1
+      },
+      {
+          "text": "Adoro atropelar crianças com o(a) meu(minha) ___.",
+          "pick": 1
+      },
+      {
+          "text": "O recém-descoberto 11º mandamento é ___.",
+          "pick": 1
+      },
+      {
+          "text": "Sempre quis ter sexo com ___.",
+          "pick": 1
+      },
+      {
+          "text": "Agora é hora de ___.",
+          "pick": 1
+      },
+      {
+          "text": "Quando estou no chuveiro penso em ___.",
+          "pick": 1
+      },
+      {
+          "text": "Notícia de última hora: ___.",
+          "pick": 1
+      },
+      {
+          "text": "O que trazes na pasta? ___.",
+          "pick": 1
+      },
+      {
+          "text": "Quando entrei numa reunião neo-nazi vi ___.",
+          "pick": 1
+      },
+      {
+          "text": "Tenho tanta vergonha de(da/do) ___.",
+          "pick": 1
+      },
+      {
+          "text": "Pai nosso que estais no céu, ___ seja o Vosso nome.",
+          "pick": 1
+      },
+      {
+          "text": "O novo set da LEGO terá como tema ___.",
+          "pick": 1
+      },
+      {
+          "text": "Eu fiz ___ e apareceu um chimpanzé.",
+          "pick": 1
+      },
+      {
+          "text": "Boa tarde. Esta é a primeira vez que venho a uma reunião deste tipo. Chamo-me ___ e sou viciado em ___.",
+          "pick": 2
+      },
+      {
+          "text": "Numa escala de ___ a ___, quão forte é a dor?",
+          "pick": 2
+      },
+      {
+          "text": "A carta mais brutal vence: ___.",
+          "pick": 1
+      },
+      {
+          "text": "Merda, tenho ___ no meu rabo de novo.",
+          "pick": 1
+      },
+      {
+          "text": "Eu estaria de acordo com a cientologia se não fosse ___.",
+          "pick": 1
+      },
+      {
+          "text": "Não se preocupe senhor agente, isto é só ___.",
+          "pick": 1
+      },
+      {
+          "text": "Porque é que ___ é uma carta?",
+          "pick": 1
+      },
+      {
+          "text": "Se eu fosse uma stripper o meu nome seria ___.",
+          "pick": 1
+      },
+      {
+          "text": "A minha frase de engate favorita: ___.",
+          "pick": 1
+      },
+      {
+          "text": "Mãe, porque é que não posso ___?",
+          "pick": 1
+      },
+      {
+          "text": "O que é que vou contrabandear para a prisão? ___.",
+          "pick": 1
+      },
+      {
+          "text": "As pessoas já paravam de falar sobre ___. Já enjoa!",
+          "pick": 1
+      },
+      {
+          "text": "Ontem encontrei ___ à venda no OLX.",
+          "pick": 1
+      },
+      {
+          "text": "WTF, não precisava de saber que fizeste ___.",
+          "pick": 1
+      },
+      {
+          "text": "Aquele momento em que descobres que ___ é ilegal.",
+          "pick": 1
+      },
+      {
+          "text": "A carta mais engraçada vence: ___.",
+          "pick": 1
+      },
+      {
+          "text": "O monstro das bolachas virou-se para as bolachas após superar uma terrível adição a ___.",
+          "pick": 1
+      },
+      {
+          "text": "Lembram-se daquela noite louca em que ___?",
+          "pick": 1
+      },
+      {
+          "text": "O que se encontra na minha masmorra sexual? ___.",
+          "pick": 1
+      },
+      {
+          "text": "Quando alguém nasce, nasce ___.",
+          "pick": 1
+      },
+      {
+          "text": "A mais recente inovação no mundo dos brinquedos sexuais é ___.",
+          "pick": 1
+      },
+      {
+          "text": "O meu estômago estava com desejos de ___.",
+          "pick": 1
+      },
+      {
+          "text": "É preciso dar prioridade à investigação sobre ___.",
+          "pick": 1
+      },
+      {
+          "text": "A minha parte favorita do teu corpo é ___.",
+          "pick": 1
+      },
+      {
+          "text": "As crianças saltaram da cama, desceram as escadas e encontraram ___ debaixo da árvore de natal.",
+          "pick": 1
+      },
+      {
+          "text": "4 em cada 5 dentistas recomendam ___.",
+          "pick": 1
+      },
+      {
+          "text": "Fico sempre espantado com ___.",
+          "pick": 1
+      },
+      {
+          "text": "Deveria ser uma prioridade da Humanidade assegurar que ___ nunca acontecerá.",
+          "pick": 1
+      },
+      {
+          "text": "O que é que o pequeno órfão cego recebeu no natal? ___.",
+          "pick": 1
+      },
+      {
+          "text": "Esgueirei-me para o palácio de Belém e vi ___.",
+          "pick": 1
+      },
+      {
+          "text": "___ faz-me sempre perder a vontade.",
+          "pick": 1
+      },
+      {
+          "text": "Este ano recebi ___ no natal.",
+          "pick": 1
+      },
+      {
+          "text": "___ não é ilegal, ou é?",
+          "pick": 1
+      },
+      {
+          "text": "Eu considerava o meu trabalho uma merda até que descobri ___.",
+          "pick": 1
+      },
+      {
+          "text": "O que faria por um KitKat? ___.",
+          "pick": 1
+      },
+      {
+          "text": "___. HA GAAAAAAAAAY.",
+          "pick": 1
+      },
+      {
+          "text": "Merda, pisei ___.",
+          "pick": 1
+      },
+      {
+          "text": "Eu estava tão ganzado que ___.",
+          "pick": 1
+      },
+      {
+          "text": "Passei de ___ a ___ graças a ___!",
+          "pick": 3
+      },
+      {
+          "text": "___. Palavra do Senhor.",
+          "pick": 1
+      },
+      {
+          "text": "Ligue 808203203 e fica habilitado a ganhar um(a) maravilhoso(a) ___!",
+          "pick": 1
+      },
+      {
+          "text": "Adormeci a ver a SIC Radical e quando acordei vi ___ na televisão.",
+          "pick": 1
+      },
+      {
+          "text": "O meu nome é ___.",
+          "pick": 1
+      },
+      {
+          "text": "Ontem à noite, um sono descansado foi arruinado por ___.",
+          "pick": 1
+      },
+      {
+          "text": "O nome da minha sex-tape é ___.",
+          "pick": 1
+      },
+      {
+          "text": "Apesar de ter vergonha de admiti-lo, eu troquei favores sexuais por ___.",
+          "pick": 1
+      },
+      {
+          "text": "___... vergonhoso.",
+          "pick": 1
+      },
+      {
+          "text": "___ teve graça, mas depois ela acordou.",
+          "pick": 1
+      },
+      {
+          "text": "Pai acho que tenho ___.",
+          "pick": 1
+      },
+      {
+          "text": "Com grande poder vem ___.",
+          "pick": 1
+      },
+      {
+          "text": "O novo reality show da TVI é sobre ___.",
+          "pick": 1
+      },
+      {
+          "text": "É errado eu querer ter sexo com ___?",
+          "pick": 1
+      },
+      {
+          "text": "CONTACTE O DR. ___ URGENTEMENTE. O PACIENTE ESTÁ EM RISCO DE VIDA.",
+          "pick": 1
+      },
+      {
+          "text": "LOL, ___, grande coisa...",
+          "pick": 1
+      },
+      {
+          "text": "Quando fui pescar apanhei ___.",
+          "pick": 1
+      },
+      {
+          "text": "___. Venho-me sempre com isso.",
+          "pick": 1
+      },
+      {
+          "text": "Acho que veio ___ no meu happy meal.",
+          "pick": 1
+      },
+      {
+          "text": "___. Sexy.",
+          "pick": 1
+      },
+      {
+          "text": "Encontrei ___ debaixo da cama da minha avó.",
+          "pick": 1
+      },
+      {
+          "text": "Quem ganha o combate na Liga Knockout: ___ ou ___.",
+          "pick": 2
+      },
+      {
+          "text": "Qual o melhor nome para uma boyband portuguesa? ___.",
+          "pick": 1
+      },
+      {
+          "text": "A TVI decidiu refazer \"Morangos com açúcar\", tendo mudado nome para \"Morangos com ___\".",
+          "pick": 1
+      },
+      {
+          "text": "O que trouxe o Renato Sanches de novo ao Benfica? ___.",
+          "pick": 1
+      },
+      {
+          "text": "Fernando Mendes deixou \"O Preço Certo\" para apresentar um novo programa sobre ___.",
+          "pick": 1
+      },
+      {
+          "text": "Gostava de ___ com um miúdo de 12 anos.",
+          "pick": 1
+      },
+      {
+          "text": "Nunca é demasiado escuro para ___.",
+          "pick": 1
+      },
+      {
+          "text": "Nunca tinha pensado em suicídio até ___.",
+          "pick": 1
+      },
+      {
+          "text": "Esta é a voz, ___ tem que ___.",
+          "pick": 2
+      },
+      {
+          "text": "A seguir a um passeio de família, Ernesto disse: ___.",
+          "pick": 1
+      },
+      {
+          "text": "Quando foi para ___, Rui, de 9 anos, teve que ___ para se incluir.",
+          "pick": 2
+      },
+      {
+          "text": "Estranho, o meu/minha ___ cheira a ___.",
+          "pick": 2
+      },
+      {
+          "text": "Nada descreve o júri melhor que: ___.",
+          "pick": 1
+      },
+      {
+          "text": "___: it`s just a prank, disse ___.",
+          "pick": 2
+      },
+      {
+          "text": "O título de tricampeão de levar no cú foi ganho pelo/a ___.",
+          "pick": 1
+      },
+      {
+          "text": "O Carlos Cruz ouviu ___ a dizer ___ antes de morrer.",
+          "pick": 2
+      },
+      {
+          "text": "\"Depois não venhas mexer-me no ___ e na ___ e pedir para ___ contigo\".",
+          "pick": 3
+      },
+      {
+          "text": "\"MOSTRA-ME A TUA ___, QUERO COMER A TUA ___\".",
+          "pick": 2
+      },
+      {
+          "text": "O segredo da Bernardina é ___.",
+          "pick": 1
+      },
+      {
+          "text": "As duas principais causas do Boavista ter descido de divisão: ___ e ___.",
+          "pick": 2
+      },
+      {
+          "text": "O famoso provérbio português \"Cá se ___, Cá se ___ .\".",
+          "pick": 2
+      },
+      {
+          "text": "Tudo melhor que ___.",
+          "pick": 1
+      },
+      {
+          "text": "Cristiano Ronaldo após terminar a sua carreira no futebol decidiu dedicar-se a ___.",
+          "pick": 1
+      },
+      {
+          "text": "Oh meu Deus, mal posso esperar para experimentar o novo ___.",
+          "pick": 1
+      },
+      {
+          "text": "Gatos são muito piores que ___.",
+          "pick": 1
+      },
+      {
+          "text": "Quem me dera comer um ___.",
+          "pick": 1
+      },
+      {
+          "text": "A próxima série do Feromonas chamar-se-á ___.",
+          "pick": 1
+      },
+      {
+          "text": "CR7 significa: ___ Ronaldo 7.",
+          "pick": 1
+      },
+      {
+          "text": "Tenho medo de um dia ter ___.",
+          "pick": 1
+      },
+      {
+          "text": "Adorei beber ___.",
+          "pick": 1
+      },
+      {
+          "text": "O novo sunday com sabor a ___ é delicioso.",
+          "pick": 1
+      },
+      {
+          "text": "A telepizza agora também tem pizza de ___.",
+          "pick": 1
+      },
+      {
+          "text": "No seu próximo vídeo, o Fábio Martins vai ___.",
+          "pick": 1
+      },
+      {
+          "text": "A melhor coisa que os portugueses trouxeram de África foi ___.",
+          "pick": 1
+      },
+      {
+          "text": "A tua mãe é mais gorda que ___.",
+          "pick": 1
+      },
+      {
+          "text": "É perigoso ir sozinho! Leva ___.",
+          "pick": 1
+      },
+      {
+          "text": "A nova música do Quim Barreiros tem como tema ___.",
+          "pick": 1
+      },
+      {
+          "text": "Welcome to the League of ___.",
+          "pick": 1
+      },
+      {
+          "text": "A melhor coisa que me podia dar no Natal é ___.",
+          "pick": 1
+      },
+      {
+          "text": "Booooas pessoal daaqui quem fala é o ___.",
+          "pick": 1
+      },
+      {
+          "text": "Se Camões visse ___ ele arrancava o segundo olho.",
+          "pick": 1
+      },
+      {
+          "text": "___ é algo que nunca se fala no primeiro encontro.",
+          "pick": 1
+      },
+      {
+          "text": "Eu acho ___ mentalmente perturbante.",
+          "pick": 1
+      },
+      {
+          "text": "Todos os anos, na terceira terça de agosto, celebro ___.",
+          "pick": 1
+      },
+      {
+          "text": "Um estudo científico recente provou que ___ pode causar gravidez.",
+          "pick": 1
+      },
+      {
+          "text": "Aquele momento em que percebes que ___ e ___ são a mesma coisa.",
+          "pick": 2
+      },
+      {
+          "text": "O meu amigo foi violado por ___.",
+          "pick": 1
+      },
+      {
+          "text": "No início, Deus criou os céus e ___.",
+          "pick": 1
+      },
+      {
+          "text": "Desde que foi apanhado com ___, a minha mãe recusa falar comigo.",
+          "pick": 1
+      },
+      {
+          "text": "___ É MENTIRA!",
+          "pick": 1
+      },
+      {
+          "text": "Gosto de roubar ___ a velhinhas.",
+          "pick": 1
+      },
+      {
+          "text": "Devia haver um vídeo jogo sobre ___.",
+          "pick": 1
+      },
+      {
+          "text": "Hoje é um bom dia para ___.",
+          "pick": 1
+      },
+      {
+          "text": "Uma descoberta recente sobre ___ fez com que críticos começassem a questionar a ciência.",
+          "pick": 1
+      },
+      {
+          "text": "Ambrósio há algo que desejo, ___.",
+          "pick": 1
+      },
+      {
+          "text": "Eu digo sempre que ___ faz a melhor prenda.",
+          "pick": 1
+      },
+      {
+          "text": "___? ILLUMINATI!",
+          "pick": 1
+      },
+      {
+          "text": "O Médio Oriente tem o hábito de se envolver com ___.",
+          "pick": 1
+      },
+      {
+          "text": "O meu pai deixou-me ___ no seu testamento.",
+          "pick": 1
+      },
+      {
+          "text": "Tem a ver com ___!",
+          "pick": 1
+      },
+      {
+          "text": "___ é de longe a coisa mais estúpida que existe.",
+          "pick": 1
+      },
+      {
+          "text": "Eu costumava ser ___ como tu, depois levei com uma seta no joelho.",
+          "pick": 1
+      },
+      {
+          "text": "A minha pequena irmã não pode ser ___!",
+          "pick": 1
+      },
+      {
+          "text": "Sou o Vegeta, príncipe de todo ___!",
+          "pick": 1
+      },
+      {
+          "text": "Por favor senhor, estou pobre e doente e ___!",
+          "pick": 1
+      },
+      {
+          "text": "Não sou estranho, apenas gosto mesmo de ___.",
+          "pick": 1
+      },
+      {
+          "text": "O mundo está a acabar, e é tudo devido a ___.",
+          "pick": 1
+      },
+      {
+          "text": "Eu agora identifico o meu género como ___.",
+          "pick": 1
+      },
+      {
+          "text": "___? Eu definitivamente fazia sexo com isso.",
+          "pick": 1
+      },
+      {
+          "text": "Mas pai, ___ mata pessoas.",
+          "pick": 1
+      },
+      {
+          "text": "Devia tentar ___ este fim de semana.",
+          "pick": 1
+      },
+      {
+          "text": "Acabaste de ativar o meu cartão de ___!",
+          "pick": 1
+      },
+      {
+          "text": "A wild ___ appears!",
+          "pick": 1
+      },
+      {
+          "text": "Uma recente onda de controvérsia começou devido ao início de filmagens de um filme com o nome \"___\".",
+          "pick": 1
+      },
+      {
+          "text": "SOU O ÚNICO QUE EXPERIMENTOU ___?!?!",
+          "pick": 1
+      },
+      {
+          "text": "Imagina um mundo cheio de ___, ___, e de ___. Seria o melhor mundo.",
+          "pick": 3
+      },
+      {
+          "text": "___ é a única razão para viver.",
+          "pick": 1
+      },
+      {
+          "text": "Que som é aquele? ___.",
+          "pick": 1
+      },
+      {
+          "text": "Olá, o meu nome é ___.",
+          "pick": 1
+      },
+      {
+          "text": "Descreve o júri desta ronda com três cartas: ___, ___, ___.",
+          "pick": 3
+      },
+      {
+          "text": "Agora tenho de me masturbar para ___!",
+          "pick": 1
+      },
+      {
+          "text": "___ : Testado por crianças, aprovado por mães.",
+          "pick": 1
+      },
+      {
+          "text": "Qual o melhor amigo de uma rapariga? ___.",
+          "pick": 1
+      },
+      {
+          "text": "Num mundo devastado por ___, a nossa única consolação é ___.",
+          "pick": 2
+      },
+      {
+          "text": "Não sei com que armas a 3ª Guerra Mundial vai ser combatida, mas a 4ª Guerra Mundial vai ser combatida com: ___.",
+          "pick": 1
+      },
+      {
+          "text": "Porque é que não consigo dormir à noite? ___.",
+          "pick": 1
+      },
+      {
+          "text": "Pessoas brancas gostam de ___.",
+          "pick": 1
+      },
+      {
+          "text": "Tenho 99, problemas mas ___ não é um deles.",
+          "pick": 1
+      },
+      {
+          "text": "A visita de estudo foi completamente arruinada por ___.",
+          "pick": 1
+      },
+      {
+          "text": "___: Bom até à última gota.",
+          "pick": 1
+      },
+      {
+          "text": "O que fica melhor com a idade? ___.",
+          "pick": 1
+      },
+      {
+          "text": "Qual o meu super poder? ___.",
+          "pick": 1
+      },
+      {
+          "text": "Como é que perdi a minha virgindade? ___.",
+          "pick": 1
+      },
+      {
+          "text": "___ + ___ = ___.",
+          "pick": 3
+      },
+      {
+          "text": "Um jantar romântico está incompleto sem ___.",
+          "pick": 1
+      },
+      {
+          "text": "Qual o próximo brinquedo que vem no Happy Meal? ___.",
+          "pick": 1
+      },
+      {
+          "text": "Próximo livro da J.K: Rowling: Harry Potter e a Câmara dos ___.",
+          "pick": 1
+      },
+      {
+          "text": "Eu bebo para esquecer ___.",
+          "pick": 1
+      },
+      {
+          "text": "___. É assim que quero morrer.",
+          "pick": 1
+      },
+      {
+          "text": "Sempre quis fazer sexo com ___.",
+          "pick": 1
+      },
+      {
+          "text": "Merda, tenho ___ no meu cu outra vez.",
+          "pick": 1
+      },
+      {
+          "text": "Morte por ___.",
+          "pick": 1
+      },
+      {
+          "text": "___ é o melhor lubrificante.",
+          "pick": 1
+      },
+      {
+          "text": "Vendi a minha alma por ___.",
+          "pick": 1
+      },
+      {
+          "text": "O meu último marido morreu devido a complicações de ___.",
+          "pick": 1
+      },
+      {
+          "text": "O único Deus verdadeiro é ___.",
+          "pick": 1
+      },
+      {
+          "text": "Qual é a password? ___.",
+          "pick": 1
+      },
+      {
+          "text": "Não tenho um preservativo, mas tenho ___.",
+          "pick": 1
+      },
+      {
+          "text": "Diz a lenda: se disseres ___ três vezes, ___ vai aparecer.",
+          "pick": 2
+      },
+      {
+          "text": "A prenda perfeita: ___.",
+          "pick": 1
+      },
+      {
+          "text": "Estou coberto de ___.",
+          "pick": 1
+      },
+      {
+          "text": "Cartas contra ___.",
+          "pick": 1
+      },
+      {
+          "text": "A única maneira de matar Donald Trump é ___.",
+          "pick": 1
+      },
+      {
+          "text": "Eu gostava de ___, com ___.",
+          "pick": 2
+      },
+      {
+          "text": "O que é pior? Comer uma puta com ___ ou ___?",
+          "pick": 2
+      },
+      {
+          "text": "Dói, não dói? ___!",
+          "pick": 1
+      },
+      {
+          "text": "Uma sextape envolvendo ___ e ___.",
+          "pick": 2
+      },
+      {
+          "text": "Gosto de ___ como gosto do meu café, ___.",
+          "pick": 2
+      },
+      {
+          "text": "Bonito, bonito, bonito são os ___ a bater no pito.",
+          "pick": 1
+      },
+      {
+          "text": "Quero ___ contigo.",
+          "pick": 1
+      },
+      {
+          "text": "Quando pego na sua mão suave e olho para os seus doces olhos, só consigo pensar em ___.",
+          "pick": 1
+      },
+      {
+          "text": "Anda comigo ver os ___.",
+          "pick": 1
+      },
+      {
+          "text": "Foda-se, esqueci-me de ___ outra vez.",
+          "pick": 1
+      },
+      {
+          "text": "Era uma vez os três famosos ___, o pequeno ___ e seus companheiros.",
+          "pick": 2
+      },
+      {
+          "text": "Foda-se, estou emocionado para ___.",
+          "pick": 1
+      },
+      {
+          "text": "E tudo mudou quando a/o ___ atacou!",
+          "pick": 1
+      },
+      {
+          "text": "Numa tentativa do Joãozinho ter um namorado, o quê é que ele fez? ___",
+          "pick": 1
+      },
+      {
+          "text": "___ é pior que ___.",
+          "pick": 2
+      },
+      {
+          "text": "O quê é que o Doraemon tirou da bolsa? ___.",
+          "pick": 1
+      },
+      {
+          "text": "Fui à loja do Mestre André e comprei ___.",
+          "pick": 1
+      },
+      {
+          "text": "Eu chumbei a FQ porque ___.",
+          "pick": 1
+      },
+      {
+          "text": "DN confirma que Salazar não morreu caindo de uma cadeira, mas na verdade ___",
+          "pick": 1
+      },
+      {
+          "text": "CMtv descobre que o novo hobby do Cristiano Ronaldo é ___",
+          "pick": 1
+      },
+      {
+          "text": "Gato Fedorento estreou-se na TV com a Série Fonseca, anos depois volta com a Série ___.",
+          "pick": 1
+      },
+      {
+          "text": "Descobriu-se um álbum inédito do arquivo de Carlos Paredes, de seu nome: ___.",
+          "pick": 1
+      },
+      {
+          "text": "E tudo o/a ___ levou.",
+          "pick": 1
+      },
+      {
+          "text": "Jesus subiu ao céu e disse ___.",
+          "pick": 1
+      },
+      {
+          "text": "___! Assim terei abdominais como os da Carolina Patrocínio.",
+          "pick": 1
+      },
+      {
+          "text": "Hoje nas tardes da Júlia vamos falar de ___.",
+          "pick": 1
+      },
+      {
+          "text": "___ É NOSSA!",
+          "pick": 1
+      },
+      {
+          "text": "Está tudo preso seus ___!",
+          "pick": 1
+      },
+      {
+          "text": "Eu gostava de ___, com ___.",
+          "pick": 2
+      },
+      {
+          "text": "No quê é que eu vou gastar os mil euros em multibanco? ___.",
+          "pick": 1
+      },
+      {
+          "text": "Qual o próximo super-herói? ___.",
+          "pick": 1
+      },
+      {
+          "text": "Um estudo recente mostra que os portugueses têm 50% menos sexo depois de serem expostos a ___.",
+          "pick": 1
+      },
+      {
+          "text": "Dica! Quando o teu homem te pedir para ir lá abaixo, tenta surpreendê-lo com ___ em vez.",
+          "pick": 1
+      },
+      {
+          "text": "O museu de história natural abriu uma exposição interativa sobre ___.",
+          "pick": 1
+      },
+      {
+          "text": "O tema para o Festival Eurovisão do próximo ano vai ser \"___\".",
+          "pick": 1
+      },
+      {
+          "text": "A segurança do aeroporto está agora a proibir ___ nos aviões.",
+          "pick": 1
+      },
+      {
+          "text": "E o Globo de Ouro de ___ vai para ___.",
+          "pick": 2
+      },
+      {
+          "text": "As leis são como as meninas virgens, são para ser ___.",
+          "pick": 1
+      },
+      {
+          "text": "___... outra vez não...",
+          "pick": 1
+      },
+      {
+          "text": "E o prémio do maior pénis vai para ___.",
+          "pick": 1
+      },
+      {
+          "text": "O caminho para o coração de um homem é através de ___.",
+          "pick": 1
+      }
+  ],
+  "whiteCards": [
+"Matar uma foca bebé com a força do meu pénis.",
+"Orgias papais.",
+"Cagar para cima de comida à frente de um sem abrigo esfomeado.",
+"Salazar.",
+"Lágrimas do Bruno de Carvalho.",
+"Diarreia.",
+"Meninas da católica.",
+"Repositório de esperma.",
+"SIDA.",
+"Quando colas o teu pénis a um poste congelado no inverno.",
+"Uma vagina onde cabe um melão.",
+"Chamar preto da Guiné a alguém de Angola.",
+"Violação surpresa.",
+"O rei ghob.",
+"Muçulmanos enrolados em bacon.",
+"Asfixia auto-erótica.",
+"Mamas.",
+"Comer uma banana.",
+"Pedofilia.",
+"Gonorreia.",
+"Os tomates do Goucha.",
+"Esquecer-se de limpar o histórico da internet.",
+"Pêlos do cu.",
+"Gelado de sémen.",
+"Ter sexo anal com outro homem mas dizer \"no homo\" depois.",
+"Violar um tetraplégico porque ele não se consegue defender.",
+"Aquele homem obeso a \"meter a mão na massa\" no canto.",
+"Contratar uma prostituta, matá-la e comê-la.",
+"Matar um cego à pedrada porque ele nunca verá as pedras a chegar.",
+"Um bebé morto.",
+"Disparar palitos através do pénis.",
+"O bigode da tua tia.",
+"Um dildo barato que se estraga após uma utilização.",
+"Violar raparigas no metro.",
+"Cometer genocídio.",
+"A conta do gás do Hitler.",
+"O ânus do Fernando Mendes.",
+"Sexo.",
+"Pornografia infantil.",
+"Pastel de belém.",
+"Um javali a violar o José Castelo Branco.",
+"Pornografia da mocidade portuguesa.",
+"5 senegaleses munidos de pénis de 20 cms.",
+"A festa de Auschwitz.",
+"Um ritual sexual de uma tribo africana.",
+"Manchas misteriosas.",
+"Espancar órfãos.",
+"Um filme antigo da primeira experiência sexual da minha avó.",
+"JJ.",
+"Estar na varanda, de tronco nu, com uma sniper a alvejar judeus.",
+"Usar o telefone como vibrador.",
+"Hitler.",
+"Stalin.",
+"Merda.",
+"Limpar vigorosamente o pénis da minha filha.",
+"Uma stripper com lepra.",
+"Winnie The Pooh a usar um pote de mel para asfixia auto-erótica.",
+"Servir carne grelhada na ala dos queimados do hospital.",
+"Um rato a tentar fugir de dentro de uma vagina.",
+"Aborto depois do nascimento.",
+"Morte por esperma.",
+"Espanhóis.",
+"O micropénis do António José Seguro.",
+"Prostitutas do século XVI.",
+"Escrever palavras porcas ao jogar scrabble com crianças.",
+"Ser penetrado por um taco de basebol com arame farpado.",
+"Filho da puta.",
+"Uma colher de sopa de Ébola.",
+"Super SIDA.",
+"Mijo.",
+"Uma piada insensível sobre pilas.",
+"Impotência.",
+"Uma vagina com dentes.",
+"Manter o sabonete na mão no banho da prisão apenas para ser violado pelo companheiro de cela.",
+"Mantorras.",
+"Feito, já não é incesto, é necrofilia.",
+"Orgia de sexo anal.",
+"Chupar todo o esperma do pénis do padrasto.",
+"Não é gay se não tiveres prazer.",
+"Nada sabe melhor que a mão áspera e grossa do meu padrasto.",
+"O meu tio.",
+"Carlos Cruz.",
+"O estilo moderno do Manuel Luís Goucha.",
+"Peso Pesado.",
+"Cavaco, com calções bem apertados, tirando a sua t-shirt e mostrando os seus brilhantes e gloriosos abdominais.",
+"Fetiche de pés.",
+"Vagina com os lábios caídos até aos joelhos.",
+"A grande, grossa e muito usada piça de um preto.",
+"Aquele velho que vivia na amadora, acho que se chamava Renato Sanches.",
+"Sexo anal.",
+"Violar o Sócrates na prisão.",
+"Queijo derretido.",
+"Ser apanhado com um rapaz de 9 anos.",
+"A barriga do Fernando Mendes.",
+"Quim Barreiros.",
+"Renato Seabra.",
+"Etiópia.",
+"Os graciosos, lindos, gigantes lábios da Manuela Moura Guedes.",
+"Pedófilo.",
+"Um pénis \"à grande e à francesa\".",
+"Quem apanhou a avó a comer o avô por trás com um dildo.",
+"Casa Pia.",
+"Esgalhar o pessegueiro.",
+"Dar uma volta com o Angélico Vieira.",
+"Pornografia leve.",
+"Um gordo que dorme dentro da casa de banho do McDonalds.",
+"Memes grelhados.",
+"Cancro.",
+"Uma orgia no balneário da seleção portuguesa.",
+"Esperma do Feromonas também conhecido como Leite Agros.",
+"Memes.",
+"Remover pêlos do cu com o pé.",
+"O gordo do Fernando Mendes.",
+"Piça.",
+"John Cena.",
+"Sexo anal com José Castelo Branco.",
+"Memes portugueses.",
+"Depilar as bolas.",
+"Típica rapariga branca.",
+"A indefinida orientação sexual do Goucha.",
+"Esperma.",
+"#Hashtag.",
+"Porno de ovelhas.",
+"Masturbar ao ver porno de violação.",
+"Allahu Akbar.",
+"Um longo, brilhante, grosso pénis.",
+"O meu pequeno pénis asiático.",
+"O Holocausto.",
+"Darude Sandstorm.",
+"Sentar numa sanita.",
+"Harambe.",
+"Osama Bin Laden.",
+"Colecionar todas as sete Bolas de Dragão para desejar as cuecas da Bulma.",
+"Vladimir Putin.",
+"Comunistas.",
+"2 girls 1 cup.",
+"Aliens.",
+"Campeonatos do Sporting.",
+"O meu cu branco.",
+"Donald Trump.",
+"Barack Obama.",
+"Bloco de Esquerda.",
+"PSD.",
+"PCP.",
+"CDS.",
+"PS.",
+"António Costa.",
+"Cristiano Ronaldo.",
+"Éder.",
+"Pedro Passos Coelho.",
+"Tony Carreira.",
+"Ir para a universidade arranjar uma licenciatura para trabalhar no McDonalds.",
+"Chuck Norris.",
+"Fazer sexo com raparigas gordas e de seguida acabar com elas.",
+"A tua mãe.",
+"Viver na cave dos teus avós, ver anime e ser obeso.",
+"Nigga.",
+"Madeleine McCann.",
+"Violação consensual.",
+"Nada.",
+"Vegetarianos.",
+"36 horas de masturbação intensa.",
+"Agenda feminista.",
+"Dividir por 0.",
+"Ébola.",
+"Correr nu pela casa.",
+"Os KKK.",
+"Fantasmas.",
+"Um tumor cerebral.",
+"Um saco de feijões mágicos.",
+"O clitóris.",
+"A minha alma.",
+"Os Judeus.",
+"Amputados.",
+"A minha vagina.",
+"Silêncio.",
+"Sexo consensual.",
+"Ficar nu e ver Canal Panda.",
+"O Big Bang.",
+"Darth Vader.",
+"Diarreia que nunca acaba.",
+"A sua majestade, Rainha Isabel II.",
+"Um macaco a fumar um cigarro.",
+"Kanye West.",
+"Fogo amigável.",
+"Ficar sem sémen.",
+"Agricultura.",
+"Gandhi.",
+"Carne de cavalo.",
+"Abdominais espetaculares.",
+"Alberto Barbosa.",
+"Fernando Mendes.",
+"Make Portugal Great Again.",
+"Estado Novo.",
+"Angola.",
+"Angola é nossa.",
+"Ciência.",
+"Telepizza.",
+"Paz mundial.",
+"A minha coleção de brinquedos sexuais topo de gama.",
+"Motosserras no lugar de mãos.",
+"O teu irmão estranho.",
+"Deus.",
+"Os gays.",
+"Masturbação.",
+"RoboCop.",
+"Injeções hormonais.",
+"Ser rico.",
+"Incesto.",
+"A minha ex-mulher.",
+"Nicolas Cage.",
+"Tensão sexual.",
+"Os terroristas.",
+"Puberdade.",
+"O homem do leite.",
+"Esperança.",
+"Lactação.",
+"Um cavalo pequeno.",
+"Fazer a coisa certa.",
+"Trabalhos.",
+"Cuidados hospitalares.",
+"Schwarzenegger.",
+"A Biblia.",
+"Dizer \"Amo-te\".",
+"Limpeza étnica.",
+"Acordar seminu num parque de estacionamento.",
+"Não ligar um caralho ao Terceiro Mundo.",
+"Japoneses velhos.",
+"Crianças com cancro do cu.",
+"Roubar campas.",
+"O meu cu preto.",
+"Fazer batota nos jogos Paralímpicos.",
+"Dar 110%.",
+"Morrer.",
+"Sem abrigos.",
+"Um chapéu muito fixe.",
+"Não usar calças.",
+"A minha vida sexual.",
+"Netflix.",
+"Viagra.",
+"Voz do Morgan Freeman.",
+"Pessoas brancas.",
+"Invadir a Polónia.",
+"Snifar cola.",
+"Justin Bieber.",
+"Cuecas usadas.",
+"Alcoolismo.",
+"Uma cara feia.",
+"Testículos.",
+"Calças muito justas.",
+"Leggings.",
+"Lutas de almofadas sensuais.",
+"Disfunção eréctil.",
+"Pais mortos.",
+"Porno de tentáculos.",
+"Um micropénis.",
+"Fotografias de mamas.",
+"Sonhos molhados.",
+"Beber sozinho.",
+"O Sangue de Cristo.",
+"Manuel Luis Goucha.",
+"Maria Leal.",
+"Pilotos Kamikaze.",
+"Seleção natural.",
+"Emoções.",
+"72 virgens.",
+"Os meus genitais.",
+"Pessoas pobres.",
+"BATMAN!!!.",
+"Pessoas castanhas.",
+"Pessoas pretas.",
+"Pedófilos.",
+"Uma metralhadora.",
+"Explosões.",
+"Tom Cruise.",
+"Orgasmo feminino.",
+"Uma sopa que está demasiado quente.",
+"Abuso de crianças.",
+"Brutalidade policial.",
+"O coração de uma criança.",
+"Canibalismo.",
+"Racismo.",
+"Escuteiros.",
+"Asiáticos que não são bons a matemática.",
+"Nazis.",
+"O verdadeiro sentido do Natal.",
+"Atirar uma virgem para um vulcão.",
+"Cheiro a velho.",
+"Ser gordo e estúpido.",
+"Uma explosão nuclear.",
+"Crianças africanas.",
+"O Papa.",
+"Esconder uma ereção.",
+"Baixas civis.",
+"Estar a arder.",
+"Bebés mortos.",
+"Uma ereção que dura mais do que 4 horas.",
+"Kim Jong Un.",
+"Esquecer de apagar o histórico da internet.",
+"Dragon Ball.",
+"Doraemon.",
+"Vender o teu bebé durante a Black Friday.",
+"Tornar-se policia para matar pretos como desporto.",
+"Holocausto: O musical.",
+"Usar supercola para evitar violação.",
+"Oreos do continente.",
+"Masturbar na casa de banho do museu do Holocausto.",
+"Quando coças tanto os tomates que eles ficam em carne viva.",
+"Duelar pela internet.",
+"Arquiteto Tomás Taveira.",
+"Estudasses.",
+"Vagina.",
+"Levar com as bolas no queixo.",
+"Amália Rodrigues.",
+"Jorge Perestrelo.",
+"Rita Pereira.",
+"Fernando Pessoa.",
+"Afonso Henriques.",
+"Submarinos do Paulo Portas.",
+"SIC.",
+"Cristina Ferreira.",
+"O riso estridente da Cristina Ferreira.",
+"Nuno \"Nhonhas\" Markl.",
+"1, 2, 3, 4 ninjas.",
+"Está aqui o Shredder!",
+"Casa dos segredos.",
+"A voz da Cristina Ferreira.",
+"Os peitos da cabritinha.",
+"SIIIIIIIII.",
+"Dona Branca a gastar o dinheiro do povo em Calcitrin.",
+"Velhos com bolor.",
+"Margem Sul.",
+"Lixoboa.",
+"Amadora.",
+"Egas Moniz e a sua milagrosa lobotomia.",
+"Atirar microfones.",
+"Uma chinesa a vender cão frito às escondidas no Martim Moniz.",
+"Adopte um Dote.",
+"Adopte um pirilampo mágico.",
+"Pita rica de Cascais.",
+"Sopa dos Pobres servindo refeições da fossa séptica.",
+"Jogar às escondidas com o Pedro Dias.",
+"Portuguese Breakfast.",
+"Gelado com sabor a pila.",
+"Esperma do bom.",
+"Pilas grandes e boas.",
+"Sócrates.",
+"Portátil Magalhães.",
+"Linux Caixa Mágica.",
+"Cabrõezinhos.",
+"PNR.",
+"Ana Malhoa.",
+"Pedro Dias.",
+"Xaroca.",
+"Caralho.",
+"Cona.",
+"Tentar pronunciar o nome da filha da Luciana Abreu.",
+"Droga, no meu dealer favorito.",
+"Abstinência.",
+"Cabras a comer moedas.",
+"A história de um filme do Michael Bay.",
+"Capitão Falcão.",
+"Capitães de Abril.",
+"O estilo de vida homossexual.",
+"Swag.",
+"Um homem no clímax.",
+"Um solo de saxofone.",
+"Pastinha de memes.",
+"Tartarugas de assalto com respiração ácida.",
+"O delicioso ânus do José Castelo Branco.",
+"Forças negras e misteriosas fora do nosso controlo.",
+"Dar à luz o AntiCristo.",
+"Segurar numa criança e peidar em cima dela.",
+"Ver a avó nua.",
+"Mijo sexual.",
+"Bataclan.",
+"ISIS.",
+"Guerra colonial."
+  ]
+}

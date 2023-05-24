@@ -37,7 +37,7 @@ export default function PlayerItem({ player, leader }: IPlayerItemProps) {
   const score = player.score
 
   return (
-    <div className="flex w-full max-w-full items-center gap-2">
+    <div className="flex w-full max-w-full flex-col items-center gap-2 sm:flex-row">
       <CustomAvatar
         src={player.pictureUrl}
         size={60}

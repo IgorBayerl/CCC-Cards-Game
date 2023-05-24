@@ -96,6 +96,7 @@ export default class GameRoom extends Room {
     this.time = config.time
   }
 
+  // BUG: This function is not working properly, all the players are getting the same cards, just in random order
   giveCardsToPlayer(player: GamePlayer): void {
     for (let i = 0; i < 6; i++) {
       const cardIndex =
@@ -196,7 +197,7 @@ export default class GameRoom extends Room {
     console.log('>>> starting game...')
 
     this.status = 'starting'
-    this.notifyStateAll(socket)
+    this.broadcastState()
 
     //choose a random judge
     console.log('>>> choosing a random judge...')
@@ -257,6 +258,10 @@ export default class GameRoom extends Room {
     // }, 4000)
   }
   nextRound(): void {
+    if (this.checkForWinner()) {
+      return
+    }
+
     // Select the next player as a judge
     if (this.players.length > 0 && this.currentJudgeIndex !== null) {
       this.currentJudgeIndex =
@@ -278,6 +283,14 @@ export default class GameRoom extends Room {
     if (this.judge && this.currentQuestionCard) {
       this.addRound(this.currentQuestionCard, this.judge)
     }
+
+    // Make sure each player has 6 cards
+    // TODO: Implement this
+    // this.players.forEach(player => {
+    // while (player.cards.length < 6) {
+    //   this.giveCardsToPlayer(player)
+    // }
+    // })
     this.broadcastState()
   }
 
@@ -333,15 +346,17 @@ export default class GameRoom extends Room {
     )
   }
 
-  checkForWinner(): void {
+  checkForWinner(): boolean {
     for (let player of this.players) {
       if (player.score >= this.scoreToWin) {
         this.status = 'finished'
         this.updatePlayerStatuses()
         console.log(`${player.username} has won the game!`)
-        break
+        this.broadcastState()
+        return true
       }
     }
+    return false
   }
 
   get statePlayers(): Player[] {
@@ -411,7 +426,8 @@ export default class GameRoom extends Room {
     }
 
     // If the winning player has reached the score to win, update the game state to 'finished'.
-    // if (winningPlayer.score === this.scoreToWin) { // TODO: move this in a place where it will be shown after the round results
+    // if (winningPlayer.score === this.scoreToWin) {
+    //   // TODO: move this in a place where it will be shown after the round results
     //   this.status = 'finished'
     //   this.broadcastState()
     //   return
@@ -433,8 +449,17 @@ export default class GameRoom extends Room {
       )
 
       // Remove the selected cards from the player's hand
+      console.log(
+        `>>> 1 >> Player ${player.username} has submitted their cards.`,
+        player.cards
+      )
+      const selectedCardTexts = new Set(selectedCards.map((card) => card.text))
       player.cards = player.cards.filter(
-        (card) => !selectedCards.includes(card)
+        (card) => !selectedCardTexts.has(card.text)
+      )
+      console.log(
+        `>>> 2 >> Player ${player.username} has submitted their cards.`,
+        player.cards
       )
 
       // Store the selected cards for the round
@@ -454,18 +479,9 @@ export default class GameRoom extends Room {
         this.status = 'judging'
         this.updatePlayerStatuses()
       }
-
-      // Notify the game room of the state change
-      this.notifyState(socket)
-      // Notify the player of their updated status
-      this.notifyPlayerState(socket)
+      this.notifyPlayerCards()
+      this.broadcastState()
     }
-  }
-
-  // TODO: change all the places that call notifyStateAll to broadcastState
-  notifyStateAll(socket: Socket): void {
-    this.notifyState(socket)
-    this.notifyPlayerState(socket)
   }
 
   broadcast(messageType: string, content: any): void {

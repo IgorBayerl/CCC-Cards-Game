@@ -15,7 +15,6 @@ export interface IDeck {
 }
 
 export interface ICard {
-  id: string
   text: string
 }
 
@@ -25,6 +24,5 @@ export interface ICardQuestion extends ICard {
 
 // I tried to extend the ICard with no changes, but the vercel build failed (this is just to get a more descriptive name)
 export interface ICardAnswer {
-  id: string
   text: string
 }

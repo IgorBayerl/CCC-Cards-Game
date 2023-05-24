@@ -7,41 +7,33 @@
     "cards": {
       "questions": [
         {
-          "id": "Q1",
           "text": "The capital of ___ is ___.",
           "spaces": 2
         },
         {
-          "id": "Q2",
           "text": "The ___ mammal is the ___.",
           "spaces": 2
         },
         {
-          "id": "Q3",
           "text": "The highest mountain in ___ is ___.",
           "spaces": 2
         },
         {
-          "id": "Q4",
           "text": "___ is known for ___.",
           "spaces": 2
         }
       ],
       "answers": [
         {
-          "id": "A1",
           "text": "France"
         },
         {
-          "id": "A2",
           "text": "Blue Whale"
         },
         {
-          "id": "A3",
           "text": "Australia"
         },
         {
-          "id": "A4",
           "text": "Kangaroos"
         }
       ]
@@ -55,41 +47,33 @@
     "cards": {
       "questions": [
         {
-          "id": "Q9",
           "text": "O menor planeta do nosso sistema solar é ___.",
           "spaces": 1
         },
         {
-          "id": "Q10",
           "text": "O maior oceano é ___.",
           "spaces": 1
         },
         {
-          "id": "Q11",
           "text": "O Brasil é conhecido pelo ___.",
           "spaces": 1
         },
         {
-          "id": "Q12",
           "text": "O prato tradicional do ___ é o ___.",
           "spaces": 2
         }
       ],
       "answers": [
         {
-          "id": "A13",
           "text": "Mercúrio"
         },
         {
-          "id": "A14",
           "text": "Oceano Pacífico"
         },
         {
-          "id": "A15",
           "text": "Futebol"
         },
         {
-          "id": "A16",
           "text": "Feijoada"
         }
       ]
@@ -103,37 +87,30 @@
     "cards": {
       "questions": [
         {
-          "id": "Q1",
           "text": "The capital of ___ is ___.",
           "spaces": 2
         },
         {
-          "id": "Q2",
           "text": "The ___ mammal is the ___.",
           "spaces": 2
         },
         {
-          "id": "Q3",
           "text": "The highest mountain in ___ is ___.",
           "spaces": 2
         },
         {
-          "id": "Q4",
           "text": "___ is known for ___.",
           "spaces": 2
         }
       ],
       "answers": [
         {
-          "id": "A1",
           "text": "France"
         },
         {
-          "id": "A2",
           "text": "Blue Whale"
         },
         {
-          "id": "A3",
           "text": "Australia"
         },
         {
@@ -151,41 +128,33 @@
     "cards": {
       "questions": [
         {
-          "id": "Q9",
           "text": "O menor planeta do nosso sistema solar é ___.",
           "spaces": 1
         },
         {
-          "id": "Q10",
           "text": "O maior oceano é ___.",
           "spaces": 1
         },
         {
-          "id": "Q11",
           "text": "O Brasil é conhecido pelo ___.",
           "spaces": 1
         },
         {
-          "id": "Q12",
           "text": "O prato tradicional do ___ é o ___.",
           "spaces": 2
         }
       ],
       "answers": [
         {
-          "id": "A13",
           "text": "Mercúrio"
         },
         {
-          "id": "A14",
           "text": "Oceano Pacífico"
         },
         {
-          "id": "A15",
           "text": "Futebol"
         },
         {
-          "id": "A16",
           "text": "Feijoada"
         }
       ]

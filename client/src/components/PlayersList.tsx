@@ -16,7 +16,7 @@ export default function PlayersList({ players, leader, roomSize }: IProps) {
   return (
     <>
       <div className="flex  w-full flex-col items-center justify-center gap-3 overflow-y-auto">
-        <div className="flex w-full flex-row gap-2 rounded-lg  border-2 px-2 sm:flex-col">
+        <div className="flex w-full flex-row gap-2 rounded-lg  border-2  px-2 sm:flex-col">
           {sortedPlayers.map((player, index) => (
             <div key={index}>
               <div className="flex flex-col items-center gap-3 text-2xl font-bold sm:flex-row">

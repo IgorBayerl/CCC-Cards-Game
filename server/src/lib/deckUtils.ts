@@ -1,8 +1,25 @@
+import fs from 'fs'
+import path from 'path'
 import { IDeck } from '../models/Deck'
-import decks from '../data/decks.json'
 
 export function getDeckById(id: string): IDeck | undefined {
-  return decks.find((d) => d.id === id)
+  // Find a file that matches the id
+  const decksDirectory = path.join(__dirname, '../data/decks')
+  const deckFiles = fs.readdirSync(decksDirectory)
+  const deckFile = deckFiles.find((file) => file.includes(id))
+
+  if (!deckFile) return undefined
+
+  const deck = JSON.parse(
+    fs.readFileSync(path.join(decksDirectory, deckFile), 'utf-8')
+  )
+
+  // Assuming that id and language are included in the file name, but not in the file content
+  const [language, _rest, fileId] = deckFile.split('_')
+  deck.id = fileId.split('.')[0] // remove .json extension
+  deck.language = language
+
+  return deck
 }
 
 /**

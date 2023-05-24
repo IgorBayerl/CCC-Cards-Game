@@ -8,11 +8,12 @@ import {
   useMantineTheme,
 } from '@mantine/core'
 import InGameLayout from '~/components/Layout/InGameLayout'
-import GameCard from '~/components/Atoms/GameCard'
+import GameCard, { GameCardResult } from '~/components/Atoms/GameCard'
 import { ICard, ICardAnswer } from '~/models/Deck'
 import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 import { CountdownCircleTimer } from 'react-countdown-circle-timer'
+import TimerScreen from '~/components/Layout/TimerScreen'
 
 const useStyles = createStyles((theme) => {
   const { colorScheme } = useMantineTheme()
@@ -90,15 +91,7 @@ interface IUpdateResultCards {
 }
 
 export default function Judging() {
-  const {
-    myHand,
-    socket,
-    gameState,
-    startingState,
-    playerSelectCards,
-    isCurrentUserJudge,
-  } = useGameContext()
-  const myCards = myHand.cards
+  const { myHand, socket, gameState, isCurrentUserJudge } = useGameContext()
 
   const { currentQuestionCard } = gameState
   const { classes } = useStyles()
@@ -186,12 +179,15 @@ export default function Judging() {
     socket?.emit('game:seeAllRoundAnswers')
     console.log('>> see results')
   }
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      handleTimerTimeout()
-    }, 10000)
-    setTimerId(timer)
-  }, [])
+  // useEffect(() => {
+  //   const timer = setTimeout(() => {
+  //     handleTimerTimeout()
+  //   }, 10000)
+  //   setTimerId(timer)
+  //   return () => {
+  //     void clearTimeout(timer)
+  //   }
+  // }, [])
 
   useEffect(() => {
     return () => {
@@ -215,111 +211,101 @@ export default function Judging() {
     if (seeConfirmBtn) {
       // TODO: select a random group
       resultCards.cards
-      const randomPlayerId = Object.keys(resultCards.cards)[0]!
+      const randomPlayerId = Object.keys(resultCards.cards)[0]! //BUG: not that random
       const randomGroup = resultCards.cards[randomPlayerId]!
       handleGroupClick(randomPlayerId, randomGroup)
 
       // TODO: wait for a second and then confirm
-      setTimeout(() => {
-        handleConfirm() //BUG: this is throwing the you must select a group error, but it is selecting a group
-      }, 1000)
+      // setTimeout(() => {
+      handleConfirm() //BUG: this is throwing the you must select a group error, but it is selecting a group
+      // }, 1000)
     }
   }
 
-  const renderTime = ({ remainingTime }: { remainingTime: number }) => {
-    if (remainingTime === 0) {
-      return <div className="timer">Too late!</div>
-    }
-    return (
-      <div className="timer">
-        <div className="value">{remainingTime}</div>
-        <div className="text">seconds</div>
-      </div>
-    )
-  }
-
-  const time = 10 // 10 seconds
+  const time = 99999 // 10 seconds
 
   // TODO: add a timer
   // TODO: change the layout to look more like a chat than a card game
   return (
     <Layout>
       <InGameLayout>
-        <div className={classes.gameContainer}>
-          <h1>Judging</h1>
-          <CountdownCircleTimer
-            isPlaying
-            key={resetKey}
-            duration={time}
-            colors={['#004777', '#F7B801', '#A30000', '#A30000']}
-            colorsTime={[7, 5, 2, 0]}
-            onComplete={handleTimerTimeout}
-          >
-            {renderTime}
-          </CountdownCircleTimer>
-          <div className={classes.cardContainer}>
-            <div className={classes.questionContainer}>
-              {currentQuestionCard && (
-                <GameCard cardInfo={currentQuestionCard} selected={false} />
-              )}
-            </div>
+        <TimerScreen
+          subtitle="Judging"
+          time={time}
+          handleTimeout={handleTimerTimeout}
+        >
+          <div className={classes.gameContainer}>
+            <div className={classes.cardContainer}>
+              <div className={classes.questionContainer}>
+                {currentQuestionCard && (
+                  <>
+                    <GameCard cardInfo={currentQuestionCard} selected={false} />
+                    {/* <GameCardResult
+                    // TODO: make it show the selected card when the judge is deciding 
+                      question={currentQuestionCard.text}
+                      answers={lastCards?.map((card) => card.text) || []}
+                    /> */}
+                  </>
+                )}
+              </div>
 
-            {seeIndividualResults &&
-              lastCards?.map((card) => (
-                <div key={card.id} className={classes.playerCards}>
-                  <GameCard cardInfo={card} selected={false} />
-                </div>
-              ))}
+              {seeIndividualResults &&
+                lastCards?.map((card, index) => (
+                  <div key={index} className={classes.playerCards}>
+                    <GameCard cardInfo={card} selected={false} />
+                  </div>
+                ))}
 
-            <div className="flex justify-center gap-3">
-              {
-                // all results
-                seeAllResults &&
-                  Object.entries(cards).map(([playerId, cardList]) => (
-                    <div
-                      key={playerId}
-                      className={`flex flex-col gap-5  ${
-                        selectedGroup && selectedGroup.playerId === playerId
-                          ? classes.selectedGroup
-                          : ''
-                      }`}
-                      onClick={() => handleGroupClick(playerId, cardList)}
-                    >
-                      {cardList.map((card) => (
-                        <div key={card.id} className={classes.playerCards}>
-                          <GameCard cardInfo={card} selected={false} />
-                        </div>
-                      ))}
-                    </div>
-                  ))
-              }
+              <div className="flex justify-center gap-3">
+                {
+                  // all results
+                  seeAllResults &&
+                    Object.entries(cards).map(([playerId, cardList]) => (
+                      <div
+                        key={playerId}
+                        className={`flex flex-col gap-5  ${
+                          selectedGroup && selectedGroup.playerId === playerId
+                            ? classes.selectedGroup
+                            : ''
+                        }`}
+                        onClick={() => handleGroupClick(playerId, cardList)}
+                      >
+                        {cardList.map((card, index) => (
+                          <div key={index} className={classes.playerCards}>
+                            <GameCard cardInfo={card} selected={false} />
+                          </div>
+                        ))}
+                      </div>
+                    ))
+                }
+              </div>
             </div>
+            {isCurrentUserJudge && (
+              <div className={classes.confirmButton}>
+                {seeGoToAllResultsBtn && (
+                  <Button
+                    onClick={handleSeeResults}
+                    variant="outline"
+                    color="teal"
+                    leftIcon={
+                      <ActionIcon variant="outline" color="teal" radius="xl">
+                        🏆
+                      </ActionIcon>
+                    }
+                  >
+                    See all results
+                  </Button>
+                )}
+                {seeNextBtn && <Button onClick={handleNextCard}>Next</Button>}
+                {seeConfirmBtn && (
+                  <Button disabled={!enableConfirmBtn} onClick={handleConfirm}>
+                    Confirm
+                  </Button>
+                )}
+              </div>
+            )}
           </div>
-          {isCurrentUserJudge && (
-            <div className={classes.confirmButton}>
-              {seeGoToAllResultsBtn && (
-                <Button
-                  onClick={handleSeeResults}
-                  variant="outline"
-                  color="teal"
-                  leftIcon={
-                    <ActionIcon variant="outline" color="teal" radius="xl">
-                      🏆
-                    </ActionIcon>
-                  }
-                >
-                  See all results
-                </Button>
-              )}
-              {seeNextBtn && <Button onClick={handleNextCard}>Next</Button>}
-              {seeConfirmBtn && (
-                <Button disabled={!enableConfirmBtn} onClick={handleConfirm}>
-                  Confirm
-                </Button>
-              )}
-            </div>
-          )}
-        </div>
+        </TimerScreen>
       </InGameLayout>
     </Layout>
   )
