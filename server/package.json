@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "npx nodemon",
-    "build": "rimraf ./build && tsc && cp -r src/data/decks build/data/decks",
+    "build": "rimraf ./build && tsc && mkdir -p build/data/decks && cp -r src/data/decks/* build/data/decks",
     "build:windows": "rimraf ./build && tsc && xcopy src\\data\\decks build\\data\\decks /E /I /Y",
     "start": "npm run build && node build/index.js"
   },
