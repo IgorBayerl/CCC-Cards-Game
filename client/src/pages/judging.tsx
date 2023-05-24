@@ -222,7 +222,7 @@ export default function Judging() {
     }
   }
 
-  const time = 99999 // 10 seconds
+  const time = 10 // 10 seconds
 
   // TODO: add a timer
   // TODO: change the layout to look more like a chat than a card game

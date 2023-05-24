@@ -117,7 +117,7 @@ export default class GameRoom extends Room {
     })
   }
 
-  getNextPlayerCards(): {
+  getNextPlayerCardsResults(): {
     cards: { [playerId: string]: ICardAnswer[] } | null
     hasNext: boolean
   } {
@@ -173,7 +173,7 @@ export default class GameRoom extends Room {
   }
 
   requestNextCard(socket: Socket): void {
-    const { cards: nextCards, hasNext } = this.getNextPlayerCards()
+    const { cards: nextCards, hasNext } = this.getNextPlayerCardsResults()
     if (nextCards) {
       // Emit the entire 'cards' object instead of just the array for the next player
       this.broadcast('game:updateResultCards', { cards: nextCards, hasNext })
@@ -193,21 +193,25 @@ export default class GameRoom extends Room {
     this.broadcast('game:showAllCards', { cards: allCards, hasNext: false })
   }
 
-  startGame(socket: Socket): void {
-    console.log('>>> starting game...')
+  // TODO: handle judge quitting
+  // TODO: handle player quitting
 
-    this.status = 'starting'
-    this.broadcastState()
-
-    //choose a random judge
+  /**
+   * Selects a random judge from the players array.
+   */
+  selectJudge(): void {
     console.log('>>> choosing a random judge...')
     this.startingStatusUpdate('>>> choosing a random judge...')
     if (this.players.length > 0) {
       this.currentJudgeIndex = Math.floor(Math.random() * this.players.length)
       this.judge = this.players[this.currentJudgeIndex]
     }
+  }
 
-    // Populate the available cards with the selected decks
+  /**
+   * Populates the available cards with the selected decks.
+   */
+  populateCards(): void {
     console.log('>>> populating the available cards...')
     this.startingStatusUpdate('>>> populating the available cards...')
     this.availableQuestionCards = []
@@ -221,25 +225,92 @@ export default class GameRoom extends Room {
       this.availableQuestionCards.push(...deck.cards.questions)
       this.availableAnswerCards.push(...deck.cards.answers)
     }
+  }
 
-    // Shuffle the cards
+  /**
+   * Shuffles the available cards.
+   */
+  shuffleCards(): void {
     console.log('>>> shuffling the cards...')
     this.startingStatusUpdate('>>> shuffling the cards...')
     this.availableQuestionCards = shuffleCards(this.availableQuestionCards)
     this.availableAnswerCards = shuffleCards(this.availableAnswerCards)
+  }
 
-    // Give 6 cards to each player
-    console.log('>>> giving 6 cards to each player...')
-    this.startingStatusUpdate('>>> giving 6 cards to each player...')
-    for (let player of this.players) {
-      this.giveCardsToPlayer(player)
+  /**
+   * Gives the specified number of cards to the specified player.
+   */
+  dealCardsToPlayer(player: GamePlayer, cardsToDeal: number): void {
+    const cardsNeeded = cardsToDeal - player.cards.length
+
+    if (cardsNeeded > 0) {
+      if (this.availableAnswerCards.length < cardsNeeded) {
+        console.error('Not enough cards in the deck.')
+        return
+      }
+
+      for (let i = 0; i < cardsNeeded; i++) {
+        const cardIndex = Math.floor(
+          Math.random() * this.availableAnswerCards.length
+        )
+        player.cards.push(this.availableAnswerCards[cardIndex])
+        this.availableAnswerCards.splice(cardIndex, 1)
+      }
+    } else if (cardsNeeded < 0) {
+      // Remove the excess cards
+      player.cards.splice(cardsToDeal)
     }
-    this.notifyPlayerCards()
+  }
+
+  /**
+   * Deals cards to each player.
+   * The number of cards dealt is based on the number of spaces on the current question card.
+   * At the end of the round, each player should have 5 cards.
+   */
+  dealQuestionCardsForEveryone(): void {
+    if (this.currentQuestionCard) {
+      const cardsToDeal = 5 + this.currentQuestionCard.spaces
+
+      // Give cards to each player
+      console.log(`>>> giving ${cardsToDeal} cards to each player...`)
+      this.startingStatusUpdate(
+        `>>> giving ${cardsToDeal} cards to each player...`
+      )
+      for (let player of this.players) {
+        this.dealCardsToPlayer(player, cardsToDeal)
+      }
+    } else {
+      console.error('No current question card is set.')
+    }
+  }
+
+  startGame(socket: Socket): void {
+    console.log('>>> starting game...')
+
+    this.status = 'starting'
+    this.broadcastState()
+
+    this.selectJudge()
+
+    this.populateCards()
+
+    this.shuffleCards()
 
     // Give a question card to the judge
     console.log('>>> giving a question card to the judge...')
     this.startingStatusUpdate('>>> giving a question card to the judge...')
     this.currentQuestionCard = this.getNextQuestionCard()
+
+    this.dealQuestionCardsForEveryone()
+    this.notifyPlayerCards()
+
+    // // Give 6 cards to each player
+    // console.log('>>> giving 6 cards to each player...')
+    // this.startingStatusUpdate('>>> giving 6 cards to each player...')
+    // for (let player of this.players) {
+    //   this.giveCardsToPlayer(player)
+    // }
+    // this.notifyPlayerCards()
 
     // Add a round here
     if (this.judge && this.currentQuestionCard) {
@@ -283,6 +354,9 @@ export default class GameRoom extends Room {
     if (this.judge && this.currentQuestionCard) {
       this.addRound(this.currentQuestionCard, this.judge)
     }
+
+    this.dealQuestionCardsForEveryone()
+    this.notifyPlayerCards()
 
     // Make sure each player has 6 cards
     // TODO: Implement this

@@ -124,7 +124,7 @@ export default function Game() {
     }
   }
 
-  const time = 99999 || gameState.config.time
+  const time = gameState.config.time
 
   const handleTimeout = () => {
     console.log('Timeout triggered')

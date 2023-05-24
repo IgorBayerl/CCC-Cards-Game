@@ -103,7 +103,7 @@ export default function Results() {
   const lastRoundQuestionCard = lastRoundResults?.questionCard as ICard
   const lastRoundWinnerAnswers = lastRoundResults?.answerCards[winner?.id || '']
 
-  const time = 99999 // 10 seconds on the screen before going to the next round
+  const time = 10 // 10 seconds on the screen before going to the next round
 
   // const [timerId, setTimerId] = useState<ReturnType<typeof setTimeout> | null>(
   //   null
