@@ -111,8 +111,8 @@ export default function LobbyPage() {
 
   const handleStartGame = () => {
     //verify if there are enough players
-    if (gameState.players.length < 2) {
-      toast.error('You need at least 2 players to start the game, sorry!')
+    if (gameState.players.length < 3) {
+      toast.error('You need at least 3 players to start the game, sorry!')
       return
     }
 
