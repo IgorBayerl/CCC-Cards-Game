@@ -1,0 +1,8 @@
+{
+  "locales": ["en", "pt", "es"],
+  "defaultLocale": "en",
+  "pages": {
+    "*": ["common"],
+    "/game": ["game"]
+  }
+}

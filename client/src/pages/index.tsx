@@ -8,6 +8,7 @@ import { IconPlayerPlay, IconReload } from '@tabler/icons-react'
 import { TutorialCarousel } from '~/components/Atoms/TutorialCarousel'
 import Image from 'next/image'
 import { useShuffleArray } from '~/hooks/useShuffleArray'
+import useTranslation from 'next-translate/useTranslation'
 
 const profilePictures = [
   '/profile/profile_1.webp',
@@ -74,6 +75,7 @@ const useStyles = createStyles((theme) => ({
 }))
 
 export default function Home() {
+  const { t } = useTranslation('common')
   const { gameState, joinRoom, socket } = useGameContext()
   const [pictureUrl, nextPicture] = useShuffleArray(profilePictures)
   const router = useRouter()
@@ -124,8 +126,11 @@ export default function Home() {
     nextPicture()
   }
 
+  const playText = t('i-play')
+  const createRoomText = t('i-create-room')
+
   const isJoiningRoom = roomCode && gameState.players.length === 0
-  const buttonText = isJoiningRoom ? 'Join Room' : 'Create Room'
+  const buttonText = isJoiningRoom ? playText : createRoomText
   const buttonOnClick = isJoiningRoom ? handleJoinRoom : handleCreateRoom
 
   const handleButtonClick = () => {
@@ -184,7 +189,7 @@ export default function Home() {
               loading={isLoading}
               onClick={handleButtonClick}
             >
-              {buttonText}
+              {playText}
             </Button>
           </div>
         </div>
