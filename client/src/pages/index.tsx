@@ -140,6 +140,18 @@ export default function Home() {
         <div className={classes.formContainer}>
           {/* <div className="flex aspect-[16/9] flex-1 flex-col items-center justify-center gap-6  lg:aspect-auto xl:flex-row"> */}
           <div className=" flex justify-center ">
+            {profilePictures.map((picture) => {
+              return (
+                <div className="hidden">
+                  <Image
+                    src={picture}
+                    alt="Profile Picture"
+                    width={200}
+                    height={200}
+                  />
+                </div>
+              )
+            })}
             <div className="relative ">
               <Image
                 src={pictureUrl || '/profile_1.jpg'}
