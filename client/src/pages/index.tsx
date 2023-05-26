@@ -140,9 +140,9 @@ export default function Home() {
         <div className={classes.formContainer}>
           {/* <div className="flex aspect-[16/9] flex-1 flex-col items-center justify-center gap-6  lg:aspect-auto xl:flex-row"> */}
           <div className=" flex justify-center ">
-            {profilePictures.map((picture) => {
+            {profilePictures.map((picture, index) => {
               return (
-                <div className="hidden">
+                <div className="hidden" key={index}>
                   <Image
                     src={picture}
                     alt="Profile Picture"
