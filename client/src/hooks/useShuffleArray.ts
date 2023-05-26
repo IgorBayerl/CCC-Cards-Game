@@ -18,9 +18,18 @@ const shuffleArray = <T>(array: T[]): T[] => {
 
 type IUseShuffleArray<T> = [T, () => void]
 
-export const useShuffleArray = <T>(inputArray: T[]): IUseShuffleArray<T> => {
+export const useShuffleArray = <T>(
+  inputArray: T[],
+  initialValue?: T
+): IUseShuffleArray<T> => {
+  const initialIndex =
+    initialValue !== undefined
+      ? inputArray.findIndex((value) => value === initialValue)
+      : -1
   const [currentIndex, setCurrentIndex] = useState(
-    Math.floor(Math.random() * inputArray.length)
+    initialIndex !== -1
+      ? initialIndex
+      : Math.floor(Math.random() * inputArray.length)
   )
   const [shuffledArray, setShuffledArray] = useState<T[]>(
     shuffleArray([...inputArray])

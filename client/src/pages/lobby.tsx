@@ -15,6 +15,7 @@ import ContainerFooter from '~/components/Layout/ContainerFooter'
 import { toast } from 'react-toastify'
 import useSound from 'use-sound'
 import { useAudio } from '~/components/AudioContext'
+import { Tabs } from '@mantine/core'
 
 const useStyles = createStyles((theme) => ({
   containerCard: {
@@ -159,54 +160,65 @@ export default function LobbyPage() {
             />
           </div>
           <div className={classes.gameContainer}>
-            <div className="flex items-center">
-              <div className="px-4 py-2 text-center">Score to win</div>
-              <Select
-                allowDeselect={false}
-                value={scoreToWin}
-                onChange={handleChangeScoreToWin}
-                disabled={!isCurrentUserLeader}
-                data={Array.from({ length: 27 }, (_, i) => i + 4).map((i) => ({
-                  value: i.toString(),
-                  label: `${i} Points`,
-                }))}
-              />
-              <div className="px-4 py-2 text-center">Time</div>
-              <Select
-                allowDeselect={false}
-                value={timeToPlay}
-                onChange={handleChangeTimeToPlay}
-                disabled={!isCurrentUserLeader}
-                data={Array.from({ length: 6 }, (_, i) => (i + 1) * 10).map(
-                  (i) => ({
-                    value: i.toString(),
-                    label: `${i} Seconds`,
-                  })
-                )}
-              />
-              {/* <div>Score to win: {gameConfig.scoreToWin}</div> */}
-            </div>
             <div>
-              {/* <h1>Decks</h1> */}
-              {/* <p>Choose the decks you want to play with</p> */}
-              <div className="grid max-h-[65vh] grid-cols-1 items-stretch gap-2  p-3 md:grid-cols-2 lg:grid-cols-4">
-                {decks.length === 0 && (
-                  <div className="text-center">No decks found</div>
-                )}
-                {decks.map((deck: IDeckConfigScreen) => (
-                  <CheckBoxCard
-                    key={deck.id}
-                    id={deck.id}
-                    disabled={!isCurrentUserLeader}
-                    selected={gameConfig.decks.includes(deck.id)}
-                    onChange={handleChangeSelectedCards}
-                  >
-                    <div>{deck.language}</div>
-                    <h1 className="my-0">{deck.name}</h1>
-                    <p>{deck.description}</p>
-                  </CheckBoxCard>
-                ))}
-              </div>
+              <Tabs keepMounted={false} defaultValue="decks">
+                <Tabs.List>
+                  <Tabs.Tab value="decks">Decks Selection</Tabs.Tab>
+                  <Tabs.Tab value="settings">Settings</Tabs.Tab>
+                </Tabs.List>
+                <Tabs.Panel value="decks">
+                  <div className="grid max-h-[65vh] grid-cols-1 items-stretch gap-2  p-3 md:grid-cols-2 lg:grid-cols-4">
+                    {decks.length === 0 && (
+                      <div className="text-center">No decks found</div>
+                    )}
+                    {decks.map((deck: IDeckConfigScreen) => (
+                      <CheckBoxCard
+                        key={deck.id}
+                        id={deck.id}
+                        disabled={!isCurrentUserLeader}
+                        selected={gameConfig.decks.includes(deck.id)}
+                        onChange={handleChangeSelectedCards}
+                      >
+                        <div>{deck.language}</div>
+                        <h1 className="my-0">{deck.name}</h1>
+                        <p>{deck.description}</p>
+                      </CheckBoxCard>
+                    ))}
+                  </div>
+                </Tabs.Panel>
+                <Tabs.Panel value="settings">
+                  <div className="flex flex-col items-center">
+                    <div className="px-4 py-2 text-center">Score to win</div>
+                    <Select
+                      allowDeselect={false}
+                      value={scoreToWin}
+                      onChange={handleChangeScoreToWin}
+                      disabled={!isCurrentUserLeader}
+                      data={Array.from({ length: 27 }, (_, i) => i + 4).map(
+                        (i) => ({
+                          value: i.toString(),
+                          label: `${i} Points`,
+                        })
+                      )}
+                    />
+                    <div className="px-4 py-2 text-center">Time</div>
+                    <Select
+                      allowDeselect={false}
+                      value={timeToPlay}
+                      onChange={handleChangeTimeToPlay}
+                      disabled={!isCurrentUserLeader}
+                      data={Array.from(
+                        { length: 6 },
+                        (_, i) => (i + 1) * 10
+                      ).map((i) => ({
+                        value: i.toString(),
+                        label: `${i} Seconds`,
+                      }))}
+                    />
+                  </div>
+                </Tabs.Panel>
+              </Tabs>
+
               <div className="flex items-center justify-evenly">
                 {isCurrentUserLeader && (
                   <>
