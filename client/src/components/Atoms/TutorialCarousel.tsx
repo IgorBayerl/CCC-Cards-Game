@@ -1,64 +1,13 @@
-import { Carousel } from '@mantine/carousel'
-import { createStyles, Text, Title, rem } from '@mantine/core'
+// import { Carousel } from '@mantine/carousel'
+// import { createStyles, Text, Title, rem } from '@mantine/core'
+// import Autoplay from 'embla-carousel-autoplay'
+// import { useRef } from 'react'
+import Image from 'next/image'
+
+import useEmblaCarousel, { EmblaOptionsType } from 'embla-carousel-react'
+import { PropsWithChildren, useRef } from 'react'
 import Autoplay from 'embla-carousel-autoplay'
-import { useRef } from 'react'
-
-const useStyles = createStyles((theme) => ({
-  card: {
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    backgroundSize: 'cover',
-    backgroundPosition: 'center',
-    aspectRatio: '16/12',
-    backgroundColor:
-      theme.colorScheme === 'dark'
-        ? theme.colors.dark[6]
-        : theme.colors.gray[0],
-    padding: theme.spacing.md,
-    borderRadius: theme.radius.md,
-  },
-
-  title: {
-    fontFamily: theme.fontFamily,
-    fontWeight: 900,
-    // color: theme.white,
-    lineHeight: 1.2,
-    fontSize: rem(32),
-    marginTop: theme.spacing.xs,
-  },
-
-  category: {
-    // color: theme.white,
-    opacity: 0.7,
-    fontWeight: 700,
-    textTransform: 'uppercase',
-  },
-}))
-
-interface CardProps {
-  image: string
-  title: string
-  category: string
-}
-
-function Card({ title, category }: CardProps) {
-  const { classes } = useStyles()
-
-  return (
-    <div className={classes.card}>
-      <div>
-        <Text className={classes.category} size="xs">
-          {category}
-        </Text>
-        <Title order={3} className={classes.title}>
-          {title}
-        </Title>
-      </div>
-    </div>
-  )
-}
+import useTranslation from 'next-translate/useTranslation'
 
 const data = [
   {
@@ -107,40 +56,54 @@ const data = [
   },
 ]
 
-export function TutorialCarousel() {
-  const autoplay = useRef(null) //BUG: fix this shit
-  const slides = data.map((item) => (
-    <Carousel.Slide key={item.title}>
-      <Card {...item} />
-    </Carousel.Slide>
-  ))
+interface CardProps {
+  image: string
+  title: string
+  category: string
+}
+
+function Card({ title, category }: CardProps) {
+  return (
+    <div className="">
+      <div>
+        {/* <div className="">{category}</div> */}
+        <div className="">{title}</div>
+      </div>
+    </div>
+  )
+}
+
+type Props = PropsWithChildren & EmblaOptionsType
+
+const Carousel = ({ children, ...options }: Props) => {
+  const autoplay = useRef(Autoplay({ delay: 3000, stopOnInteraction: true }))
+  const [emblaRef] = useEmblaCarousel(options, [autoplay.current])
 
   return (
-    <Carousel
-      slideSize="100%"
-      loop={true}
-      breakpoints={[{ maxWidth: 'sm', slideSize: '100%', slideGap: rem(2) }]}
-      slideGap="xl"
-      align="start"
-      slidesToScroll={1}
-      draggable={true}
-      withIndicators
-      // plugins={[autoplay.current]}
-      // onMouseEnter={autoplay.current.stop}
-      // onMouseLeave={autoplay.current.reset}
-      styles={{
-        indicator: {
-          width: rem(12),
-          height: rem(4),
-          transition: 'width 250ms ease',
+    <div className="h-full overflow-hidden " ref={emblaRef}>
+      <div className="flex">{children}</div>
+    </div>
+  )
+}
+export default Carousel
 
-          '&[data-active]': {
-            width: rem(40),
-          },
-        },
-      }}
-    >
-      {slides}
-    </Carousel>
+export function TutorialCarousel() {
+  const { t } = useTranslation('common')
+  const howToPlayText = t('i-how-to-play')
+  return (
+    <div className="h-full ">
+      <div className="card-title mb-4 flex items-center justify-center font-bold uppercase">
+        {howToPlayText}
+      </div>
+      <Carousel loop>
+        {data.map((item, index) => {
+          return (
+            <div className="relative h-full flex-[0_0_100%] " key={index}>
+              <Card {...item} />
+            </div>
+          )
+        })}
+      </Carousel>
+    </div>
   )
 }

@@ -1,4 +1,4 @@
-/* @tailwind base; for some reason, this mess with @mantine styling*/ 
+@tailwind base;
 @tailwind components;
 @tailwind utilities;
 
@@ -28,4 +28,19 @@
   100% {
     transform: rotate(-33deg) translate(0, 0) scale(1);
   }
+}
+
+.emoji-404{
+
+  position: relative;
+  animation: mymove 2.5s infinite;
+}
+
+@keyframes mymove {
+  33%   {top: 0px;}
+  66%  {top: 20px;}
+  100%  {top: 0px}
+
+
+
 }

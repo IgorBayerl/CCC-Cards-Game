@@ -5,7 +5,7 @@ const config: Config = {
   theme: {
     extend: {},
   },
-  plugins: [],
+  plugins: [require('daisyui')],
   options: {
     prefix: 'tw-',
   },

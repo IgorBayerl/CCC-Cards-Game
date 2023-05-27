@@ -163,7 +163,7 @@ export default function LobbyPage() {
             <div>
               <Tabs keepMounted={false} defaultValue="decks">
                 <Tabs.List>
-                  <Tabs.Tab value="decks">Decks Selection</Tabs.Tab>
+                  <Tabs.Tab value="decks">Decks Selectionnn</Tabs.Tab>
                   <Tabs.Tab value="settings">Settings</Tabs.Tab>
                 </Tabs.List>
                 <Tabs.Panel value="decks">

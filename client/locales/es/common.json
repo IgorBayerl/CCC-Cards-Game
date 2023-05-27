@@ -1,4 +1,13 @@
 {
   "i-play": "Jugar",
-  "i-create-room": "Crear sala"
+  "i-create-room": "Crear sala",
+  "i-how-to-play": "Como Jugar",
+  "i-terms-of-service": "Terminos de Servicio",
+  "i-privacy-policy": "Politica de Privacidad",
+  "i-contact": "Contacto",
+  "i-nickname": "Nickname",
+  "i-select-picture-and-nickname": "Selecciona una imagen y un nickname",
+  "i-invalid-nickname": "Nickname invalido",
+  "i-nickname-must-be-between-3-and-20-characters": "El nickname debe tener entre 3 y 20 caracteres",
+  "i-select-your-language": "Selecciona tu idioma"
 }

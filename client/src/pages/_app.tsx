@@ -2,11 +2,7 @@ import { type AppType } from "next/dist/shared/lib/utils";
 import { ToastContainer } from "react-toastify";
 import { SocketProvider } from '~/components/SocketContext'
 import { GameProvider } from '~/components/GameContext'
-import {
-  type ColorScheme,
-  ColorSchemeProvider,
-  MantineProvider,
-} from '@mantine/core'
+
 import Head from 'next/head'
 import { useState } from 'react'
 import { QueryClient, QueryClientProvider } from 'react-query'
@@ -20,13 +16,7 @@ const url = process.env.NEXT_PUBLIC_GAME_SERVER || 'http://localhost:3365'
 
 const queryClient = new QueryClient()
 
-
-
 const MyApp: AppType = ({ Component, pageProps }) => {
-  const [colorScheme, setColorScheme] = useState<ColorScheme>('dark')
-  const toggleColorScheme = (value?: ColorScheme) =>
-    setColorScheme(value || (colorScheme === 'dark' ? 'light' : 'dark'))
-
   return (
     <>
       <Head>
@@ -39,26 +29,13 @@ const MyApp: AppType = ({ Component, pageProps }) => {
       </Head>
       <ToastContainer />
       <QueryClientProvider client={queryClient}>
-        <ColorSchemeProvider
-          colorScheme={colorScheme}
-          toggleColorScheme={toggleColorScheme}
-        >
-          <MantineProvider
-            withGlobalStyles
-            withNormalizeCSS
-            theme={{
-              colorScheme,
-            }}
-          >
-            <SocketProvider url={url}>
-              <GameProvider>
-                <AudioProvider>
-                  <Component {...pageProps} />
-                </AudioProvider>
-              </GameProvider>
-            </SocketProvider>
-          </MantineProvider>
-        </ColorSchemeProvider>
+        <SocketProvider url={url}>
+          <GameProvider>
+            <AudioProvider>
+              <Component {...pageProps} />
+            </AudioProvider>
+          </GameProvider>
+        </SocketProvider>
         {/* <ReactQueryDevtools /> */}
       </QueryClientProvider>
     </>

@@ -1,5 +1,5 @@
 import { useSocketContext } from '~/components/SocketContext'
-import { Tooltip } from '@mantine/core'
+
 import clsx from 'clsx'
 
 export default function ConnectionStatus() {
@@ -15,14 +15,14 @@ export default function ConnectionStatus() {
 
   return (
     <div className="relative mx-5 h-5 w-5">
-      <Tooltip withArrow label={statusMessage}>
+      <div className="tooltip" data-tip={statusMessage}>
         <div
           className={clsx(
             'absolute bottom-0 left-0 right-0 top-0 rounded-full',
             colorStatus[status]
           )}
         />
-      </Tooltip>
+      </div>
     </div>
   )
 }
