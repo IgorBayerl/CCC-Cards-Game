@@ -1,5 +1,4 @@
-import { ActionIcon } from '@mantine/core'
-import { IconVolumeOff, IconVolume } from '@tabler/icons-react'
+import { SpeakerHigh, SpeakerSimpleSlash } from '@phosphor-icons/react'
 import { useState } from 'react'
 import useSound from 'use-sound'
 import { useAudio } from '../AudioContext'
@@ -26,8 +25,24 @@ export default function MuteButton({
   }
 
   return (
-    <ActionIcon variant="outline" color="blue" onClick={handleToggle}>
-      {isMuted ? <IconVolumeOff /> : <IconVolume />}
-    </ActionIcon>
+    <label htmlFor="checkbox-mute" className="swap swap-rotate p-2">
+      <input
+        type="checkbox"
+        checked={isMuted}
+        onChange={handleToggle}
+        id="checkbox-mute"
+        hidden
+      />
+      <SpeakerSimpleSlash className="swap-off" size={36} weight="bold" />
+      <SpeakerHigh className="swap-on" size={36} weight="bold" />
+    </label>
+
+    // <button onClick={handleToggle} className="btn-outline btn-circle btn">
+    //   {isMuted ? (
+    //     <SpeakerSimpleSlash size={36} weight="bold" />
+    //   ) : (
+    //     <SpeakerHigh size={36} weight="bold" />
+    //   )}
+    // </button>
   )
 }

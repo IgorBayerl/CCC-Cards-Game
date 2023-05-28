@@ -9,7 +9,7 @@ export default function Layout({ children }: ILayoutProps): JSX.Element {
   return (
     <div className="flex min-h-screen flex-col justify-center ">
       {/* <HeaderSimple links={[]} /> */}
-      <div className="flex w-full justify-center ">{children}</div>
+      <div className="md:p-5">{children}</div>
       {/* <FooterSocial /> */}
       {/* <div></div> */}
     </div>

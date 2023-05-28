@@ -1,4 +1,3 @@
-import { Card } from '@mantine/core'
 import { type ReactNode } from 'react'
 
 interface ICheckBoxCardProps {
@@ -21,13 +20,7 @@ export default function CheckBoxCard({
   return (
     <label htmlFor={id}>
       <div className={`h-full rounded-xl p-1 ${bgColor}`}>
-        <Card
-          shadow="sm"
-          padding="lg"
-          radius="md"
-          withBorder
-          className="h-full"
-        >
+        <div className="card h-full">
           <input
             disabled={disabled}
             id={id}
@@ -37,7 +30,7 @@ export default function CheckBoxCard({
             hidden
           />
           {children}
-        </Card>
+        </div>
       </div>
     </label>
   )

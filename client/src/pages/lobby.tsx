@@ -4,7 +4,6 @@ import PlayersList from '~/components/PlayersList'
 import { useEffect } from 'react'
 import router from 'next/router'
 import Layout from '~/components/Layout/Layout'
-import { createStyles, Button, Select } from '@mantine/core'
 import { CopyToClipboard } from '~/components/Atoms/CopyToClipboard'
 import { useQuery } from 'react-query'
 import { getDecks } from '~/api/deck'
@@ -15,42 +14,6 @@ import ContainerFooter from '~/components/Layout/ContainerFooter'
 import { toast } from 'react-toastify'
 import useSound from 'use-sound'
 import { useAudio } from '~/components/AudioContext'
-import { Tabs } from '@mantine/core'
-
-const useStyles = createStyles((theme) => ({
-  containerCard: {
-    backgroundColor:
-      theme.colorScheme === 'dark'
-        ? theme.colors.dark[5]
-        : theme.colors.gray[2],
-    borderRadius: theme.radius.md,
-    marginTop: theme.spacing.md,
-    marginBottom: theme.spacing.md,
-    marginRight: theme.spacing.md,
-    marginLeft: theme.spacing.md,
-    padding: theme.spacing.md,
-    display: 'flex',
-    width: '100%',
-    flexDirection: 'column',
-    // [theme.fn.smallerThan('md')]: {
-    //   flexDirection: 'column',
-    // },
-    [theme.fn.smallerThan('sm')]: {
-      borderRadius: 0,
-      margin: 0,
-      padding: 0,
-      maxWidth: '100%',
-      backgroundColor: 'transparent',
-    },
-  },
-  gameContainer: {
-    flexGrow: 1,
-    borderRadius: theme.radius.md,
-    border: `3px solid ${
-      theme.colorScheme === 'dark' ? theme.colors.dark[4] : theme.colors.gray[4]
-    }`,
-  },
-}))
 
 export default function LobbyPage() {
   const {
@@ -62,7 +25,6 @@ export default function LobbyPage() {
     setConfig,
     admCommand,
   } = useGameContext()
-  const { classes } = useStyles()
   // TODO: change this to a getStaticProps with revalidate of 1 hour
   const decksResponse = useQuery('get-decks', getDecks)
 
@@ -79,7 +41,8 @@ export default function LobbyPage() {
     if (!roomId) handleLeaveRoom()
   }, [roomId])
 
-  const handleChangeRoomSize = (value: string) => {
+  const handleChangeRoomSize = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const value = e.target.value
     const newSize = parseInt(value)
     setConfig({ ...gameConfig, roomSize: newSize })
   }
@@ -138,35 +101,40 @@ export default function LobbyPage() {
 
   return (
     <Layout>
-      <div className={classes.containerCard}>
+      <div className="flex flex-col gap-3 dark:border-gray-600 md:rounded-xl md:border-4 md:px-5 md:py-2 2xl:mx-auto">
         <ContainerHeader />
-        <div className="flex flex-col border sm:flex-row">
+        <div className="flex flex-col sm:flex-row">
           <div className="flex min-w-fit flex-col gap-5">
-            <Select
-              className="mx-2"
-              allowDeselect={false}
+            <select
+              className="select"
+              disabled={!isCurrentUserLeader}
               value={roomSize}
               onChange={handleChangeRoomSize}
-              disabled={!isCurrentUserLeader}
-              data={Array.from({ length: 17 }, (_, i) => i + 4).map((i) => ({
-                value: i.toString(),
-                label: `${i} Players`,
-              }))}
-            />
+            >
+              {Array.from({ length: 17 }, (_, i) => i + 4).map((i) => (
+                <option
+                  className="text-lg"
+                  key={i}
+                  value={i.toString()}
+                >{`${i} Players`}</option>
+              ))}
+            </select>
             <PlayersList
               players={gameState.players}
               leader={gameState.leader}
               roomSize={gameConfig.roomSize}
             />
           </div>
-          <div className={classes.gameContainer}>
+          <div className="">
             <div>
-              <Tabs keepMounted={false} defaultValue="decks">
-                <Tabs.List>
-                  <Tabs.Tab value="decks">Decks Selectionnn</Tabs.Tab>
-                  <Tabs.Tab value="settings">Settings</Tabs.Tab>
-                </Tabs.List>
-                <Tabs.Panel value="decks">
+              <div defaultValue="decks">
+                <div className="tabs">
+                  <a className="tab-lifted tab">Decks Selection</a>
+                  <a className="tab-lifted tab tab-active">Settings</a>
+                  <a className="tab-lifted tab">Tab 3</a>
+                </div>
+
+                <div value="decks">
                   <div className="grid max-h-[65vh] grid-cols-1 items-stretch gap-2  p-3 md:grid-cols-2 lg:grid-cols-4">
                     {decks.length === 0 && (
                       <div className="text-center">No decks found</div>
@@ -185,50 +153,49 @@ export default function LobbyPage() {
                       </CheckBoxCard>
                     ))}
                   </div>
-                </Tabs.Panel>
-                <Tabs.Panel value="settings">
+                </div>
+                <div value="settings">
                   <div className="flex flex-col items-center">
                     <div className="px-4 py-2 text-center">Score to win</div>
-                    <Select
-                      allowDeselect={false}
+                    <select
+                      className="select w-full max-w-xs"
+                      onChange={(e) => handleChangeScoreToWin(e.target.value)}
+                      disabled={!isCurrentUserLeader}
                       value={scoreToWin}
-                      onChange={handleChangeScoreToWin}
-                      disabled={!isCurrentUserLeader}
-                      data={Array.from({ length: 27 }, (_, i) => i + 4).map(
-                        (i) => ({
-                          value: i.toString(),
-                          label: `${i} Points`,
-                        })
-                      )}
-                    />
+                    >
+                      {Array.from({ length: 27 }, (_, i) => i + 4).map((i) => (
+                        <option value={i.toString()}>{`${i} Points`}</option>
+                      ))}
+                    </select>
                     <div className="px-4 py-2 text-center">Time</div>
-                    <Select
-                      allowDeselect={false}
-                      value={timeToPlay}
-                      onChange={handleChangeTimeToPlay}
+
+                    <select
+                      className="select w-full max-w-xs"
+                      onChange={(e) => handleChangeTimeToPlay(e.target.value)}
                       disabled={!isCurrentUserLeader}
-                      data={Array.from(
-                        { length: 6 },
-                        (_, i) => (i + 1) * 10
-                      ).map((i) => ({
-                        value: i.toString(),
-                        label: `${i} Seconds`,
-                      }))}
-                    />
+                      value={timeToPlay}
+                    >
+                      {Array.from({ length: 6 }, (_, i) => (i + 1) * 10).map(
+                        (i) => (
+                          <option value={i.toString()}>{`${i} Seconds`}</option>
+                        )
+                      )}
+                    </select>
                   </div>
-                </Tabs.Panel>
-              </Tabs>
+                </div>
+              </div>
 
               <div className="flex items-center justify-evenly">
                 {isCurrentUserLeader && (
                   <>
                     <CopyToClipboard text="Invite" content={roomInviteLink} />
-                    <Button
+                    <button
+                      className="btn"
                       disabled={!isCurrentUserLeader}
                       onClick={handleStartGame}
                     >
                       Start Game
-                    </Button>
+                    </button>
                   </>
                 )}
                 {!isCurrentUserLeader && (
@@ -241,7 +208,6 @@ export default function LobbyPage() {
             </div>
           </div>
         </div>
-        <ContainerFooter />
       </div>
     </Layout>
   )

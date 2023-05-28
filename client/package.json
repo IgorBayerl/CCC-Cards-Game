@@ -9,6 +9,7 @@
     "start": "next start"
   },
   "dependencies": {
+    "@mantine/hooks": "^6.0.11",
     "@phosphor-icons/react": "^2.0.9",
     "@t3-oss/env-nextjs": "^0.2.1",
     "axios": "^1.4.0",

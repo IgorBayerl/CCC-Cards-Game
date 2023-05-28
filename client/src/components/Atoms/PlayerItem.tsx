@@ -1,4 +1,3 @@
-import { createStyles } from '@mantine/core'
 import { IPlayer, useGameContext } from '../GameContext'
 import { TbCheck, TbClock, TbDots, TbGavel } from 'react-icons/tb'
 import CustomAvatar from './CustomAvatar'
@@ -8,21 +7,6 @@ import {
   TPlayerStatus,
 } from '~/lib/playerUtils'
 
-const useStyles = createStyles((_theme) => ({
-  username: {
-    textTransform: 'capitalize',
-    whiteSpace: 'nowrap',
-    textOverflow: 'ellipsis',
-    overflow: 'hidden',
-  },
-  container: {
-    backgroundColor: 'red',
-    display: 'flex',
-    maxWidth: '100%',
-    alignItems: 'center',
-  },
-}))
-
 interface IPlayerItemProps {
   player: IPlayer
   leader: boolean
@@ -30,7 +14,7 @@ interface IPlayerItemProps {
 
 export default function PlayerItem({ player, leader }: IPlayerItemProps) {
   const { gameState, myId, myStatus } = useGameContext()
-  const { classes } = useStyles()
+
   const itsMe = player.id === myId
   const status = getPlayerStatus(player, gameState)
   const showStatus = shouldShowPlayerStatus(gameState)
@@ -40,14 +24,12 @@ export default function PlayerItem({ player, leader }: IPlayerItemProps) {
     <div className="flex w-full max-w-full flex-col items-center gap-2 sm:flex-row">
       <CustomAvatar
         src={player.pictureUrl}
-        size={60}
-        className="rounded-full"
         leader={leader}
         player={player}
         itsMe={itsMe}
       />
       <div className="flex w-full max-w-full items-center justify-between overflow-hidden ">
-        <div className={classes.username}>
+        <div className="">
           <div className="text-xs font-bold capitalize ">
             {showStatus && score}
           </div>

@@ -20,6 +20,7 @@ import {
 import CCCIconThemed from '~/components/Atoms/CCCIconThemed'
 import Link from 'next/link'
 import { z } from 'zod'
+import ConnectionStatus from '~/components/Atoms/ConnectionStatus'
 
 const profilePictures = [
   '/profile/profile_1.webp',
@@ -123,6 +124,11 @@ export default function Home() {
   const handleButtonClick = () => {
     setIsLoading(true)
     buttonOnClick()
+
+    //Timeout to prevent infinite loading
+    setTimeout(() => {
+      setIsLoading(false)
+    }, 5000)
   }
 
   return (
@@ -145,7 +151,11 @@ export default function Home() {
             <Globe size={28} weight="bold" /> PT
           </label>
           <CCCIconThemed />
-          <Link className="btn-outline btn" href="https://discord.gg/JmgHFt2s">
+          <Link
+            className="btn-outline btn"
+            href="https://discord.gg/JmgHFt2s"
+            target="_blank"
+          >
             <DiscordLogo size={28} weight="bold" />
           </Link>
         </div>
@@ -237,13 +247,14 @@ export default function Home() {
               {privacyText}
             </button>
           </Link>
-
           <div className="divider divider-horizontal" />
           <Link href="#">
             <button className="btn-ghost btn-block btn-sm btn text-xs">
               {contactText}
             </button>
           </Link>
+          <div className="divider divider-horizontal" />
+          <ConnectionStatus />
         </footer>
       </div>
       <div className="flex">
