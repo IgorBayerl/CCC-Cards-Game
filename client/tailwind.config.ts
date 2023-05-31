@@ -5,7 +5,10 @@ const config: Config = {
   theme: {
     extend: {},
   },
-  plugins: [require('daisyui')],
+  plugins: [
+    require('daisyui'),
+    require('tailwind-scrollbar')({ nocompatible: true }),
+  ],
   options: {
     prefix: 'tw-',
   },

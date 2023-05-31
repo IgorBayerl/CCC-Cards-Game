@@ -23,7 +23,7 @@ export default function CustomAvatar({
       <div className="w-24 rounded-full">
         <img src={player.pictureUrl} {...props} />
       </div>
-      {leader && <GiCrown color="yellow" className="leader-crown" size={30} />}
+      {leader && <GiCrown color="yellow" className="leader-crown" size={25} />}
       {itsMe && (
         <CgProfile
           title="This is you!"

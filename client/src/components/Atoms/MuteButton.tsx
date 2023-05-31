@@ -25,7 +25,7 @@ export default function MuteButton({
   }
 
   return (
-    <label htmlFor="checkbox-mute" className="swap swap-rotate p-2">
+    <label htmlFor="checkbox-mute" className="swap-rotate swap p-2">
       <input
         type="checkbox"
         checked={isMuted}
@@ -33,15 +33,15 @@ export default function MuteButton({
         id="checkbox-mute"
         hidden
       />
-      <SpeakerSimpleSlash className="swap-off" size={36} weight="bold" />
-      <SpeakerHigh className="swap-on" size={36} weight="bold" />
+      <SpeakerSimpleSlash className="swap-off" size={25} weight="bold" />
+      <SpeakerHigh className="swap-on" size={25} weight="bold" />
     </label>
 
     // <button onClick={handleToggle} className="btn-outline btn-circle btn">
     //   {isMuted ? (
-    //     <SpeakerSimpleSlash size={36} weight="bold" />
+    //     <SpeakerSimpleSlash size={25} weight="bold" />
     //   ) : (
-    //     <SpeakerHigh size={36} weight="bold" />
+    //     <SpeakerHigh size={25} weight="bold" />
     //   )}
     // </button>
   )

@@ -16,7 +16,7 @@ export default function ContainerHeader() {
   return (
     <div className="hidden w-full items-center justify-between md:flex">
       <button className="btn-outline btn " onClick={handleLeaveRoom}>
-        <SignOut size={36} weight="bold" />
+        <SignOut size={25} weight="bold" />
         BACK
       </button>
       <CCCIconThemed />

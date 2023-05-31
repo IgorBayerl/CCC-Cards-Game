@@ -1,5 +1,5 @@
 {
-  "i-play": "Play",
+  "i-join": "Join",
   "i-create-room": "Create Room",
   "i-how-to-play": "How to play",
   "i-terms-of-service": "Terms of Service",
@@ -9,5 +9,6 @@
   "i-select-picture-and-nickname": "Select a picture and a nickname",
   "i-invalid-nickname": "Invalid nickname",
   "i-nickname-must-be-between-3-and-20-characters": "Nickname must be between 3 and 20 characters long",
-  "i-select-your-language": "Select your language"
+  "i-select-your-language": "Select your language",
+  "i-error-joining-room": "Error joining room"
 }

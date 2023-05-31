@@ -21,6 +21,7 @@ import CCCIconThemed from '~/components/Atoms/CCCIconThemed'
 import Link from 'next/link'
 import { z } from 'zod'
 import ConnectionStatus from '~/components/Atoms/ConnectionStatus'
+import { toast } from 'react-toastify'
 
 const profilePictures = [
   '/profile/profile_1.webp',
@@ -39,7 +40,7 @@ export default function Home() {
   const router = useRouter()
 
   const { t } = useTranslation('common')
-  const playText = t('i-play')
+  const playText = t('i-join')
   const createRoomText = t('i-create-room')
 
   const howToPlayText = t('i-how-to-play')
@@ -55,6 +56,7 @@ export default function Home() {
   )
 
   const selectYourLanguageText = t('i-select-your-language')
+  const errorMsgText = t('i-error-joining-room')
 
   const usernameSchema = z
     .string()
@@ -125,30 +127,29 @@ export default function Home() {
     setIsLoading(true)
     buttonOnClick()
 
-    //Timeout to prevent infinite loading
     setTimeout(() => {
       setIsLoading(false)
     }, 5000)
   }
 
   return (
-    <div className="flex min-h-screen flex-col justify-between px-5 py-5 md:justify-center">
+    <div className="min-h-screen-safe flex flex-col justify-between px-5 py-5 md:justify-center">
       <header className="flex justify-between md:hidden">
         <label htmlFor="my-modal-1" className="btn">
-          <DotsThree size={28} weight="bold" />
+          <DotsThree size={25} weight="bold" />
         </label>
         <CCCIconThemed />
         <label htmlFor="my-modal-2" className="btn">
-          <Info size={28} weight="bold" />
+          <Info size={25} weight="bold" />
         </label>
       </header>
-      <div className="flex  flex-col gap-3 dark:border-gray-600 md:rounded-xl md:border-4 md:px-5 md:py-2 2xl:mx-auto ">
+      <div className="game-container-border flex flex-col gap-3 ">
         <div className="hidden w-full items-center justify-between md:flex">
           <label
             htmlFor="my-modal-language"
             className="btn-outline btn flex gap-2 font-bold"
           >
-            <Globe size={28} weight="bold" /> PT
+            <Globe size={25} weight="bold" /> {router.locale}
           </label>
           <CCCIconThemed />
           <Link
@@ -156,7 +157,7 @@ export default function Home() {
             href="https://discord.gg/JmgHFt2s"
             target="_blank"
           >
-            <DiscordLogo size={28} weight="bold" />
+            <DiscordLogo size={25} weight="bold" />
           </Link>
         </div>
         <div className="gap-5 py-10 md:flex">
@@ -187,7 +188,7 @@ export default function Home() {
                     className="btn-circle btn absolute bottom-0 right-0 "
                     onClick={handlePictureUrlChange}
                   >
-                    <ArrowClockwise size={28} weight="bold" />
+                    <ArrowClockwise size={25} weight="bold" />
                   </button>
                 </div>
               </div>
@@ -218,7 +219,7 @@ export default function Home() {
                 disabled={isLoading}
                 onClick={handleButtonClick}
               >
-                <Play size={28} weight="bold" />
+                <Play size={25} weight="bold" />
                 <div className="flex flex-1 items-center justify-center">
                   {buttonText}
                 </div>
@@ -263,7 +264,7 @@ export default function Home() {
           disabled={isLoading}
           onClick={handleButtonClick}
         >
-          <Play size={28} weight="bold" />
+          <Play size={25} weight="bold" />
           <div className="flex flex-1 items-center justify-center">
             {buttonText}
           </div>
