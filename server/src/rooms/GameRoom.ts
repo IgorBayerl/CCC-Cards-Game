@@ -62,7 +62,7 @@ export default class GameRoom extends Room {
     // TODO: Remove this default decks in the future
     config: IGameConfig = {
       roomSize: 6,
-      decks: ['1', '2', '4', '5'],
+      decks: [],
       scoreToWin: 8,
       time: 20,
     }
