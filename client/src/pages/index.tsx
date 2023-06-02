@@ -281,8 +281,8 @@ export default function Home() {
           </label>
           <h3 className="text-lg font-bold">Modal 1</h3>
           <p className="py-4">
-            You've been selected for a chance to get one year of subscription to
-            use Wikipedia for free!
+            {`You've been selected for a chance to get one year of subscription to
+            use Wikipedia for free!`}
           </p>
         </div>
       </div>

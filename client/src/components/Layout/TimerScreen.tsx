@@ -1,15 +1,3 @@
-import { ActionIcon, Button, createStyles } from '@mantine/core'
-import { IconArrowBack, IconVolume, IconVolumeOff } from '@tabler/icons-react'
-import router from 'next/router'
-import { useEffect } from 'react'
-import { useQuery } from 'react-query'
-import { CopyToClipboard } from '../Atoms/CopyToClipboard'
-import { useGameContext } from '../GameContext'
-import PlayersList from '../PlayersList'
-import Image from 'next/image'
-import MuteButton from '../Atoms/MuteButton'
-import ContainerFooter from './ContainerFooter'
-import ContainerHeader from './ContainerHeader'
 import { CountdownCircleTimer } from 'react-countdown-circle-timer'
 
 interface ITimerScreenProps {

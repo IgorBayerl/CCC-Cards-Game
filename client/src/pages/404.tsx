@@ -101,7 +101,7 @@ export default function NotFoundPage() {
               <span>4 0 4</span>
             </span>
             <span className="text-xl text-gray-500">
-              Sorry, We couldn't find what you are looking for!
+              {`Sorry, We couldn't find what you are looking for!`}
             </span>
           </div>
         </center>
@@ -110,7 +110,7 @@ export default function NotFoundPage() {
             href="/"
             className="rounded-md bg-gray-200 p-3 font-mono text-xl text-gray-500 hover:shadow-md"
           >
-            Go back{' '}
+            Go back
           </Link>
         </center>
       </div>

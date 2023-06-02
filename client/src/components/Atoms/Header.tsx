@@ -1,5 +1,5 @@
 import { useState } from 'react'
-// import { ThemeSwitcher } from './ThemeSwitcher'
+
 import ConnectionStatus from './ConnectionStatus'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -38,7 +38,6 @@ export function HeaderSimple({ links }: HeaderSimpleProps) {
           {items}
 
           <ConnectionStatus />
-          {/* <ThemeSwitcher /> */}
         </div>
       </div>
     </header>

@@ -1,7 +1,3 @@
-// import { Carousel } from '@mantine/carousel'
-// import { createStyles, Text, Title, rem } from '@mantine/core'
-// import Autoplay from 'embla-carousel-autoplay'
-// import { useRef } from 'react'
 import Image from 'next/image'
 
 import useEmblaCarousel, { EmblaOptionsType } from 'embla-carousel-react'

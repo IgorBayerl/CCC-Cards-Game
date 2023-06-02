@@ -1,12 +1,7 @@
 import { useGameContext } from '~/components/GameContext'
 import router from 'next/router'
 import Layout from '~/components/Layout/Layout'
-import {
-  ActionIcon,
-  Button,
-  createStyles,
-  useMantineTheme,
-} from '@mantine/core'
+
 import InGameLayout from '~/components/Layout/InGameLayout'
 import GameCard, { GameCardResult } from '~/components/Atoms/GameCard'
 import { ICard, ICardAnswer } from '~/models/Deck'
@@ -14,76 +9,6 @@ import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 import { CountdownCircleTimer } from 'react-countdown-circle-timer'
 import TimerScreen from '~/components/Layout/TimerScreen'
-
-const useStyles = createStyles((theme) => {
-  const { colorScheme } = useMantineTheme()
-
-  return {
-    startingMessage: {
-      backgroundColor:
-        theme.colorScheme === 'dark'
-          ? theme.colors.red[1]
-          : theme.colors.red[3],
-    },
-    gameContainer: {
-      display: 'flex',
-      flexDirection: 'column',
-      justifyContent: 'space-between',
-      gap: theme.spacing.md,
-      borderRadius: theme.radius.md,
-    },
-    cardContainer: {
-      display: 'flex',
-      flexDirection: 'column',
-      justifyContent: 'space-between',
-      flexGrow: 1,
-    },
-    questionContainer: {
-      display: 'flex',
-      justifyContent: 'center',
-      marginTop: theme.spacing.lg,
-      marginBottom: theme.spacing.lg,
-    },
-    playerCards: {
-      display: 'flex',
-      justifyContent: 'center',
-      gap: theme.spacing.md,
-    },
-    confirmButton: {
-      display: 'flex',
-      justifyContent: 'center',
-      gap: theme.spacing.md,
-    },
-    questionCard: {
-      backgroundColor:
-        colorScheme === 'dark' ? theme.colors.red[4] : theme.colors.red[6],
-      color:
-        colorScheme === 'dark' ? theme.colors.dark[9] : theme.colors.gray[9],
-    },
-    answerCard: {
-      backgroundColor:
-        colorScheme === 'dark' ? theme.colors.teal[4] : theme.colors.teal[6],
-      color:
-        colorScheme === 'dark' ? theme.colors.dark[9] : theme.colors.gray[9],
-    },
-    cardSizePortrait: {
-      width: 130,
-      aspectRatio: '3/4',
-    },
-    cardSizePortraitSelected: {
-      width: 200,
-      aspectRatio: '3/4',
-    },
-    cardBorder: {
-      border: `2px solid ${
-        colorScheme === 'dark' ? theme.colors.dark[4] : theme.colors.gray[4]
-      }`,
-    },
-    selectedGroup: {
-      border: `2px solid ${theme.colors.blue[6]}`, // Adjust the color and border thickness as you need
-    },
-  }
-})
 
 interface IUpdateResultCards {
   hasNext: boolean
@@ -94,7 +19,6 @@ export default function Judging() {
   const { myHand, socket, gameState, isCurrentUserJudge } = useGameContext()
 
   const { currentQuestionCard } = gameState
-  const { classes } = useStyles()
 
   const [timerId, setTimerId] = useState<ReturnType<typeof setTimeout> | null>(
     null
@@ -234,9 +158,9 @@ export default function Judging() {
           time={time}
           handleTimeout={handleTimerTimeout}
         >
-          <div className={classes.gameContainer}>
-            <div className={classes.cardContainer}>
-              <div className={classes.questionContainer}>
+          <div className="">
+            <div className="">
+              <div className="">
                 {currentQuestionCard && (
                   <>
                     <GameCard cardInfo={currentQuestionCard} selected={false} />
@@ -251,7 +175,7 @@ export default function Judging() {
 
               {seeIndividualResults &&
                 lastCards?.map((card, index) => (
-                  <div key={index} className={classes.playerCards}>
+                  <div key={index} className="">
                     <GameCard cardInfo={card} selected={false} />
                   </div>
                 ))}
@@ -265,13 +189,13 @@ export default function Judging() {
                         key={playerId}
                         className={`flex flex-col gap-5  ${
                           selectedGroup && selectedGroup.playerId === playerId
-                            ? classes.selectedGroup
+                            ? 'border-2 border-primary'
                             : ''
                         }`}
                         onClick={() => handleGroupClick(playerId, cardList)}
                       >
                         {cardList.map((card, index) => (
-                          <div key={index} className={classes.playerCards}>
+                          <div key={index} className="">
                             <GameCard cardInfo={card} selected={false} />
                           </div>
                         ))}
@@ -281,26 +205,17 @@ export default function Judging() {
               </div>
             </div>
             {isCurrentUserJudge && (
-              <div className={classes.confirmButton}>
+              <div className="">
                 {seeGoToAllResultsBtn && (
-                  <Button
-                    onClick={handleSeeResults}
-                    variant="outline"
-                    color="teal"
-                    leftIcon={
-                      <ActionIcon variant="outline" color="teal" radius="xl">
-                        🏆
-                      </ActionIcon>
-                    }
-                  >
+                  <button onClick={handleSeeResults} color="teal">
                     See all results
-                  </Button>
+                  </button>
                 )}
-                {seeNextBtn && <Button onClick={handleNextCard}>Next</Button>}
+                {seeNextBtn && <button onClick={handleNextCard}>Next</button>}
                 {seeConfirmBtn && (
-                  <Button disabled={!enableConfirmBtn} onClick={handleConfirm}>
+                  <button disabled={!enableConfirmBtn} onClick={handleConfirm}>
                     Confirm
-                  </Button>
+                  </button>
                 )}
               </div>
             )}

@@ -8,7 +8,7 @@ import { CopyToClipboard } from '~/components/Atoms/CopyToClipboard'
 import { useQuery } from 'react-query'
 import { getDecks } from '~/api/deck'
 import CheckBoxCard from '~/components/Atoms/CheckBoxCard'
-import { type IDeckConfigScreen } from '~/models/Deck'
+import { IDeck, type IDeckConfigScreen } from '~/models/Deck'
 import ContainerHeader from '~/components/Layout/ContainerHeader'
 import ContainerFooter from '~/components/Layout/ContainerFooter'
 import { toast } from 'react-toastify'
@@ -19,6 +19,7 @@ import useShare from '~/hooks/useShare'
 import classNames from 'classnames'
 import { TypeOf } from 'zod'
 import Image from 'next/image'
+import { AnimatePresence, motion } from 'framer-motion'
 
 const languagesMock = [
   { id: 'en', name: 'English' },
@@ -84,21 +85,21 @@ export default function LobbyPage() {
     setConfig({ ...gameConfig, roomSize: newSize })
   }
 
-  const handleChangeSelectedCards = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const { checked, id } = event.target
+  // const handleChangeSelectedCards = (
+  //   event: React.ChangeEvent<HTMLInputElement>
+  // ) => {
+  //   const { checked, id } = event.target
 
-    if (!isMuted) checked ? playSwitchOn() : playSwitchOff()
+  //   if (!isMuted) checked ? playSwitchOn() : playSwitchOff()
 
-    let newSelectedDecksIds
-    if (checked) {
-      newSelectedDecksIds = [...gameConfig.decks, id]
-    } else {
-      newSelectedDecksIds = gameConfig.decks.filter((deckId) => deckId !== id)
-    }
-    setConfig({ ...gameConfig, decks: newSelectedDecksIds })
-  }
+  //   let newSelectedDecksIds
+  //   if (checked) {
+  //     newSelectedDecksIds = [...gameConfig.decks, id]
+  //   } else {
+  //     newSelectedDecksIds = gameConfig.decks.filter((deckId) => deckId !== id)
+  //   }
+  //   setConfig({ ...gameConfig, decks: newSelectedDecksIds })
+  // }
 
   const handleStartGame = () => {
     //verify if there are enough players
@@ -126,7 +127,7 @@ export default function LobbyPage() {
       url: roomInviteLink,
     }
 
-    share(data)
+    void share(data)
   }
 
   const decks = decksResponse.data
@@ -209,9 +210,12 @@ export default function LobbyPage() {
               {tabs.map((tab) => (
                 <a
                   key={tab}
-                  className={classNames('tab-bordered tab tab-lg flex-1', {
-                    'tab-active': activeTab === tab,
-                  })}
+                  className={classNames(
+                    'tab-bordered tab tab-lg flex-1 whitespace-nowrap',
+                    {
+                      'tab-active': activeTab === tab,
+                    }
+                  )}
                   onClick={() => setActiveTab(tab)}
                 >
                   {tab}
@@ -428,7 +432,7 @@ interface ILanguage {
   name: string
 }
 
-const decksMockResponse = [
+const decksMockResponse: IDeckConfigScreen[] = [
   {
     id: '1',
     name: 'Baralho BR - Pedro Álvares Cabral',
@@ -561,82 +565,108 @@ function LobbyDecksTab() {
     setIsModalLanguageOpen(false)
   }
 
-  const handleDeckChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { checked, id } = event.target
+  const handleDeckChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+    id: string
+  ) => {
+    const { checked } = event.target
 
     if (!isMuted) checked ? playSwitchOn() : playSwitchOff()
 
-    let newSelectedDecksIds
+    let newSelectedDecks: IDeckConfigScreen[] = []
     if (checked) {
-      newSelectedDecksIds = [...gameConfig.decks, id]
+      const deckToAdd = decksMockResponse.find((deck) => deck.id === id)
+      if (!deckToAdd) return console.error(`Deck not found with id ${id}`)
+      newSelectedDecks = [...gameConfig.decks, deckToAdd]
     } else {
-      newSelectedDecksIds = gameConfig.decks.filter((deckId) => deckId !== id)
+      newSelectedDecks = gameConfig.decks.filter((deck) => deck.id !== id)
     }
-    setConfig({ ...gameConfig, decks: newSelectedDecksIds })
+
+    setConfig({ ...gameConfig, decks: newSelectedDecks })
   }
 
-  const decksList = isCurrentUserLeader ? decksMockResponse : gameConfig.decks
+  // const decksList = isCurrentUserLeader ? decksMockResponse : gameConfig.decks
+
+  const decksList: IDeckConfigScreen[] = isCurrentUserLeader
+    ? decksMockResponse.map((deck) => ({
+        ...deck,
+        selected: gameConfig.decks.some(
+          (selectedDeck) => selectedDeck.id === deck.id
+        ),
+      }))
+    : gameConfig.decks.map((deck) => ({
+        ...deck,
+        selected: true,
+      }))
 
   return (
     <div className="flex h-full flex-col px-2 pt-2 md:px-0">
-      <div className="flex gap-3 rounded-md bg-accent p-2 md:mx-3">
-        <label
-          htmlFor="modal-language"
-          className="btn-outline btn justify-between gap-2"
-        >
-          <Globe size={25} weight="bold" /> {selectedLanguage?.id || 'All'}
-          <div />
-        </label>
-        <label htmlFor="modal-category" className="btn-outline btn flex-1">
-          {selectedCategory ? (
-            <span className="flex gap-2">
-              <span>{selectedCategory.name}</span>
-            </span>
-          ) : (
-            <span className="flex gap-2">All Categories</span>
-          )}
-        </label>
-      </div>
+      {isCurrentUserLeader && (
+        <div className="flex gap-3 rounded-md bg-accent p-2 md:mx-3">
+          <label
+            htmlFor="modal-language"
+            className="btn-outline btn justify-between gap-2"
+          >
+            <Globe size={25} weight="bold" /> {selectedLanguage?.id || 'All'}
+            <div />
+          </label>
+          <label htmlFor="modal-category" className="btn-outline btn flex-1">
+            {selectedCategory ? (
+              <span className="flex gap-2">
+                <span>{selectedCategory.name}</span>
+              </span>
+            ) : (
+              <span className="flex gap-2">All Categories</span>
+            )}
+          </label>
+        </div>
+      )}
 
       <div className="divider mx-3 my-0" />
       <div className="flex flex-col gap-2 overflow-y-auto bg-opacity-50 scrollbar-none md:px-3">
-        {decksList.map((deck) => (
-          <React.Fragment key={deck.id}>
-            <input
-              id={`${deck.id}_deck`}
-              type="checkbox"
-              onChange={handleDeckChange}
-              className="hidden"
-              disabled={!isCurrentUserLeader}
-            />
-            <label
-              htmlFor={`${deck.id}_deck`}
-              className={classNames(
-                'flex h-auto flex-nowrap items-center justify-between gap-2 py-2 pl-2 text-left normal-case',
-                {
-                  'btn-ghost btn': isCurrentUserLeader,
-                  'btn-disabled btn-ghost btn-active btn': !isCurrentUserLeader,
-                }
-              )}
-            >
-              <div className="flex items-center gap-3">
-                <Image
-                  src={deck.icon}
-                  alt={deck.name}
-                  width={100}
-                  height={100}
-                  className="aspect-square h-16 w-16 rounded-xl bg-neutral"
-                />
-                <div className="truncate">
-                  <h1 className="card-title ">{deck.name}</h1>
-                  <p className="text-sm">{deck.description}</p>
+        <AnimatePresence mode="popLayout">
+          {decksList.map((deck) => (
+            <React.Fragment key={`${deck.id}_deck`}>
+              <input
+                id={`${deck.id}_deck`}
+                type="checkbox"
+                onChange={(e) => handleDeckChange(e, deck.id)}
+                className="hidden"
+                disabled={!isCurrentUserLeader}
+              />
+              <motion.label
+                htmlFor={`${deck.id}_deck`}
+                className={classNames(
+                  'flex h-auto flex-nowrap items-center justify-between gap-2 border-2 py-2 pl-2 text-left normal-case',
+                  {
+                    'btn-ghost btn': isCurrentUserLeader,
+                    'btn-disabled btn-ghost btn-active btn':
+                      !isCurrentUserLeader,
+                    'border-accent hover:border-accent': deck.selected,
+                    'border-transparent': !deck.selected,
+                  }
+                )}
+              >
+                <div className="flex items-center gap-3">
+                  <Image
+                    src={deck.icon}
+                    alt={deck.name}
+                    width={100}
+                    height={100}
+                    className="aspect-square h-16 w-16 rounded-xl bg-neutral"
+                  />
+                  {/* {JSON.stringify(deck.selected)} */}
+                  <div className="truncate">
+                    <h1 className="card-title ">{deck.name}</h1>
+                    <p className="text-sm">{deck.description}</p>
+                  </div>
                 </div>
-              </div>
-              <div className="uppercase">{deck.language}</div>
-            </label>
-            <div className="divider mx-auto my-0 w-32" />
-          </React.Fragment>
-        ))}
+                <div className="uppercase">{deck.language}</div>
+              </motion.label>
+              <div className="divider mx-auto my-0 w-32" />
+            </React.Fragment>
+          ))}
+        </AnimatePresence>
       </div>
       <input
         type="checkbox"
