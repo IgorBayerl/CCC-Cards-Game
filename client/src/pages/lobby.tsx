@@ -1,7 +1,7 @@
 import { useGameContext } from '~/components/GameContext'
 import Loading from '~/components/Atoms/Loading'
 import PlayersList from '~/components/PlayersList'
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import router from 'next/router'
 import Layout from '~/components/Layout/Layout'
 import { CopyToClipboard } from '~/components/Atoms/CopyToClipboard'
@@ -82,16 +82,6 @@ export default function LobbyPage() {
     const value = e.target.value
     const newSize = parseInt(value)
     setConfig({ ...gameConfig, roomSize: newSize })
-  }
-
-  const handleChangeScoreToWin = (value: string) => {
-    const newScoreToWin = parseInt(value)
-    setConfig({ ...gameConfig, scoreToWin: newScoreToWin })
-  }
-
-  const handleChangeTimeToPlay = (value: string) => {
-    const newTimeToPlay = parseInt(value)
-    setConfig({ ...gameConfig, time: newTimeToPlay })
   }
 
   const handleChangeSelectedCards = (
@@ -187,7 +177,7 @@ export default function LobbyPage() {
             </select>
           </div>
         </div>
-        <div className="flex h-full gap-3 overflow-clip p-1">
+        <div className="flex h-full overflow-clip">
           <div className="hidden flex-col gap-2 md:flex">
             <select
               className="select-bordered select w-full"
@@ -214,8 +204,8 @@ export default function LobbyPage() {
               ))}
             </div>
           </div>
-          <div className="flex w-full flex-col justify-between ">
-            <div className="tabs">
+          <div className="flex w-full flex-col justify-between">
+            <div className="tabs md:px-3">
               {tabs.map((tab) => (
                 <a
                   key={tab}
@@ -260,8 +250,8 @@ export default function LobbyPage() {
             )}
             {!isCurrentUserLeader && (
               <>
-                <div>Loading... </div> Waiting for the host to setup and start
-                the game.
+                <span className="loading-spinner loading">Loading</span> Waiting
+                for the host to setup and start the game.
               </>
             )}
           </div>
@@ -348,27 +338,6 @@ export default function LobbyPage() {
                   </div>
                 </div>
               </div>
-
-              <div className="flex items-center justify-evenly">
-                {isCurrentUserLeader && (
-                  <>
-                    <CopyToClipboard text="Invite" content={roomInviteLink} />
-                    <button
-                      className="btn"
-                      disabled={!isCurrentUserLeader}
-                      onClick={handleStartGame}
-                    >
-                      Start Game
-                    </button>
-                  </>
-                )}
-                {!isCurrentUserLeader && (
-                  <>
-                    <div>Loading... </div> Waiting for the host to setup and
-                    start the game.
-                  </>
-                )}
-              </div>
             </div>
           </div>
         </div> */}
@@ -378,18 +347,46 @@ export default function LobbyPage() {
 }
 
 function LobbySettingsTab() {
+  const { gameConfig, setConfig, isCurrentUserLeader } = useGameContext()
+
+  const handleChangeScoreToWin = (value: string) => {
+    const newScoreToWin = parseInt(value)
+    setConfig({ ...gameConfig, scoreToWin: newScoreToWin })
+  }
+
+  const handleChangeTimeToPlay = (value: string) => {
+    const newTimeToPlay = parseInt(value)
+    setConfig({ ...gameConfig, time: newTimeToPlay })
+  }
+
+  const scoreToWin = gameConfig?.scoreToWin?.toString() || '10'
+  const timeToPlay = gameConfig?.time?.toString() || '60'
+
   return (
-    <div className="flex h-full flex-col overflow-y-auto px-2 pt-2 md:px-0">
+    <div className="flex h-full flex-col overflow-y-auto px-2 pt-2 md:px-3">
       <div className="flex flex-col gap-2">
         <label htmlFor="score-to-win" className="flex gap-3">
           <Trophy size={24} weight="bold" />
           Score To Win
         </label>
-        <select className="select-bordered select" id="score-to-win">
+        <select
+          className="select-bordered select"
+          id="score-to-win"
+          onChange={(e) => handleChangeScoreToWin(e.target.value)}
+          disabled={!isCurrentUserLeader}
+          value={scoreToWin}
+        >
           {Array.from({ length: 27 }, (_, i) => i + 4).map((i) => (
             <option
               className="text-lg"
               key={i}
+              value={i.toString()}
+            >{`${i} Points`}</option>
+          ))}
+          {Array.from({ length: 27 }, (_, i) => i + 4).map((i) => (
+            <option
+              className="text-lg"
+              key={`${i}_points`}
               value={i.toString()}
             >{`${i} Points`}</option>
           ))}
@@ -401,13 +398,19 @@ function LobbySettingsTab() {
           <Timer size={24} weight="bold" />
           Time
         </label>
-        <select className="select-bordered select" id="score-to-win">
-          {Array.from({ length: 27 }, (_, i) => i + 4).map((i) => (
+        <select
+          className="select-bordered select"
+          id="score-to-win"
+          onChange={(e) => handleChangeTimeToPlay(e.target.value)}
+          disabled={!isCurrentUserLeader}
+          value={timeToPlay}
+        >
+          {Array.from({ length: 6 }, (_, i) => (i + 1) * 10).map((i) => (
             <option
               className="text-lg"
-              key={i}
+              key={`${i}_seconds`}
               value={i.toString()}
-            >{`${i} Points`}</option>
+            >{`${i} Seconds`}</option>
           ))}
         </select>
       </div>
@@ -432,7 +435,7 @@ const decksMockResponse = [
     language: 'br',
     description: 'O nosso primeiro baralho brasileiro',
     category: 'family_friendly',
-    icon: '/icon_light.svg',
+    icon: '/icon_cyber_chaos_cards.svg',
     questions: 100,
     answers: 40,
   },
@@ -442,7 +445,7 @@ const decksMockResponse = [
     language: 'br',
     description: 'O nosso segundo baralho brasileiro',
     category: 'chaos',
-    icon: '/icon_light.svg',
+    icon: '/icon_cyber_chaos_cards.svg',
     questions: 100,
     answers: 536,
   },
@@ -452,13 +455,79 @@ const decksMockResponse = [
     language: 'pt',
     description: 'O baralho original, o nosso primeiro baralho',
     category: 'safe_for_stream',
-    icon: '/icon_light.svg',
+    icon: '/icon_cyber_chaos_cards.svg',
+    questions: 20,
+    answers: 40,
+  },
+  {
+    id: '4',
+    name: 'Baralho BR - Pedro Álvares Cabral',
+    language: 'br',
+    description: 'O nosso primeiro baralho brasileiro',
+    category: 'family_friendly',
+    icon: '/icon_cyber_chaos_cards.svg',
+    questions: 100,
+    answers: 40,
+  },
+  {
+    id: '5',
+    name: 'Baralho BR - O ouro recuperado',
+    language: 'br',
+    description: 'O nosso segundo baralho brasileiro',
+    category: 'chaos',
+    icon: '/icon_cyber_chaos_cards.svg',
+    questions: 100,
+    answers: 536,
+  },
+  {
+    id: '6',
+    name: 'Cartas Contra Tugas Base',
+    language: 'pt',
+    description: 'O baralho original, o nosso primeiro baralho',
+    category: 'safe_for_stream',
+    icon: '/icon_cyber_chaos_cards.svg',
+    questions: 20,
+    answers: 40,
+  },
+  {
+    id: '7',
+    name: 'Baralho BR - Pedro Álvares Cabral',
+    language: 'br',
+    description: 'O nosso primeiro baralho brasileiro',
+    category: 'family_friendly',
+    icon: '/icon_cyber_chaos_cards.svg',
+    questions: 100,
+    answers: 40,
+  },
+  {
+    id: '8',
+    name: 'Baralho BR - O ouro recuperado',
+    language: 'br',
+    description: 'O nosso segundo baralho brasileiro',
+    category: 'chaos',
+    icon: '/icon_cyber_chaos_cards.svg',
+    questions: 100,
+    answers: 536,
+  },
+  {
+    id: '9',
+    name: 'Cartas Contra Tugas Base',
+    language: 'pt',
+    description: 'O baralho original, o nosso primeiro baralho',
+    category: 'safe_for_stream',
+    icon: '/icon_cyber_chaos_cards.svg',
     questions: 20,
     answers: 40,
   },
 ]
 
 function LobbyDecksTab() {
+  const { gameConfig, setConfig, isCurrentUserLeader } = useGameContext()
+  const { isMuted } = useAudio()
+
+  const [playSwitchOn] = useSound('/sounds/switch-on.mp3')
+  const [playSwitchOff] = useSound('/sounds/switch-off.mp3')
+
   const defaultLanguage =
     languagesMock.find((language) => language.id === router.locale) || null
 
@@ -471,6 +540,8 @@ function LobbyDecksTab() {
     defaultLanguage
   )
   const [isModalLanguageOpen, setIsModalLanguageOpen] = useState<boolean>(false)
+
+  const [selectedDecks, setSelectedDecks] = useState<string[]>([])
 
   const toggleCategorySelection = (category: ICategory) => {
     if (selectedCategory && selectedCategory.id === category.id) {
@@ -490,9 +561,25 @@ function LobbyDecksTab() {
     setIsModalLanguageOpen(false)
   }
 
+  const handleDeckChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { checked, id } = event.target
+
+    if (!isMuted) checked ? playSwitchOn() : playSwitchOff()
+
+    let newSelectedDecksIds
+    if (checked) {
+      newSelectedDecksIds = [...gameConfig.decks, id]
+    } else {
+      newSelectedDecksIds = gameConfig.decks.filter((deckId) => deckId !== id)
+    }
+    setConfig({ ...gameConfig, decks: newSelectedDecksIds })
+  }
+
+  const decksList = isCurrentUserLeader ? decksMockResponse : gameConfig.decks
+
   return (
     <div className="flex h-full flex-col px-2 pt-2 md:px-0">
-      <div className="flex gap-3 rounded-md bg-accent p-2">
+      <div className="flex gap-3 rounded-md bg-accent p-2 md:mx-3">
         <label
           htmlFor="modal-language"
           className="btn-outline btn justify-between gap-2"
@@ -511,26 +598,44 @@ function LobbyDecksTab() {
         </label>
       </div>
 
-      <div className="divider my-0" />
-      <div className="flex flex-col gap-2 overflow-y-auto bg-opacity-50">
-        {decksMockResponse.map((deck) => (
-          <>
-            <div className="flex items-center gap-2" key={deck.id}>
-              <Image
-                src={deck.icon}
-                alt={deck.name}
-                width={100}
-                height={100}
-                className="aspect-square h-16 w-16 rounded-xl bg-neutral"
-              />
-              <div className="truncate">
-                <h1 className="card-title ">{deck.name}</h1>
-                <p className="text-sm">{deck.description}</p>
+      <div className="divider mx-3 my-0" />
+      <div className="flex flex-col gap-2 overflow-y-auto bg-opacity-50 scrollbar-none md:px-3">
+        {decksList.map((deck) => (
+          <React.Fragment key={deck.id}>
+            <input
+              id={`${deck.id}_deck`}
+              type="checkbox"
+              onChange={handleDeckChange}
+              className="hidden"
+              disabled={!isCurrentUserLeader}
+            />
+            <label
+              htmlFor={`${deck.id}_deck`}
+              className={classNames(
+                'flex h-auto flex-nowrap items-center justify-between gap-2 py-2 pl-2 text-left normal-case',
+                {
+                  'btn-ghost btn': isCurrentUserLeader,
+                  'btn-disabled btn-ghost btn-active btn': !isCurrentUserLeader,
+                }
+              )}
+            >
+              <div className="flex items-center gap-3">
+                <Image
+                  src={deck.icon}
+                  alt={deck.name}
+                  width={100}
+                  height={100}
+                  className="aspect-square h-16 w-16 rounded-xl bg-neutral"
+                />
+                <div className="truncate">
+                  <h1 className="card-title ">{deck.name}</h1>
+                  <p className="text-sm">{deck.description}</p>
+                </div>
               </div>
               <div className="uppercase">{deck.language}</div>
-            </div>
+            </label>
             <div className="divider mx-auto my-0 w-32" />
-          </>
+          </React.Fragment>
         ))}
       </div>
       <input
