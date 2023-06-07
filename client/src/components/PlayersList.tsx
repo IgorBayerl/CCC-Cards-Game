@@ -17,41 +17,34 @@ export default function PlayersList({ players, leader, roomSize }: IProps) {
   )
 
   return (
-    <>
-      <div className="flex  w-full flex-col items-center justify-center gap-3 overflow-y-auto">
-        <div className="flex w-full flex-row gap-2 rounded-lg  border-2  px-2 sm:flex-col">
-          <AnimatePresence mode="popLayout">
-            {sortedPlayers.map((player) => (
-              <motion.div
-                initial={{ scale: 0.8, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                exit={{ scale: 0.8, opacity: 0 }}
-                transition={{ type: 'spring' }}
-                key={player.id}
-              >
-                <div className="flex flex-col items-center gap-3 text-2xl font-bold sm:flex-row">
-                  <RoomChair
-                    player={player}
-                    leader={leader?.id === player.id}
-                  />
-                </div>
-              </motion.div>
-            ))}
+    <div className="flex h-full w-72 flex-col items-center justify-start gap-3 overflow-y-auto overflow-x-clip scrollbar-none">
+      <div className="flex w-full flex-col gap-2">
+        <AnimatePresence mode="popLayout">
+          {sortedPlayers.map((player) => (
+            <motion.div
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.8, opacity: 0 }}
+              transition={{ type: 'spring' }}
+              key={player.id}
+            >
+              <RoomChair player={player} leader={leader?.id === player.id} />
+            </motion.div>
+          ))}
 
-            {freeSpaces.map((item) => (
-              <motion.div
-                initial={{ scale: 0.8, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                exit={{ scale: 0.8, opacity: 0 }}
-                key={item}
-                className="text-2xl font-bold text-gray-400"
-              >
-                <RoomChair />
-              </motion.div>
-            ))}
-          </AnimatePresence>
-        </div>
+          {freeSpaces.map((item) => (
+            <motion.div
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.8, opacity: 0 }}
+              key={item}
+              className=" "
+            >
+              <RoomChair />
+            </motion.div>
+          ))}
+        </AnimatePresence>
       </div>
-    </>
+    </div>
   )
 }

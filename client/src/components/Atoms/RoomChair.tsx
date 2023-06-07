@@ -1,5 +1,5 @@
+import { TbMoodEmpty } from 'react-icons/tb'
 import { IPlayer } from '../GameContext'
-import CustomAvatar, { CustomAvatarEmpty } from './CustomAvatar'
 import PlayerItem from './PlayerItem'
 
 interface IRoomChairProps {
@@ -10,9 +10,9 @@ interface IRoomChairProps {
 export default function RoomChair({ player, leader = false }: IRoomChairProps) {
   if (!player) {
     return (
-      <div className="">
+      <div className="rounded-xl px-2 py-1 bg-neutral h-16 flex items-center font-bold">
         <div className="flex items-center gap-2">
-          <CustomAvatarEmpty src="http://localhost:3000/_next/image?url=%2Fprofile%2Fprofile_3.jpg&w=256&q=75" />
+          <TbMoodEmpty size={35} opacity={0.5}/>
           <div className="flex flex-col">Empty</div>
         </div>
       </div>
@@ -20,7 +20,7 @@ export default function RoomChair({ player, leader = false }: IRoomChairProps) {
   }
 
   return (
-    <div className="">
+    <div className="rounded-xl px-2 py-1 bg-neutral text-xl font-bold ">
       <PlayerItem player={player} leader={leader} />
     </div>
   )

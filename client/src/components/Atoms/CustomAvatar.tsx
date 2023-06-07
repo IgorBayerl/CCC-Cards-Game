@@ -2,10 +2,9 @@ import { GiCrown } from 'react-icons/gi'
 import { CgProfile } from 'react-icons/cg'
 import { IPlayer } from '../GameContext'
 
-interface AvatarProps {
+
+interface ICustomAvatarProps  {
   src: string
-}
-interface ICustomAvatarProps extends AvatarProps {
   player: IPlayer
   leader: boolean
   itsMe: boolean
@@ -20,7 +19,7 @@ export default function CustomAvatar({
 }: ICustomAvatarProps) {
   return (
     <div className="avatar">
-      <div className="w-24 rounded-full">
+      <div className="w-16 rounded-full">
         <img src={player.pictureUrl} {...props} />
       </div>
       {leader && <GiCrown color="yellow" className="leader-crown" size={25} />}
@@ -36,10 +35,3 @@ export default function CustomAvatar({
   )
 }
 
-export function CustomAvatarEmpty({ ...props }: AvatarProps) {
-  return (
-    <div className="">
-      <div className="rounded-full" />
-    </div>
-  )
-}

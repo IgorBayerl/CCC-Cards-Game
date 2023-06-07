@@ -21,22 +21,24 @@ export default function PlayerItem({ player, leader }: IPlayerItemProps) {
   const score = player.score
 
   return (
-    <div className="flex w-full max-w-full flex-col items-center gap-2 sm:flex-row">
+    <div className="flex w-full max-w-full flex-row items-center gap-2">
       <CustomAvatar
         src={player.pictureUrl}
         leader={leader}
         player={player}
         itsMe={itsMe}
       />
-      <div className="flex w-full max-w-full items-center justify-between overflow-hidden ">
-        <div className="">
+      <div className="flex w-full max-w-full items-center justify-between overflow-hidden truncate">
+        <div className="w-full">
           <div className="text-xs font-bold capitalize ">
-            {showStatus && score}
+            {showStatus && `${score} pts`}
           </div>
           <div className="truncate">{player.username}</div>
           {showStatus && <StatusIndicatorText status={status} />}
         </div>
-        <div>{showStatus && <StatusIndicatorIcon status={status} />}</div>
+      </div>
+      <div>
+        {showStatus && <StatusIndicatorIcon status={status} />}
       </div>
     </div>
   )
@@ -59,7 +61,7 @@ function StatusIndicatorIcon({ status }: IStatusIndicatorProps) {
 
   return (
     <div
-      className="flex items-center gap-2 rounded-full bg-red-200 p-2"
+      className="flex items-center gap-2 rounded-full p-2 "
       title={status}
     >
       {iconByStatus[status]}

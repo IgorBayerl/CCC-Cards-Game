@@ -60,15 +60,15 @@ export default function LobbyPage() {
     setConfig,
     admCommand,
   } = useGameContext()
+
+  const playersList = gameState.players
+
   // TODO: change this to a getStaticProps with revalidate of 1 hour
   const decksResponse = useQuery('get-decks', getDecks)
   const share = useShare()
-  const [playSwitchOn] = useSound('/sounds/switch-on.mp3')
-  const [playSwitchOff] = useSound('/sounds/switch-off.mp3')
 
   const tabs = ['Decks Selection', 'Settings']
   const [activeTab, setActiveTab] = useState(tabs[0])
-  const { isMuted } = useAudio()
 
   const handleLeaveRoom = () => {
     void router.push('/')
@@ -85,26 +85,10 @@ export default function LobbyPage() {
     setConfig({ ...gameConfig, roomSize: newSize })
   }
 
-  // const handleChangeSelectedCards = (
-  //   event: React.ChangeEvent<HTMLInputElement>
-  // ) => {
-  //   const { checked, id } = event.target
-
-  //   if (!isMuted) checked ? playSwitchOn() : playSwitchOff()
-
-  //   let newSelectedDecksIds
-  //   if (checked) {
-  //     newSelectedDecksIds = [...gameConfig.decks, id]
-  //   } else {
-  //     newSelectedDecksIds = gameConfig.decks.filter((deckId) => deckId !== id)
-  //   }
-  //   setConfig({ ...gameConfig, decks: newSelectedDecksIds })
-  // }
-
   const handleStartGame = () => {
     //verify if there are enough players
-    if (gameState.players.length < 3) {
-      toast.error('You need at least 3 players to start the game, sorry!')
+    if (gameState.players.length < 2) {
+      toast.error('You need at least 2 players to start the game, sorry!')
       return
     }
 
@@ -194,16 +178,12 @@ export default function LobbyPage() {
                 >{`${i} Players`}</option>
               ))}
             </select>
-            <div className="overflow-y-auto overflow-x-clip scrollbar-none">
-              {Array.from({ length: 20 }, (_, i) => i + 1).map((i) => (
-                <div
-                  key={i}
-                  className="btn-circle flex w-72 items-center bg-neutral p-5"
-                >
-                  {i} - Player Name
-                </div>
-              ))}
-            </div>
+
+            <PlayersList
+              players={playersList}
+              leader={gameState.leader}
+              roomSize={parseInt(roomSize)}
+            />
           </div>
           <div className="flex w-full flex-col justify-between">
             <div className="tabs md:px-3">
@@ -602,7 +582,7 @@ function LobbyDecksTab() {
   return (
     <div className="flex h-full flex-col px-2 pt-2 md:px-0">
       {isCurrentUserLeader && (
-        <div className="flex gap-3 rounded-md bg-accent p-2 md:mx-3">
+        <div className="flex gap-3 rounded-md bg-accent p-2 dark:bg-base-300 md:mx-3">
           <label
             htmlFor="modal-language"
             className="btn-outline btn justify-between gap-2"
@@ -631,6 +611,7 @@ function LobbyDecksTab() {
                 id={`${deck.id}_deck`}
                 type="checkbox"
                 onChange={(e) => handleDeckChange(e, deck.id)}
+                checked={deck.selected}
                 className="hidden"
                 disabled={!isCurrentUserLeader}
               />
@@ -655,7 +636,6 @@ function LobbyDecksTab() {
                     height={100}
                     className="aspect-square h-16 w-16 rounded-xl bg-neutral"
                   />
-                  {/* {JSON.stringify(deck.selected)} */}
                   <div className="truncate">
                     <h1 className="card-title ">{deck.name}</h1>
                     <p className="text-sm">{deck.description}</p>
