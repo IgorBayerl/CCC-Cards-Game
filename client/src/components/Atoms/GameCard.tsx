@@ -16,17 +16,22 @@ export default function GameCard({
   number,
 }: IGameCardProps) {
   const isQuestion = 'spaces' in cardInfo
+  const { text } = cardInfo
 
   const cardStyles = classNames(
-    isQuestion ? 'bg-red-200' : 'bg-blue-200',
-    selected ? 'border-2 border-primary' : ''
+    isQuestion ? '' : 'bg-card',
+    selected ? ' border-primary' : 'border-transparent',
+    'relative text-lg p-2 border-2 '
   )
 
-  const { text } = cardInfo
   return (
     <div className={cardStyles} onClick={onClick}>
-      {selected && <div className="h-10 w-10 rounded-full">{number}</div>}
-      {/* <div>{id}</div> */}
+      {selected && (
+        <div className="absolute right-1 top-1 flex h-7 w-7 items-center justify-center rounded-full bg-gray-500 font-bold text-white">
+          {number}
+        </div>
+      )}
+
       <div>{text}</div>
     </div>
   )

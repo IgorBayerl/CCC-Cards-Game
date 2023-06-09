@@ -59,3 +59,8 @@
 .bg-destaque-mobile{
   @apply bg-black bg-opacity-[0.05] dark:bg-white dark:bg-opacity-[0.05] md:bg-transparent dark:md:bg-transparent
 }
+
+
+.bg-card{
+  @apply bg-black bg-opacity-[0.05] dark:bg-white dark:bg-opacity-[0.05]
+}

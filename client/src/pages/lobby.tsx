@@ -62,6 +62,7 @@ export default function LobbyPage() {
   } = useGameContext()
 
   const playersList = gameState.players
+  const roomSize = gameConfig?.roomSize?.toString() || '4'
 
   // TODO: change this to a getStaticProps with revalidate of 1 hour
   const decksResponse = useQuery('get-decks', getDecks)
@@ -116,7 +117,6 @@ export default function LobbyPage() {
 
   const decks = decksResponse.data
 
-  const roomSize = gameConfig?.roomSize?.toString() || '4'
   const scoreToWin = gameConfig?.scoreToWin?.toString() || '10'
   const timeToPlay = gameConfig?.time?.toString() || '60'
 

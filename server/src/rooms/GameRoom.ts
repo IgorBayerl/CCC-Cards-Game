@@ -1,6 +1,6 @@
 // src/rooms/GameRoom.ts
 import { type Server, type Socket } from 'socket.io'
-import { ICardAnswer, ICardQuestion } from '../models/Deck'
+import { ICardAnswer, ICardQuestion, IDeck, IDeckConfigScreen } from '../models/Deck'
 import { getDeckById, shuffleCards } from '../lib/deckUtils'
 import Room from './Room'
 import GamePlayer, { TPlayerStatus } from './GamePlayer'
@@ -26,7 +26,7 @@ interface IGameRound {
 
 interface IGameConfig {
   roomSize: number
-  decks: Array<string>
+  decks: Array<IDeckConfigScreen>
   scoreToWin: number
   time: number
 }
@@ -41,7 +41,7 @@ type TRoomStatus =
 
 export default class GameRoom extends Room {
   players: GamePlayer[]
-  private decks: Array<string>
+  private decks: Array<IDeckConfigScreen>
   private scoreToWin: number
   private time: number
 
@@ -216,14 +216,14 @@ export default class GameRoom extends Room {
     this.startingStatusUpdate('>>> populating the available cards...')
     this.availableQuestionCards = []
     this.availableAnswerCards = []
-    for (let deckID of this.decks) {
-      const deck = getDeckById(deckID)
-      if (!deck) {
-        console.error(`Deck with id ${deckID} not found.`)
+    for (const deck of this.decks) {
+      const deckData = getDeckById(deck.id)
+      if (!deckData) {
+        console.error(`Deck with id ${deck.id} not found.`)
         continue
       }
-      this.availableQuestionCards.push(...deck.cards.questions)
-      this.availableAnswerCards.push(...deck.cards.answers)
+      this.availableQuestionCards.push(...deckData.cards.questions)
+      this.availableAnswerCards.push(...deckData.cards.answers)
     }
   }
 

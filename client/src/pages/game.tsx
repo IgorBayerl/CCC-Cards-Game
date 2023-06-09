@@ -10,7 +10,7 @@ import { toast } from 'react-toastify'
 import { CountdownCircleTimer } from 'react-countdown-circle-timer'
 import useSound from 'use-sound'
 import { useAudio } from '~/components/AudioContext'
-import TimerScreen from '~/components/Layout/TimerScreen'
+import TimerTitle from '~/components/Layout/TimerScreen'
 
 export default function Game() {
   const {
@@ -115,55 +115,54 @@ export default function Game() {
   }
 
   return (
-    <Layout>
-      <InGameLayout>
-        <TimerScreen
+    <InGameLayout>
+      <div className="bg-destaque-mobile flex flex-1 flex-col py-2 md:mx-4">
+        <TimerTitle
           subtitle="Choose the best fit card(s)"
           time={time}
           handleTimeout={handleTimeout}
-        >
-          <div className="">
-            <div className="">
-              <div className="">
-                {currentQuestionCard && (
-                  <GameCard cardInfo={currentQuestionCard} selected={false} />
-                )}
-              </div>
-
-              {isCurrentUserJudge && (
-                <div className="flex justify-center">
-                  <h2>Just wait the other players</h2>
-                </div>
-              )}
-              {!isCurrentUserJudge && (
-                <div className="">
-                  {myCards.map((card, index) => {
-                    const cardIndex = selectedCards.indexOf(card)
-                    return (
-                      <GameCard
-                        key={index}
-                        cardInfo={card}
-                        selected={cardIndex !== -1}
-                        number={cardIndex !== -1 ? cardIndex + 1 : undefined}
-                        onClick={() => handleCardClick(card)}
-                      />
-                    )
-                  })}
-                </div>
-              )}
-            </div>
-
-            {!isCurrentUserJudge && (
-              <div className="">
-                <button onClick={handleConfirm} disabled={!canConfirm}>
-                  Confirm
-                </button>
-              </div>
+        />
+        <div className="flex h-full flex-1 flex-col justify-between ">
+          <div className="flex flex-1 items-center justify-center">
+            {currentQuestionCard && (
+              <GameCard cardInfo={currentQuestionCard} selected={false} />
             )}
           </div>
-        </TimerScreen>
-      </InGameLayout>
-    </Layout>
+
+          {isCurrentUserJudge && (
+            <div className="flex justify-center text-xl">
+              <h2>Just wait the other players finish</h2>
+            </div>
+          )}
+          {!isCurrentUserJudge && (
+            <div className="grid grid-cols-1 gap-2 lg:grid-cols-2">
+              {myCards.map((card, index) => {
+                const cardIndex = selectedCards.indexOf(card)
+                return (
+                  <GameCard
+                    key={index}
+                    cardInfo={card}
+                    selected={cardIndex !== -1}
+                    number={cardIndex !== -1 ? cardIndex + 1 : undefined}
+                    onClick={() => handleCardClick(card)}
+                  />
+                )
+              })}
+            </div>
+          )}
+        </div>
+      </div>
+      {!isCurrentUserJudge && (
+        <div className="flex items-center justify-center px-4 py-2">
+          <button
+            className="btn flex-1"
+            onClick={handleConfirm}
+            disabled={!canConfirm}
+          >
+            Confirm
+          </button>
+        </div>
+      )}
+    </InGameLayout>
   )
 }
-
