@@ -153,7 +153,7 @@ export default function Home() {
           <CCCIconThemed />
           <Link
             className="btn-outline btn"
-            href="https://discord.gg/JmgHFt2s"
+            href="https://discord.gg/eZsFkPuADE"
             target="_blank"
           >
             <DiscordLogo size={25} weight="bold" />
