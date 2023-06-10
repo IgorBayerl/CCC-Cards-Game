@@ -211,7 +211,6 @@ const GameProvider: React.FC<IGameProviderProps> = ({ children }) => {
     }))
   }
 
-
   const handleError = (socketError: ISocketError) => {
     const { message, error } = socketError
     console.log('SERVER:', message)

@@ -10,9 +10,9 @@ interface IRoomChairProps {
 export default function RoomChair({ player, leader = false }: IRoomChairProps) {
   if (!player) {
     return (
-      <div className="rounded-xl px-2 py-1 dark:bg-neutral bg-gray-200 h-16 flex items-center font-bold">
+      <div className="flex h-16 items-center rounded-xl bg-gray-200 px-2 py-1 font-bold dark:bg-neutral">
         <div className="flex items-center gap-2">
-          <TbMoodEmpty size={35} opacity={0.5}/>
+          <TbMoodEmpty size={35} opacity={0.5} />
           <div className="flex flex-col">Empty</div>
         </div>
       </div>
@@ -20,7 +20,7 @@ export default function RoomChair({ player, leader = false }: IRoomChairProps) {
   }
 
   return (
-    <div className="rounded-xl px-2 py-1 dark:bg-neutral bg-gray-200 text-xl font-bold ">
+    <div className="rounded-xl bg-gray-200 px-2 py-1 text-xl font-bold dark:bg-neutral ">
       <PlayerItem player={player} leader={leader} />
     </div>
   )

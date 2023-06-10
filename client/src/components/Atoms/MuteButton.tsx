@@ -25,7 +25,7 @@ export default function MuteButton({
   }
 
   return (
-    <label htmlFor="checkbox-mute" className="swap-rotate swap p-2">
+    <label htmlFor="checkbox-mute" className="swap swap-rotate p-2">
       <input
         type="checkbox"
         checked={isMuted}

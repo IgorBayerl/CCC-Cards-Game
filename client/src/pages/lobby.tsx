@@ -229,8 +229,7 @@ export default function LobbyPage() {
               </div>
             )}
             {!isCurrentUserLeader && (
-              <LoadingWithText text="Waiting for the host to setup and start the game." /> 
-
+              <LoadingWithText text="Waiting for the host to setup and start the game." />
             )}
           </div>
         </div>

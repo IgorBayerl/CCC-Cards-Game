@@ -78,63 +78,59 @@ export default function Results() {
     )
   }
 
-  const resultCardAnswer = lastRoundWinnerAnswers?.map((card) => card.text) || []
+  const resultCardAnswer =
+    lastRoundWinnerAnswers?.map((card) => card.text) || []
 
   return (
-      <InGameLayout>
-        <div className="bg-destaque-mobile flex flex-1 flex-col py-2 md:mx-4">
-          <TimerTitle
-            key="roundWinner"
-            subtitle="Round winner!"
-            time={time}
-            handleTimeout={handleTimeout}
-          />
-          <div className="flex flex-1 items-center ">
-            <div className="flex flex-col items-center gap-3 flex-1">
-              <Image
-                src={winner?.pictureUrl || ''}
-                alt={winner?.username || ''}
-                width={100}
-                height={100}
-                className="rounded-full border-4 dark:border-white border-neutral"
-              />
-              <h1 className='text-xl font-bold'>
-                {winner?.username}
-              </h1>
-              <div className="flex flex-1  flex-col items-center gap-10 lg:flex-row mx-5">
-                <div className="chat chat-end ">
-                  <div className="chat-image avatar">
-                    <div className="w-10 rounded-full">
-                      <Image
-                        src={winner?.pictureUrl || ''}
-                        alt={winner?.username || ''}
-                        width={100}
-                        height={100}
-                        className="rounded-full"
-                      />
-                    </div>
-                  </div>
-                  <div className="chat-bubble dark:bg-neutral bg-gray-200 text-gray-800 dark:text-gray-200">
-                    <GameCardResult
-                      question={lastRoundQuestionCard.text}
-                      answers={resultCardAnswer}
+    <InGameLayout>
+      <div className="bg-destaque-mobile flex flex-1 flex-col py-2 md:mx-4">
+        <TimerTitle
+          key="roundWinner"
+          subtitle="Round winner!"
+          time={time}
+          handleTimeout={handleTimeout}
+        />
+        <div className="flex flex-1 items-center ">
+          <div className="flex flex-1 flex-col items-center gap-3">
+            <Image
+              src={winner?.pictureUrl || ''}
+              alt={winner?.username || ''}
+              width={100}
+              height={100}
+              className="rounded-full border-4 border-neutral dark:border-white"
+            />
+            <h1 className="text-xl font-bold">{winner?.username}</h1>
+            <div className="mx-5 flex  flex-1 flex-col items-center gap-10 lg:flex-row">
+              <div className="chat chat-end ">
+                <div className="chat-image avatar">
+                  <div className="w-10 rounded-full">
+                    <Image
+                      src={winner?.pictureUrl || ''}
+                      alt={winner?.username || ''}
+                      width={100}
+                      height={100}
+                      className="rounded-full"
                     />
                   </div>
+                </div>
+                <div className="chat-bubble bg-gray-200 text-gray-800 dark:bg-neutral dark:text-gray-200">
+                  <GameCardResult
+                    question={lastRoundQuestionCard.text}
+                    answers={resultCardAnswer}
+                  />
                 </div>
               </div>
             </div>
           </div>
         </div>
-        {isCurrentUserLeader && (
-          <div className="flex items-center justify-center px-4 py-2">
-            <button
-              className="btn flex-1"
-              onClick={handleGoToNextRound}
-            >
-              Next Round
-            </button>
-          </div>
-        )}
-      </InGameLayout>
+      </div>
+      {isCurrentUserLeader && (
+        <div className="flex items-center justify-center px-4 py-2">
+          <button className="btn flex-1" onClick={handleGoToNextRound}>
+            Next Round
+          </button>
+        </div>
+      )}
+    </InGameLayout>
   )
 }

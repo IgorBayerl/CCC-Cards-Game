@@ -46,7 +46,6 @@ export const GameCardResult: React.FC<IGameCardResultProps> = ({
   question,
   answers,
 }) => {
-
   let answersIndex = 0
 
   const processedQuestion = question.split('___').map((part, index) => {
@@ -69,4 +68,3 @@ export const GameCardResult: React.FC<IGameCardResultProps> = ({
     </div>
   )
 }
-

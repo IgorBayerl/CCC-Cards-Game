@@ -9,7 +9,7 @@ const shuffleArray = <T>(array: T[]): T[] => {
     currentIndex--
 
     temporaryValue = array[currentIndex]!
-    array[currentIndex] = array[randomIndex]! 
+    array[currentIndex] = array[randomIndex]!
     array[randomIndex] = temporaryValue
   }
 

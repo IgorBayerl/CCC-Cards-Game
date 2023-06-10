@@ -1,9 +1,8 @@
-import { useState, useEffect } from "react";
-import { useRouter } from "next/router";
-import { v4 as uuidv4 } from "uuid";
+import { useState, useEffect } from 'react'
+import { useRouter } from 'next/router'
+import { v4 as uuidv4 } from 'uuid'
 import { useGameContext } from '~/components/GameContext'
 import Layout from '~/components/Layout/Layout'
-
 
 import { TutorialCarousel } from '~/components/Atoms/TutorialCarousel'
 import Image from 'next/image'

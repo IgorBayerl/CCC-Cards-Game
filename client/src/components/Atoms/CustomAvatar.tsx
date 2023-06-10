@@ -2,8 +2,7 @@ import { GiCrown } from 'react-icons/gi'
 import { CgProfile } from 'react-icons/cg'
 import { IPlayer } from '../GameContext'
 
-
-interface ICustomAvatarProps  {
+interface ICustomAvatarProps {
   src: string
   player: IPlayer
   leader: boolean
@@ -34,4 +33,3 @@ export default function CustomAvatar({
     </div>
   )
 }
-

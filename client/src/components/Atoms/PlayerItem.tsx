@@ -37,9 +37,7 @@ export default function PlayerItem({ player, leader }: IPlayerItemProps) {
           {showStatus && <StatusIndicatorText status={status} />}
         </div>
       </div>
-      <div>
-        {showStatus && <StatusIndicatorIcon status={status} />}
-      </div>
+      <div>{showStatus && <StatusIndicatorIcon status={status} />}</div>
     </div>
   )
 }
@@ -60,10 +58,7 @@ function StatusIndicatorIcon({ status }: IStatusIndicatorProps) {
   if (!iconByStatus[status]) return null
 
   return (
-    <div
-      className="flex items-center gap-2 rounded-full p-2 "
-      title={status}
-    >
+    <div className="flex items-center gap-2 rounded-full p-2 " title={status}>
       {iconByStatus[status]}
     </div>
   )

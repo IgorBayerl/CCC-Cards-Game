@@ -155,76 +155,75 @@ export default function Judging() {
   const answersCardText = lastCards?.map((card) => card.text) || []
 
   return (
-      <InGameLayout>
-        <div className="bg-destaque-mobile flex flex-1 flex-col py-2 md:mx-4">
-          <TimerTitle
-            key={resetKey}
-            subtitle="Judging"
-            time={time}
-            handleTimeout={handleTimerTimeout}
-          />
-          <div className="flex flex-col flex-1">
-            <div className="flex flex-1 flex-col justify-between">
-              <div className="flex-1 flex justify-center items-center">
-                {currentQuestionCard && (
-                    <GameCardResult
-                      question={currentQuestionCard.text}
-                      answers={answersCardText}
-                    />
-                )}
-              </div>
-              <div className="">
-                {seeIndividualResults &&
-                  lastCards?.map((card, index) => (
-                    <div key={index} className="">
-                      <GameCard cardInfo={card} selected={false} />
-                    </div>
-                  ))}
-              </div>
-
-              <div className="grid grid-cols-1 gap-2 lg:grid-cols-2">
-                {
-                  // all results
-                  seeAllResults &&
-                    Object.entries(cards).map(([playerId, cardList]) => (
-                      <div
-                        key={playerId}
-                        className={`flex flex-col gap-1  ${
-                          selectedGroup && selectedGroup.playerId === playerId
-                            ? 'border-2 border-primary'
-                            : 'border-2 border-transparent'
-                        }`}
-                        onClick={() => handleGroupClick(playerId, cardList)}
-                      >
-                        {cardList.map((card, index) => (
-                          <div key={index} className="">
-                            <GameCard cardInfo={card} selected={false} />
-                          </div>
-                        ))}
-                      </div>
-                    ))
-                }
-              </div>
+    <InGameLayout>
+      <div className="bg-destaque-mobile flex flex-1 flex-col py-2 md:mx-4">
+        <TimerTitle
+          key={resetKey}
+          subtitle="Judging"
+          time={time}
+          handleTimeout={handleTimerTimeout}
+        />
+        <div className="flex flex-1 flex-col">
+          <div className="flex flex-1 flex-col justify-between">
+            <div className="flex flex-1 items-center justify-center">
+              {currentQuestionCard && (
+                <GameCardResult
+                  question={currentQuestionCard.text}
+                  answers={answersCardText}
+                />
+              )}
             </div>
-            
+            <div className="">
+              {seeIndividualResults &&
+                lastCards?.map((card, index) => (
+                  <div key={index} className="">
+                    <GameCard cardInfo={card} selected={false} />
+                  </div>
+                ))}
+            </div>
+
+            <div className="grid grid-cols-1 gap-2 lg:grid-cols-2">
+              {
+                // all results
+                seeAllResults &&
+                  Object.entries(cards).map(([playerId, cardList]) => (
+                    <div
+                      key={playerId}
+                      className={`flex flex-col gap-1  ${
+                        selectedGroup && selectedGroup.playerId === playerId
+                          ? 'border-2 border-primary'
+                          : 'border-2 border-transparent'
+                      }`}
+                      onClick={() => handleGroupClick(playerId, cardList)}
+                    >
+                      {cardList.map((card, index) => (
+                        <div key={index} className="">
+                          <GameCard cardInfo={card} selected={false} />
+                        </div>
+                      ))}
+                    </div>
+                  ))
+              }
+            </div>
           </div>
         </div>
-        <JudgeActions
-              isCurrentUserJudge={isCurrentUserJudge}
-              seeGoToAllResultsBtn={seeGoToAllResultsBtn}
-              handleSeeResults={handleSeeResults}
-              seeNextBtn={seeNextBtn}
-              handleNextCard={handleNextCard}
-              seeConfirmBtn={seeConfirmBtn}
-              enableConfirmBtn={enableConfirmBtn}
-              handleConfirm={handleConfirm}
-            />
-        {!isCurrentUserJudge && (
-          <div className="flex items-center justify-center px-4 py-2">
-            <LoadingWithText text="Wait the judge." /> 
-          </div>
-        )}
-      </InGameLayout>
+      </div>
+      <JudgeActions
+        isCurrentUserJudge={isCurrentUserJudge}
+        seeGoToAllResultsBtn={seeGoToAllResultsBtn}
+        handleSeeResults={handleSeeResults}
+        seeNextBtn={seeNextBtn}
+        handleNextCard={handleNextCard}
+        seeConfirmBtn={seeConfirmBtn}
+        enableConfirmBtn={enableConfirmBtn}
+        handleConfirm={handleConfirm}
+      />
+      {!isCurrentUserJudge && (
+        <div className="flex items-center justify-center px-4 py-2">
+          <LoadingWithText text="Wait the judge." />
+        </div>
+      )}
+    </InGameLayout>
   )
 }
 
@@ -255,13 +254,21 @@ export const JudgeActions: React.FC<IJudgeActionsProps> = ({
   return (
     <div className="flex items-center justify-center px-4 py-2">
       {seeGoToAllResultsBtn && (
-        <button className='btn flex-1' onClick={handleSeeResults} >
+        <button className="btn flex-1" onClick={handleSeeResults}>
           See all results
         </button>
       )}
-      {seeNextBtn && <button className='btn flex-1' onClick={handleNextCard}>Next</button>}
+      {seeNextBtn && (
+        <button className="btn flex-1" onClick={handleNextCard}>
+          Next
+        </button>
+      )}
       {seeConfirmBtn && (
-        <button className='btn flex-1' disabled={!enableConfirmBtn} onClick={handleConfirm}>
+        <button
+          className="btn flex-1"
+          disabled={!enableConfirmBtn}
+          onClick={handleConfirm}
+        >
           Confirm
         </button>
       )}
@@ -269,7 +276,8 @@ export const JudgeActions: React.FC<IJudgeActionsProps> = ({
   )
 }
 
-{/* <div className="flex items-center justify-center px-4 py-2">
+{
+  /* <div className="flex items-center justify-center px-4 py-2">
           <button
             className="btn flex-1"
             onClick={handleConfirm}
@@ -277,4 +285,5 @@ export const JudgeActions: React.FC<IJudgeActionsProps> = ({
           >
             Confirm
           </button>
-        </div> */}
+        </div> */
+}

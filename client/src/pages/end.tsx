@@ -8,7 +8,7 @@ import { ICard, ICardAnswer } from '~/models/Deck'
 import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 import Image from 'next/image'
-import ConfettiExplosion from 'react-confetti-explosion';
+import ConfettiExplosion from 'react-confetti-explosion'
 
 interface IUpdateResultCards {
   hasNext: boolean
@@ -31,11 +31,11 @@ export default function End() {
 
   const winner = players.reduce(
     (prev, current) => (prev.score > current.score ? prev : current),
-    { 
-      score: -Infinity, 
-      username: 'No players', 
-      id: '', 
-      pictureUrl: '' 
+    {
+      score: -Infinity,
+      username: 'No players',
+      id: '',
+      pictureUrl: '',
     }
   )
 
@@ -56,24 +56,19 @@ export default function End() {
   return (
     <InGameLayout>
       <div className="bg-destaque-mobile flex flex-1 flex-col py-2 md:mx-4">
-        <h1 className='font-bold text-xl'>
-          Match Winner
-        </h1>
+        <h1 className="text-xl font-bold">Match Winner</h1>
         <div className="flex flex-1 items-center ">
-          <div className="flex flex-col items-center gap-3 flex-1">
+          <div className="flex flex-1 flex-col items-center gap-3">
             <ConfettiExplosion key={keyTest} />
             <Image
               src={winner?.pictureUrl || ''}
               alt={winner?.username || ''}
               width={100}
               height={100}
-              className="rounded-full border-4 dark:border-white border-neutral"
+              className="rounded-full border-4 border-neutral dark:border-white"
               onClick={explodeConfetti}
             />
-            <h1 
-              className='text-xl font-bold' 
-              onClick={explodeConfetti}
-            >
+            <h1 className="text-xl font-bold" onClick={explodeConfetti}>
               {winner?.username}
             </h1>
           </div>
@@ -81,16 +76,13 @@ export default function End() {
       </div>
       {isCurrentUserLeader && (
         <div className="flex items-center justify-center px-4 py-2">
-          <button
-            className="btn flex-1"
-            onClick={handleStartNewGame}
-          >
+          <button className="btn flex-1" onClick={handleStartNewGame}>
             Play Again
           </button>
         </div>
       )}
     </InGameLayout>
-)
+  )
   return (
     <Layout>
       <InGameLayout>

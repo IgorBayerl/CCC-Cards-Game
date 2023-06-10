@@ -1,5 +1,5 @@
-import { type AppType } from "next/dist/shared/lib/utils";
-import { ToastContainer } from "react-toastify";
+import { type AppType } from 'next/dist/shared/lib/utils'
+import { ToastContainer } from 'react-toastify'
 import { SocketProvider } from '~/components/SocketContext'
 import { GameProvider } from '~/components/GameContext'
 
@@ -42,4 +42,4 @@ const MyApp: AppType = ({ Component, pageProps }) => {
   )
 }
 
-export default MyApp;
+export default MyApp
