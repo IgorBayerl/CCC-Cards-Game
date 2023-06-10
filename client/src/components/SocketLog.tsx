@@ -1,20 +1,20 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react'
 import { useSocketContext } from '~/components/SocketContext'
 
 export default function SocketLog(): JSX.Element {
-  const { socket } = useSocketContext();
-  const [messages, setMessages] = useState<string[]>([]);
+  const { socket } = useSocketContext()
+  const [messages, setMessages] = useState<string[]>([])
   useEffect(() => {
-    if (!socket) return;
-    socket.on("notify:log", (message: string) => {
-      console.log(">>> SERVER LOG: ", message);
-      setMessages((prevMessages) => [...prevMessages, message]);
-    });
+    if (!socket) return
+    socket.on('notify:log', (message: string) => {
+      console.log('>>> SERVER LOG: ', message)
+      setMessages((prevMessages) => [...prevMessages, message])
+    })
 
     return () => {
-      socket?.off("notify:log");
-    };
-  }, [socket]);
+      socket?.off('notify:log')
+    }
+  }, [socket])
 
   return (
     <div className="bg-slate-200">
@@ -24,5 +24,5 @@ export default function SocketLog(): JSX.Element {
         ))}
       </ul>
     </div>
-  );
+  )
 }

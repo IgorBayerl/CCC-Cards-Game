@@ -1,8 +1,20 @@
+// export interface IDeckConfigScreen {
+//   id: string
+//   name: string
+//   description: string
+//   language: string
+//   selected?: boolean
+// }
+
 export interface IDeckConfigScreen {
   id: string
   name: string
-  description: string
   language: string
+  description: string
+  category: string
+  icon: string
+  questions: number
+  answers: number
   selected?: boolean
 }
 

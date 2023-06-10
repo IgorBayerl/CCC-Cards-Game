@@ -1,19 +1,6 @@
-import { ActionIcon, Button, createStyles } from '@mantine/core'
-import { IconArrowBack, IconVolume, IconVolumeOff } from '@tabler/icons-react'
-import router from 'next/router'
-import { useEffect } from 'react'
-import { useQuery } from 'react-query'
-import { CopyToClipboard } from '../Atoms/CopyToClipboard'
-import { useGameContext } from '../GameContext'
-import PlayersList from '../PlayersList'
-import Image from 'next/image'
-import MuteButton from '../Atoms/MuteButton'
-import ContainerFooter from './ContainerFooter'
-import ContainerHeader from './ContainerHeader'
 import { CountdownCircleTimer } from 'react-countdown-circle-timer'
 
 interface ITimerScreenProps {
-  children: React.ReactNode
   title?: string
   subtitle?: string
   time: number
@@ -21,8 +8,7 @@ interface ITimerScreenProps {
   timerKey?: string
 }
 
-export default function TimerScreen({
-  children,
+export default function TimerTitle({
   title = '',
   subtitle = '',
   time,
@@ -32,9 +18,9 @@ export default function TimerScreen({
   return (
     <div className="flex flex-col">
       <div className=" flex w-full justify-between  p-3">
-        <div className="flex flex-col">
-          <h2 className="m-0 p-0">{title}</h2>
-          <h3 className="m-0 p-0">{subtitle}</h3>
+        <div className="flex flex-col font-bold">
+          <h2 className="m-0 p-0 text-xl">{title}</h2>
+          <h3 className="m-0 p-0 text-lg">{subtitle}</h3>
         </div>
         <CountdownCircleTimer
           isPlaying
@@ -48,7 +34,6 @@ export default function TimerScreen({
           {({ remainingTime }) => remainingTime}
         </CountdownCircleTimer>
       </div>
-      <div>{children}</div>
     </div>
   )
 }

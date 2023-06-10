@@ -1,4 +1,14 @@
 {
-  "i-play": "Jogar",
-  "i-create-room": "Criar sala"
+  "i-join": "Entrar",
+  "i-create-room": "Criar sala",
+  "i-how-to-play": "Como Jogar",
+  "i-terms-of-service": "Termos de Serviço",
+  "i-privacy-policy": "Política de Privacidade",
+  "i-contact": "Contato",
+  "i-nickname": "Apelido",
+  "i-select-picture-and-nickname": "Selecione uma foto e um apelido",
+  "i-invalid-nickname": "Apelido inválido",
+  "i-nickname-must-be-between-3-and-20-characters": "O apelido deve ter entre 3 e 20 caracteres",
+  "i-select-your-language": "Selecione seu idioma",
+  "i-error-joining-room": "Erro ao entrar na sala"
 }

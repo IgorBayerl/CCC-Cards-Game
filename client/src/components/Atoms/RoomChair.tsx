@@ -1,31 +1,6 @@
-import { createStyles } from '@mantine/core'
+import { TbMoodEmpty } from 'react-icons/tb'
 import { IPlayer } from '../GameContext'
-import CustomAvatar, { CustomAvatarEmpty } from './CustomAvatar'
 import PlayerItem from './PlayerItem'
-
-const useStyles = createStyles((theme) => ({
-  avatarWrapper: {
-    backgroundColor:
-      theme.colorScheme === 'dark'
-        ? theme.colors.dark[1]
-        : theme.colors.gray[1],
-    color:
-      theme.colorScheme === 'dark'
-        ? theme.colors.dark[9]
-        : theme.colors.gray[9],
-    padding: 4,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    gap: 10,
-    borderTopLeftRadius: theme.radius.xl,
-    borderBottomLeftRadius: theme.radius.xl,
-    borderTopRightRadius: theme.radius.md,
-    borderBottomRightRadius: theme.radius.md,
-    textTransform: 'capitalize',
-    width: 300,
-  },
-}))
 
 interface IRoomChairProps {
   player?: IPlayer
@@ -33,17 +8,11 @@ interface IRoomChairProps {
 }
 
 export default function RoomChair({ player, leader = false }: IRoomChairProps) {
-  const { classes } = useStyles()
-
   if (!player) {
     return (
-      <div className={classes.avatarWrapper}>
+      <div className="flex h-16 items-center rounded-xl bg-gray-200 px-2 py-1 font-bold dark:bg-neutral">
         <div className="flex items-center gap-2">
-          <CustomAvatarEmpty
-            src="http://localhost:3000/_next/image?url=%2Fprofile%2Fprofile_3.jpg&w=256&q=75"
-            size={60}
-            className="rounded-full"
-          />
+          <TbMoodEmpty size={35} opacity={0.5} />
           <div className="flex flex-col">Empty</div>
         </div>
       </div>
@@ -51,7 +20,7 @@ export default function RoomChair({ player, leader = false }: IRoomChairProps) {
   }
 
   return (
-    <div className={classes.avatarWrapper}>
+    <div className="rounded-xl bg-gray-200 px-2 py-1 text-xl font-bold dark:bg-neutral ">
       <PlayerItem player={player} leader={leader} />
     </div>
   )

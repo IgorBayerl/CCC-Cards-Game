@@ -1,4 +1,6 @@
+import { IDeckConfigScreen } from "./Deck"
+
 export interface IRoomConfig {
   roomSize: number
-  decks: Array<string>
+  decks: Array<IDeckConfigScreen>
 }

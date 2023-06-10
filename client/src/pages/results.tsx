@@ -1,12 +1,7 @@
 import { useGameContext } from '~/components/GameContext'
 import router from 'next/router'
 import Layout from '~/components/Layout/Layout'
-import {
-  ActionIcon,
-  Button,
-  createStyles,
-  useMantineTheme,
-} from '@mantine/core'
+
 import InGameLayout from '~/components/Layout/InGameLayout'
 import GameCard, { GameCardResult } from '~/components/Atoms/GameCard'
 import { ICard, ICardAnswer } from '~/models/Deck'
@@ -14,78 +9,7 @@ import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 import { CountdownCircleTimer } from 'react-countdown-circle-timer'
 import Image from 'next/image'
-import TimerScreen from '~/components/Layout/TimerScreen'
-
-const useStyles = createStyles((theme, _params, getRef) => {
-  const { colorScheme } = useMantineTheme()
-
-  return {
-    startingMessage: {
-      backgroundColor:
-        theme.colorScheme === 'dark'
-          ? theme.colors.red[1]
-          : theme.colors.red[3],
-    },
-    gameContainer: {
-      display: 'flex',
-      flexDirection: 'column',
-      justifyContent: 'space-between',
-      gap: theme.spacing.md,
-      borderRadius: theme.radius.md,
-      position: 'relative',
-    },
-    cardContainer: {
-      display: 'flex',
-      flexDirection: 'column',
-      justifyContent: 'space-between',
-      flexGrow: 1,
-    },
-    questionContainer: {
-      display: 'flex',
-      justifyContent: 'center',
-      marginTop: theme.spacing.lg,
-      marginBottom: theme.spacing.lg,
-    },
-    playerCards: {
-      display: 'flex',
-      justifyContent: 'center',
-      gap: theme.spacing.md,
-    },
-    confirmButton: {
-      display: 'flex',
-      justifyContent: 'center',
-      gap: theme.spacing.md,
-    },
-    questionCard: {
-      backgroundColor:
-        colorScheme === 'dark' ? theme.colors.red[4] : theme.colors.red[6],
-      color:
-        colorScheme === 'dark' ? theme.colors.dark[9] : theme.colors.gray[9],
-    },
-    answerCard: {
-      backgroundColor:
-        colorScheme === 'dark' ? theme.colors.teal[4] : theme.colors.teal[6],
-      color:
-        colorScheme === 'dark' ? theme.colors.dark[9] : theme.colors.gray[9],
-    },
-    cardSizePortrait: {
-      width: 130,
-      aspectRatio: '3/4',
-    },
-    cardSizePortraitSelected: {
-      width: 200,
-      aspectRatio: '3/4',
-    },
-    cardBorder: {
-      border: `2px solid ${
-        colorScheme === 'dark' ? theme.colors.dark[4] : theme.colors.gray[4]
-      }`,
-    },
-    selectedGroup: {
-      border: `2px solid ${theme.colors.blue[6]}`, // Adjust the color and border thickness as you need
-    },
-  }
-})
+import TimerTitle from '~/components/Layout/TimerScreen'
 
 export default function Results() {
   const { socket, gameState, isCurrentUserLeader } = useGameContext()
@@ -93,8 +17,6 @@ export default function Results() {
   const handleGoToNextRound = () => {
     socket?.emit('game:admCommand', 'next_round')
   }
-
-  const { classes } = useStyles()
 
   const lastRoundResults = gameState.lastRound
 
@@ -156,57 +78,59 @@ export default function Results() {
     )
   }
 
+  const resultCardAnswer =
+    lastRoundWinnerAnswers?.map((card) => card.text) || []
+
   return (
-    <Layout>
-      <InGameLayout>
-        <TimerScreen
+    <InGameLayout>
+      <div className="bg-destaque-mobile flex flex-1 flex-col py-2 md:mx-4">
+        <TimerTitle
+          key="roundWinner"
           subtitle="Round winner!"
           time={time}
           handleTimeout={handleTimeout}
-        >
-          <div className={classes.gameContainer}>
-            <div className="flex flex-col items-center gap-3 ">
-              <div className="flex flex-col items-center gap-10  lg:flex-row">
-                <div>
-                  <div>
-                    <div className="flex flex-col items-center">
-                      <Image
-                        src={winner?.pictureUrl || ''}
-                        alt={winner?.username || ''}
-                        width={100}
-                        height={100}
-                        className="rounded-full"
-                      />
-                      <h3>{winner?.username}</h3>
-                    </div>
+        />
+        <div className="flex flex-1 items-center ">
+          <div className="flex flex-1 flex-col items-center gap-3">
+            <Image
+              src={winner?.pictureUrl || ''}
+              alt={winner?.username || ''}
+              width={100}
+              height={100}
+              className="rounded-full border-4 border-neutral dark:border-white"
+            />
+            <h1 className="text-xl font-bold">{winner?.username}</h1>
+            <div className="mx-5 flex  flex-1 flex-col items-center gap-10 lg:flex-row">
+              <div className="chat chat-end ">
+                <div className="chat-image avatar">
+                  <div className="w-10 rounded-full">
+                    <Image
+                      src={winner?.pictureUrl || ''}
+                      alt={winner?.username || ''}
+                      width={100}
+                      height={100}
+                      className="rounded-full"
+                    />
                   </div>
                 </div>
-                <div className="flex items-center gap-3">
+                <div className="chat-bubble bg-gray-200 text-gray-800 dark:bg-neutral dark:text-gray-200">
                   <GameCardResult
                     question={lastRoundQuestionCard.text}
-                    answers={
-                      lastRoundWinnerAnswers?.map((card) => card.text) || []
-                    }
+                    answers={resultCardAnswer}
                   />
-                  {/* <div className={classes.questionContainer}>
-                  {<GameCard cardInfo={lastRoundQuestionCard} />}
-                </div>
-                <div className={classes.playerCards}>
-                  {lastRoundWinnerAnswers?.map((card) => (
-                    <GameCard key={card.id} cardInfo={card} />
-                  ))}
-                </div> */}
                 </div>
               </div>
-              {isCurrentUserLeader && (
-                <div className={classes.confirmButton}>
-                  <Button onClick={handleGoToNextRound}>Next Round</Button>
-                </div>
-              )}
             </div>
           </div>
-        </TimerScreen>
-      </InGameLayout>
-    </Layout>
+        </div>
+      </div>
+      {isCurrentUserLeader && (
+        <div className="flex items-center justify-center px-4 py-2">
+          <button className="btn flex-1" onClick={handleGoToNextRound}>
+            Next Round
+          </button>
+        </div>
+      )}
+    </InGameLayout>
   )
 }

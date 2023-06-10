@@ -10,7 +10,12 @@ import { toast } from 'react-toastify'
 import { type Socket } from 'socket.io-client'
 import { useSocketContext } from '~/components/SocketContext'
 import { TPlayerStatus } from '~/lib/playerUtils'
-import { ICard, ICardAnswer, ICardQuestion } from '~/models/Deck'
+import {
+  ICard,
+  ICardAnswer,
+  ICardQuestion,
+  IDeckConfigScreen,
+} from '~/models/Deck'
 
 interface IGameContextValue {
   myId: string
@@ -33,7 +38,7 @@ interface IGameContextValue {
 type AdmCommand = 'start' | 'next_round' | 'end'
 
 interface IGameConfig {
-  decks: string[]
+  decks: IDeckConfigScreen[]
   scoreToWin: number
   roomSize: number
   time: number
@@ -205,7 +210,6 @@ const GameProvider: React.FC<IGameProviderProps> = ({ children }) => {
       cards,
     }))
   }
-
 
   const handleError = (socketError: ISocketError) => {
     const { message, error } = socketError
