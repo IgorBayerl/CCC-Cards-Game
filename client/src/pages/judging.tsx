@@ -8,7 +8,8 @@ import { ICard, ICardAnswer } from '~/models/Deck'
 import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 import { CountdownCircleTimer } from 'react-countdown-circle-timer'
-import TimerScreen from '~/components/Layout/TimerScreen'
+import TimerTitle from '~/components/Layout/TimerScreen'
+import LoadingWithText from '~/components/Atoms/LoadingWithText'
 
 interface IUpdateResultCards {
   hasNext: boolean
@@ -150,47 +151,48 @@ export default function Judging() {
 
   // TODO: add a timer
   // TODO: change the layout to look more like a chat than a card game
+
+  const answersCardText = lastCards?.map((card) => card.text) || []
+
   return (
-    <Layout>
       <InGameLayout>
-        <TimerScreen
-          subtitle="Judging"
-          time={time}
-          handleTimeout={handleTimerTimeout}
-        >
-          <div className="">
-            <div className="">
-              <div className="">
+        <div className="bg-destaque-mobile flex flex-1 flex-col py-2 md:mx-4">
+          <TimerTitle
+            key={resetKey}
+            subtitle="Judging"
+            time={time}
+            handleTimeout={handleTimerTimeout}
+          />
+          <div className="flex flex-col flex-1">
+            <div className="flex flex-1 flex-col justify-between">
+              <div className="flex-1 flex justify-center items-center">
                 {currentQuestionCard && (
-                  <>
-                    <GameCard cardInfo={currentQuestionCard} selected={false} />
-                    {/* <GameCardResult
-                    // TODO: make it show the selected card when the judge is deciding 
+                    <GameCardResult
                       question={currentQuestionCard.text}
-                      answers={lastCards?.map((card) => card.text) || []}
-                    /> */}
-                  </>
+                      answers={answersCardText}
+                    />
                 )}
               </div>
+              <div className="">
+                {seeIndividualResults &&
+                  lastCards?.map((card, index) => (
+                    <div key={index} className="">
+                      <GameCard cardInfo={card} selected={false} />
+                    </div>
+                  ))}
+              </div>
 
-              {seeIndividualResults &&
-                lastCards?.map((card, index) => (
-                  <div key={index} className="">
-                    <GameCard cardInfo={card} selected={false} />
-                  </div>
-                ))}
-
-              <div className="flex justify-center gap-3">
+              <div className="grid grid-cols-1 gap-2 lg:grid-cols-2">
                 {
                   // all results
                   seeAllResults &&
                     Object.entries(cards).map(([playerId, cardList]) => (
                       <div
                         key={playerId}
-                        className={`flex flex-col gap-5  ${
+                        className={`flex flex-col gap-1  ${
                           selectedGroup && selectedGroup.playerId === playerId
                             ? 'border-2 border-primary'
-                            : ''
+                            : 'border-2 border-transparent'
                         }`}
                         onClick={() => handleGroupClick(playerId, cardList)}
                       >
@@ -204,24 +206,75 @@ export default function Judging() {
                 }
               </div>
             </div>
-            {isCurrentUserJudge && (
-              <div className="">
-                {seeGoToAllResultsBtn && (
-                  <button onClick={handleSeeResults} color="teal">
-                    See all results
-                  </button>
-                )}
-                {seeNextBtn && <button onClick={handleNextCard}>Next</button>}
-                {seeConfirmBtn && (
-                  <button disabled={!enableConfirmBtn} onClick={handleConfirm}>
-                    Confirm
-                  </button>
-                )}
-              </div>
-            )}
+            
           </div>
-        </TimerScreen>
+        </div>
+        <JudgeActions
+              isCurrentUserJudge={isCurrentUserJudge}
+              seeGoToAllResultsBtn={seeGoToAllResultsBtn}
+              handleSeeResults={handleSeeResults}
+              seeNextBtn={seeNextBtn}
+              handleNextCard={handleNextCard}
+              seeConfirmBtn={seeConfirmBtn}
+              enableConfirmBtn={enableConfirmBtn}
+              handleConfirm={handleConfirm}
+            />
+        {!isCurrentUserJudge && (
+          <div className="flex items-center justify-center px-4 py-2">
+            <LoadingWithText text="Wait the judge." /> 
+          </div>
+        )}
       </InGameLayout>
-    </Layout>
   )
 }
+
+interface IJudgeActionsProps {
+  isCurrentUserJudge: boolean
+  seeGoToAllResultsBtn: boolean
+  handleSeeResults: () => void
+  seeNextBtn: boolean
+  handleNextCard: () => void
+  seeConfirmBtn: boolean
+  enableConfirmBtn: boolean
+  handleConfirm: () => void
+}
+
+export const JudgeActions: React.FC<IJudgeActionsProps> = ({
+  isCurrentUserJudge,
+  seeGoToAllResultsBtn,
+  handleSeeResults,
+  seeNextBtn,
+  handleNextCard,
+  seeConfirmBtn,
+  enableConfirmBtn,
+  handleConfirm,
+}) => {
+  if (!isCurrentUserJudge) {
+    return null
+  }
+  return (
+    <div className="flex items-center justify-center px-4 py-2">
+      {seeGoToAllResultsBtn && (
+        <button className='btn flex-1' onClick={handleSeeResults} >
+          See all results
+        </button>
+      )}
+      {seeNextBtn && <button className='btn flex-1' onClick={handleNextCard}>Next</button>}
+      {seeConfirmBtn && (
+        <button className='btn flex-1' disabled={!enableConfirmBtn} onClick={handleConfirm}>
+          Confirm
+        </button>
+      )}
+    </div>
+  )
+}
+
+{/* <div className="flex items-center justify-center px-4 py-2">
+          <button
+            className="btn flex-1"
+            onClick={handleConfirm}
+            disabled={!canConfirm}
+          >
+            Confirm
+          </button>
+        </div> */}

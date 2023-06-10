@@ -3,10 +3,12 @@ import router from 'next/router'
 import Layout from '~/components/Layout/Layout'
 
 import InGameLayout from '~/components/Layout/InGameLayout'
-import GameCard from '~/components/Atoms/GameCard'
+import GameCard, { GameCardResult } from '~/components/Atoms/GameCard'
 import { ICard, ICardAnswer } from '~/models/Deck'
 import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
+import Image from 'next/image'
+import ConfettiExplosion from 'react-confetti-explosion';
 
 interface IUpdateResultCards {
   hasNext: boolean
@@ -20,7 +22,7 @@ export default function End() {
     gameState,
     startingState,
     playerSelectCards,
-    isCurrentUserJudge,
+    isCurrentUserLeader,
   } = useGameContext()
   const myCards = myHand.cards
 
@@ -29,14 +31,66 @@ export default function End() {
 
   const winner = players.reduce(
     (prev, current) => (prev.score > current.score ? prev : current),
-    { score: -Infinity, username: 'No players' }
+    { 
+      score: -Infinity, 
+      username: 'No players', 
+      id: '', 
+      pictureUrl: '' 
+    }
   )
 
-  function handleStartNewGame() {
+  const [keyTest, setKeyTest] = useState(0)
+
+  function explodeConfetti() {
+    setKeyTest((prev) => prev + 1)
     // TODO: implement this
     // socket?.emit('start-new-game')
   }
 
+  function handleStartNewGame() {
+    setKeyTest((prev) => prev + 1)
+    // TODO: implement this
+    // socket?.emit('start-new-game')
+  }
+
+  return (
+    <InGameLayout>
+      <div className="bg-destaque-mobile flex flex-1 flex-col py-2 md:mx-4">
+        <h1 className='font-bold text-xl'>
+          Match Winner
+        </h1>
+        <div className="flex flex-1 items-center ">
+          <div className="flex flex-col items-center gap-3 flex-1">
+            <ConfettiExplosion key={keyTest} />
+            <Image
+              src={winner?.pictureUrl || ''}
+              alt={winner?.username || ''}
+              width={100}
+              height={100}
+              className="rounded-full border-4 dark:border-white border-neutral"
+              onClick={explodeConfetti}
+            />
+            <h1 
+              className='text-xl font-bold' 
+              onClick={explodeConfetti}
+            >
+              {winner?.username}
+            </h1>
+          </div>
+        </div>
+      </div>
+      {isCurrentUserLeader && (
+        <div className="flex items-center justify-center px-4 py-2">
+          <button
+            className="btn flex-1"
+            onClick={handleStartNewGame}
+          >
+            Play Again
+          </button>
+        </div>
+      )}
+    </InGameLayout>
+)
   return (
     <Layout>
       <InGameLayout>

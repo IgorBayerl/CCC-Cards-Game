@@ -1,9 +1,11 @@
 export default function Loading() {
   return (
-    <>
-      <div className="absolute bottom-1/2 right-1/2  translate-x-1/2 translate-y-1/2 transform ">
-        <div className="h-64 w-64 animate-spin  rounded-full border-8 border-solid border-blue-400 border-t-transparent"></div>
+    <div className="flex items-center justify-center">
+      <div className="relative inline-flex">
+        <div className="h-8 w-8 rounded-full bg-blue-500"></div>
+        <div className="absolute left-0 top-0 h-8 w-8 animate-ping rounded-full bg-blue-500"></div>
+        <div className="absolute left-0 top-0 h-8 w-8 animate-pulse rounded-full bg-blue-500"></div>
       </div>
-    </>
-  );
+    </div>
+  )
 }

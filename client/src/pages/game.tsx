@@ -3,7 +3,7 @@ import router from 'next/router'
 import Layout from '~/components/Layout/Layout'
 
 import InGameLayout from '~/components/Layout/InGameLayout'
-import GameCard from '~/components/Atoms/GameCard'
+import GameCard, { GameCardResult } from '~/components/Atoms/GameCard'
 import { ICard } from '~/models/Deck'
 import { useState } from 'react'
 import { toast } from 'react-toastify'
@@ -11,6 +11,8 @@ import { CountdownCircleTimer } from 'react-countdown-circle-timer'
 import useSound from 'use-sound'
 import { useAudio } from '~/components/AudioContext'
 import TimerTitle from '~/components/Layout/TimerScreen'
+import Loading from '~/components/Atoms/Loading'
+import LoadingWithText from '~/components/Atoms/LoadingWithText'
 
 export default function Game() {
   const {
@@ -52,7 +54,7 @@ export default function Game() {
   }
 
   // const time = gameState.config.time
-  const time = 999999
+  const time = 30
 
   const handleTimeout = () => {
     console.log('Timeout triggered')
@@ -106,6 +108,8 @@ export default function Game() {
     !isCurrentUserJudge &&
     myStatus === 'pending'
 
+  const selectedCardsTextArray = selectedCards.map((card) => card.text) || []
+
   if (gameState.status === 'starting') {
     return (
       <Layout>
@@ -118,21 +122,23 @@ export default function Game() {
     <InGameLayout>
       <div className="bg-destaque-mobile flex flex-1 flex-col py-2 md:mx-4">
         <TimerTitle
+          key="Choose your cards"
           subtitle="Choose the best fit card(s)"
           time={time}
           handleTimeout={handleTimeout}
         />
         <div className="flex h-full flex-1 flex-col justify-between ">
-          <div className="flex flex-1 items-center justify-center">
+          <div className="flex flex-1 items-center justify-center px-3">
             {currentQuestionCard && (
-              <GameCard cardInfo={currentQuestionCard} selected={false} />
+              <GameCardResult
+                question={currentQuestionCard.text}
+                answers={selectedCardsTextArray}
+              />
             )}
           </div>
 
           {isCurrentUserJudge && (
-            <div className="flex justify-center text-xl">
-              <h2>Just wait the other players finish</h2>
-            </div>
+            <LoadingWithText text="You are the Judge of the round, wait the others to play." /> 
           )}
           {!isCurrentUserJudge && (
             <div className="grid grid-cols-1 gap-2 lg:grid-cols-2">

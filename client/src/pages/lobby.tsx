@@ -20,6 +20,7 @@ import classNames from 'classnames'
 import { TypeOf } from 'zod'
 import Image from 'next/image'
 import { AnimatePresence, motion } from 'framer-motion'
+import LoadingWithText from '~/components/Atoms/LoadingWithText'
 
 const languagesMock = [
   { id: 'en', name: 'English' },
@@ -114,11 +115,6 @@ export default function LobbyPage() {
 
     void share(data)
   }
-
-  const decks = decksResponse.data
-
-  const scoreToWin = gameConfig?.scoreToWin?.toString() || '10'
-  const timeToPlay = gameConfig?.time?.toString() || '60'
 
   const renderTabContent = () => {
     switch (activeTab) {
@@ -233,98 +229,11 @@ export default function LobbyPage() {
               </div>
             )}
             {!isCurrentUserLeader && (
-              <>
-                <span className="loading-spinner loading">Loading</span> Waiting
-                for the host to setup and start the game.
-              </>
+              <LoadingWithText text="Waiting for the host to setup and start the game." /> 
+
             )}
           </div>
         </div>
-
-        {/* <div className="flex flex-col sm:flex-row">
-          <div className="flex min-w-fit flex-col gap-5">
-            <select
-              className="select"
-              disabled={!isCurrentUserLeader}
-              value={roomSize}
-              onChange={handleChangeRoomSize}
-            >
-              {Array.from({ length: 17 }, (_, i) => i + 4).map((i) => (
-                <option
-                  className="text-lg"
-                  key={i}
-                  value={i.toString()}
-                >{`${i} Players`}</option>
-              ))}
-            </select>
-            <PlayersList
-              players={gameState.players}
-              leader={gameState.leader}
-              roomSize={gameConfig.roomSize}
-            />
-          </div>
-          <div className="">
-            <div>
-              <div defaultValue="decks">
-                <div className="tabs">
-                  <a className="tab-lifted tab">Decks Selection</a>
-                  <a className="tab-lifted tab tab-active">Settings</a>
-                  <a className="tab-lifted tab">Tab 3</a>
-                </div>
-
-                <div value="decks">
-                  <div className="grid max-h-[65vh] grid-cols-1 items-stretch gap-2  p-3 md:grid-cols-2 lg:grid-cols-4">
-                    {decks.length === 0 && (
-                      <div className="text-center">No decks found</div>
-                    )}
-                    {decks.map((deck: IDeckConfigScreen) => (
-                      <CheckBoxCard
-                        key={deck.id}
-                        id={deck.id}
-                        disabled={!isCurrentUserLeader}
-                        selected={gameConfig.decks.includes(deck.id)}
-                        onChange={handleChangeSelectedCards}
-                      >
-                        <div>{deck.language}</div>
-                        <h1 className="my-0">{deck.name}</h1>
-                        <p>{deck.description}</p>
-                      </CheckBoxCard>
-                    ))}
-                  </div>
-                </div>
-                <div value="settings">
-                  <div className="flex flex-col items-center">
-                    <div className="px-4 py-2 text-center">Score to win</div>
-                    <select
-                      className="select w-full max-w-xs"
-                      onChange={(e) => handleChangeScoreToWin(e.target.value)}
-                      disabled={!isCurrentUserLeader}
-                      value={scoreToWin}
-                    >
-                      {Array.from({ length: 27 }, (_, i) => i + 4).map((i) => (
-                        <option value={i.toString()}>{`${i} Points`}</option>
-                      ))}
-                    </select>
-                    <div className="px-4 py-2 text-center">Time</div>
-
-                    <select
-                      className="select w-full max-w-xs"
-                      onChange={(e) => handleChangeTimeToPlay(e.target.value)}
-                      disabled={!isCurrentUserLeader}
-                      value={timeToPlay}
-                    >
-                      {Array.from({ length: 6 }, (_, i) => (i + 1) * 10).map(
-                        (i) => (
-                          <option value={i.toString()}>{`${i} Seconds`}</option>
-                        )
-                      )}
-                    </select>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div> */}
       </div>
     </div>
   )
@@ -565,8 +474,6 @@ function LobbyDecksTab() {
     setConfig({ ...gameConfig, decks: newSelectedDecks })
   }
 
-  // const decksList = isCurrentUserLeader ? decksMockResponse : gameConfig.decks
-
   const decksList: IDeckConfigScreen[] = isCurrentUserLeader
     ? decksMockResponse.map((deck) => ({
         ...deck,
@@ -691,8 +598,6 @@ function LobbyDecksTab() {
           </ul>
         </label>
       </label>
-
-      {/* The same for language */}
 
       <input
         type="checkbox"

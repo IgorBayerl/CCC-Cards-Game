@@ -46,12 +46,13 @@ export const GameCardResult: React.FC<IGameCardResultProps> = ({
   question,
   answers,
 }) => {
-  const answersIterator: Iterator<string> = answers[Symbol.iterator]()
+
+  let answersIndex = 0
 
   const processedQuestion = question.split('___').map((part, index) => {
-    const iteratorResult = answersIterator.next()
-    if (!iteratorResult.done) {
-      const answer = iteratorResult.value
+    if (answersIndex < answers.length) {
+      const answer = answers[answersIndex]
+      answersIndex++
       return (
         <React.Fragment key={index}>
           {part}
@@ -59,12 +60,13 @@ export const GameCardResult: React.FC<IGameCardResultProps> = ({
         </React.Fragment>
       )
     }
-    return part
+    return part + (index !== question.split('___').length - 1 ? '___' : '')
   })
 
   return (
-    <div className="">
+    <div className="text-center text-xl">
       <p>{processedQuestion}</p>
     </div>
   )
 }
+

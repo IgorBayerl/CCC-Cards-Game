@@ -21,6 +21,7 @@
     "next": "^13.2.4",
     "next-translate": "^2.0.5",
     "react": "18.2.0",
+    "react-confetti-explosion": "^2.1.2",
     "react-countdown-circle-timer": "^3.2.1",
     "react-dom": "18.2.0",
     "react-icons": "^4.8.0",
