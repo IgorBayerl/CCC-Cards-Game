@@ -4,6 +4,7 @@ import { SocketProvider } from '~/components/SocketContext'
 import { GameProvider } from '~/components/GameContext'
 
 import Head from 'next/head'
+import Script from 'next/script'
 import { useState } from 'react'
 import { QueryClient, QueryClientProvider } from 'react-query'
 import { ReactQueryDevtools } from 'react-query/devtools'
@@ -11,6 +12,7 @@ import { ReactQueryDevtools } from 'react-query/devtools'
 import 'react-toastify/dist/ReactToastify.css'
 import '~/styles/globals.css'
 import { AudioProvider } from '~/components/AudioContext'
+import TrackingCode from '~/components/TrackingCode'
 
 const url = process.env.NEXT_PUBLIC_GAME_SERVER || 'http://localhost:3365'
 
@@ -19,6 +21,7 @@ const queryClient = new QueryClient()
 const MyApp: AppType = ({ Component, pageProps }) => {
   return (
     <>
+      <TrackingCode/>
       <Head>
         <title>CCC - Cyber Chaos Cards</title>
         <meta
@@ -43,28 +46,8 @@ const MyApp: AppType = ({ Component, pageProps }) => {
           content="Cyber Chaos Cards, Online Game, Cards Against Humanity, Digital Card Game, Multiplayer, Social Game, Adult Humor, Interactive Entertainment, Online Gaming, Virtual Game Night"
         />
         <meta name="robots" content="index, follow" />
-        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta httpEquiv="Content-Type" content="text/html; charset=utf-8" />
         <meta name="author" content="Igor Bayerl" />
-
-        <script
-          async
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3354864508700429"
-          crossOrigin="anonymous"
-        ></script>
-        <script
-          async
-          src="https://www.googletagmanager.com/gtag/js?id=G-TB0SDCXYQY"
-        />
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', 'G-TB0SDCXYQY');
-            `,
-          }}
-        />
       </Head>
       <ToastContainer />
       <QueryClientProvider client={queryClient}>

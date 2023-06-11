@@ -245,7 +245,7 @@ export default function Home() {
             </div>
           </div>
           <div className=" hidden aspect-[8/10] p-2 dark:border-gray-600 md:h-full md:w-1/3 md:rounded-xl md:border-2 lg:block lg:h-96 lg:w-auto">
-            <TutorialCarousel />
+            {/* <TutorialCarousel /> */}
           </div>
         </div>
         <Footer />
