@@ -10,5 +10,6 @@
   "i-invalid-nickname": "Apelido inválido",
   "i-nickname-must-be-between-3-and-20-characters": "O apelido deve ter entre 3 e 20 caracteres",
   "i-select-your-language": "Selecione seu idioma",
-  "i-error-joining-room": "Erro ao entrar na sala"
+  "i-error-joining-room": "Erro ao entrar na sala",
+  "i-cool-nickname": "NomeLegal"
 }

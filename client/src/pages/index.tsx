@@ -20,7 +20,6 @@ import CCCIconThemed from '~/components/Atoms/CCCIconThemed'
 import Link from 'next/link'
 import { z } from 'zod'
 import ConnectionStatus from '~/components/Atoms/ConnectionStatus'
-import { toast } from 'react-toastify'
 
 const profilePictures = [
   '/profile/profile_1.webp',
@@ -127,8 +126,9 @@ export default function Home() {
    * CoolNickname + 4 random characters
    */
   const handleGenerateFallbackUsername = () => {
-    const randomUsername =
-      'CoolNickname_' + Math.random().toString(36).slice(-4).toUpperCase()
+    const coolNameText = t('i-cool-nickname')
+    const randomString = Math.random().toString(36).slice(-4).toUpperCase()
+    const randomUsername = `${coolNameText}_${randomString}`
     setFallbackUsername(randomUsername)
   }
 

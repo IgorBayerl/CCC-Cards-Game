@@ -10,5 +10,6 @@
   "i-invalid-nickname": "Invalid nickname",
   "i-nickname-must-be-between-3-and-20-characters": "Nickname must be between 3 and 20 characters long",
   "i-select-your-language": "Select your language",
-  "i-error-joining-room": "Error joining room"
+  "i-error-joining-room": "Error joining room",
+  "i-cool-nickname": "CoolNickname"
 }

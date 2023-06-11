@@ -21,6 +21,7 @@ import { TypeOf } from 'zod'
 import Image from 'next/image'
 import { AnimatePresence, motion } from 'framer-motion'
 import LoadingWithText from '~/components/Atoms/LoadingWithText'
+import useTranslation from 'next-translate/useTranslation'
 
 const languagesMock = [
   { id: 'en', name: 'English' },
@@ -62,6 +63,8 @@ export default function LobbyPage() {
     admCommand,
   } = useGameContext()
 
+  const { t } = useTranslation('lobby')
+
   const playersList = gameState.players
   const roomSize = gameConfig?.roomSize?.toString() || '4'
 
@@ -69,7 +72,15 @@ export default function LobbyPage() {
   const decksResponse = useQuery('get-decks', getDecks)
   const share = useShare()
 
-  const tabs = ['Decks Selection', 'Settings']
+  // const tabs = ['decks_selection_tab', 'settings_tab']
+
+  const tabsNames = {
+    decks_selection_tab: 'i-decks-selection-tab',
+    settings_tab: 'i-settings-tab',
+  }
+
+  const tabs = Object.keys(tabsNames) as (keyof typeof tabsNames)[]
+
   const [activeTab, setActiveTab] = useState(tabs[0])
 
   const handleLeaveRoom = () => {
@@ -108,8 +119,8 @@ export default function LobbyPage() {
 
   const handleShareClicked = () => {
     const data = {
-      title: 'CCC - Cards Against Humanity',
-      text: 'Join my game!',
+      title: 'CCC - Cyber Chaos Cards',
+      text: t('i-join-my-game'),
       url: roomInviteLink,
     }
 
@@ -118,9 +129,9 @@ export default function LobbyPage() {
 
   const renderTabContent = () => {
     switch (activeTab) {
-      case 'Decks Selection':
+      case 'decks_selection_tab':
         return <LobbyDecksTab />
-      case 'Settings':
+      case 'settings_tab':
         return <LobbySettingsTab />
       default:
         return <LobbyDecksTab />
@@ -194,7 +205,7 @@ export default function LobbyPage() {
                   )}
                   onClick={() => setActiveTab(tab)}
                 >
-                  {tab}
+                  {t(tabsNames[tab])}
                 </a>
               ))}
             </div>
