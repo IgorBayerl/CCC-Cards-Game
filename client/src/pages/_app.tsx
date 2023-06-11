@@ -26,15 +26,21 @@ const MyApp: AppType = ({ Component, pageProps }) => {
           content="minimum-scale=1, initial-scale=1, width=device-width"
         />
         <link rel="icon" type="image/x-icon" href="icon_dark.ico" />
-        
-        <script async src="https://www.googletagmanager.com/gtag/js?id=G-TB0SDCXYQY"></script>
-        <script>
-          window.dataLayer = window.dataLayer || [];
-          function gtag(){dataLayer.push(arguments);}
-          gtag('js', new Date());
 
-          gtag('config', 'G-TB0SDCXYQY');
-        </script>
+        <script
+          async
+          src="https://www.googletagmanager.com/gtag/js?id=G-TB0SDCXYQY"
+        />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-TB0SDCXYQY');
+            `,
+          }}
+        />
       </Head>
       <ToastContainer />
       <QueryClientProvider client={queryClient}>
