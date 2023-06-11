@@ -4,6 +4,9 @@
   "pages": {
     "*": ["common"],
     "/game": ["game"],
-    "/lobby": ["lobby"]
+    "/lobby": ["lobby", "game"],
+    "/judging": ["game"],
+    "/results": ["game"],
+    "/end": ["game"]
   }
 }

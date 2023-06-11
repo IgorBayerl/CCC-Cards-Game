@@ -127,8 +127,8 @@ export default function Home() {
    */
   const handleGenerateFallbackUsername = () => {
     const coolNameText = t('i-cool-nickname')
-    const randomString = Math.random().toString(36).slice(-4).toUpperCase()
-    const randomUsername = `${coolNameText}_${randomString}`
+    const randomString = Math.random().toString().slice(-4).toUpperCase()
+    const randomUsername = `${coolNameText}${randomString}`
     setFallbackUsername(randomUsername)
   }
 

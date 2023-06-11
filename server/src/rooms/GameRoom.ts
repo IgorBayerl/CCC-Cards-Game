@@ -61,7 +61,7 @@ export default class GameRoom extends Room {
     io: Server,
     // TODO: Remove this default decks in the future
     config: IGameConfig = {
-      roomSize: 6,
+      roomSize: 14,
       decks: [],
       scoreToWin: 8,
       time: 20,
@@ -286,6 +286,16 @@ export default class GameRoom extends Room {
 
   startGame(socket: Socket): void {
     console.log('>>> starting game...')
+
+    if (this.decks.length < 1) {
+      console.log('>>> no decks selected')
+      this.startingStatusUpdate('>>> no decks selected')
+      socket.emit('game:error', {
+        message: 'Select at least one deck to start the game.',
+        error: 'NO_DECKS_SELECTED',
+      })
+      return
+    }
 
     this.status = 'starting'
     this.broadcastState()

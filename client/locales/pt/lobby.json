@@ -1,6 +1,13 @@
 {
-  "i-back-text": "Voltar",
   "i-join-my-game": "Junte-se ao meu jogo!",
   "i-settings-tab": "Configurações",
-  "i-decks-selection-tab": "Seleção de Decks"
+  "i-decks-selection-tab": "Seleção de Decks",
+  "i-start-game": "Começar Jogo",
+  "i-invite": "Convidar",
+  "i-players": "Jogadores",
+  "i-waiting-the-host-start-the-game": "Esperando o Lider da sala configurar e iniciar o jogo.",
+  "i-points": "Pontos",
+  "i-score-to-win": "Pontos para vitoria.",
+  "i-time": "Tempo",
+  "i-seconds": "Segundos"
 }

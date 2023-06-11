@@ -1,6 +1,13 @@
 {
-  "i-back-text": "Back",
   "i-join-my-game": "Join my game!",
   "i-settings-tab": "Settings",
-  "i-decks-selection-tab": "Decks Selection"
+  "i-decks-selection-tab": "Decks Selection",
+  "i-start-game": "Start Game",
+  "i-invite": "Invite",
+  "i-players": "Players",
+  "i-waiting-the-host-start-the-game": "Waiting for the room leader to setup and start the game.",
+  "i-points": "Points",
+  "i-score-to-win": "Score To Win",
+  "i-time": "Time",
+  "i-seconds": "Seconds"
 }

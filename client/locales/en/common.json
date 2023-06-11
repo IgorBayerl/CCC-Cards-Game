@@ -1,4 +1,5 @@
 {
+  "i-back-text": "Back",
   "i-join": "Join",
   "i-create-room": "Create Room",
   "i-how-to-play": "How to play",
@@ -11,5 +12,6 @@
   "i-nickname-must-be-between-3-and-20-characters": "Nickname must be between 3 and 20 characters long",
   "i-select-your-language": "Select your language",
   "i-error-joining-room": "Error joining room",
-  "i-cool-nickname": "CoolNickname"
+  "i-cool-nickname": "CoolNickname",
+  "i-link-copied": "Link Copied!"
 }

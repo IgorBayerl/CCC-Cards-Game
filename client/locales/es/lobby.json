@@ -1,6 +1,13 @@
 {
-  "i-back-text": "Atrás",
   "i-join-my-game": "Unirse a mi juego",
   "i-settings-tab": "Ajustes",
-  "i-decks-selection-tab": "Selección de mazos"
+  "i-decks-selection-tab": "Selección de mazos",
+  "i-start-game": "Empezar juego",
+  "i-invite": "Invitar",
+  "i-players": "Jugadores",
+  "i-waiting-the-host-start-the-game": "Esperando a que el líder de la sala configure y comience el juego",
+  "i-points": "Puntos",
+  "i-score-to-win": "Puntuación para ganar",
+  "i-time": "Tiempo",
+  "i-seconds": "Segundos"
 }

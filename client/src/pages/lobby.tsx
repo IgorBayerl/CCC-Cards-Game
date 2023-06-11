@@ -164,13 +164,13 @@ export default function LobbyPage() {
                   className="text-lg"
                   key={i}
                   value={i.toString()}
-                >{`${i} Players`}</option>
+                >{`${i} ${t('i-players')}`}</option>
               ))}
             </select>
           </div>
         </div>
         <div className="flex h-full overflow-clip">
-          <div className="hidden flex-col gap-2 md:flex">
+          <div className="hidden flex-col gap-2 p-1 md:flex">
             <select
               className="select-bordered select w-full"
               disabled={!isCurrentUserLeader}
@@ -182,7 +182,7 @@ export default function LobbyPage() {
                   className="text-lg"
                   key={i}
                   value={i.toString()}
-                >{`${i} Players`}</option>
+                >{`${i} ${t('i-players')}`}</option>
               ))}
             </select>
 
@@ -216,7 +216,10 @@ export default function LobbyPage() {
             {isCurrentUserLeader && (
               <div className="flex justify-center gap-5 px-4 py-2">
                 <div className="hidden flex-1 md:flex">
-                  <CopyToClipboard text="Invite" content={roomInviteLink} />
+                  <CopyToClipboard
+                    text={t('i-invite')}
+                    content={roomInviteLink}
+                  />
                 </div>
                 <div className="flex flex-1 md:hidden">
                   <button
@@ -224,7 +227,7 @@ export default function LobbyPage() {
                     onClick={handleShareClicked}
                   >
                     <Link size={25} weight="bold" />
-                    <div>Invite</div>
+                    <div>{t('i-invite')}</div>
                     <div />
                   </button>
                 </div>
@@ -234,13 +237,13 @@ export default function LobbyPage() {
                   onClick={handleStartGame}
                 >
                   <Play size={25} weight="bold" />
-                  <div>Start Game</div>
+                  <div>{t('i-start-game')}</div>
                   <div />
                 </button>
               </div>
             )}
             {!isCurrentUserLeader && (
-              <LoadingWithText text="Waiting for the host to setup and start the game." />
+              <LoadingWithText text={t('i-waiting-the-host-start-the-game')} />
             )}
           </div>
         </div>
@@ -250,6 +253,7 @@ export default function LobbyPage() {
 }
 
 function LobbySettingsTab() {
+  const { t } = useTranslation('lobby')
   const { gameConfig, setConfig, isCurrentUserLeader } = useGameContext()
 
   const handleChangeScoreToWin = (value: string) => {
@@ -270,7 +274,7 @@ function LobbySettingsTab() {
       <div className="flex flex-col gap-2">
         <label htmlFor="score-to-win" className="flex gap-3">
           <Trophy size={24} weight="bold" />
-          Score To Win
+          {t('i-score-to-win')}
         </label>
         <select
           className="select-bordered select"
@@ -280,18 +284,9 @@ function LobbySettingsTab() {
           value={scoreToWin}
         >
           {Array.from({ length: 27 }, (_, i) => i + 4).map((i) => (
-            <option
-              className="text-lg"
-              key={i}
-              value={i.toString()}
-            >{`${i} Points`}</option>
-          ))}
-          {Array.from({ length: 27 }, (_, i) => i + 4).map((i) => (
-            <option
-              className="text-lg"
-              key={`${i}_points`}
-              value={i.toString()}
-            >{`${i} Points`}</option>
+            <option className="text-lg" key={i} value={i.toString()}>{`${i} ${t(
+              'i-points'
+            )}`}</option>
           ))}
         </select>
       </div>
@@ -299,7 +294,7 @@ function LobbySettingsTab() {
       <div className="flex flex-col gap-2">
         <label htmlFor="score-to-win" className="flex gap-3">
           <Timer size={24} weight="bold" />
-          Time
+          {t('i-time')}
         </label>
         <select
           className="select-bordered select"
@@ -313,7 +308,7 @@ function LobbySettingsTab() {
               className="text-lg"
               key={`${i}_seconds`}
               value={i.toString()}
-            >{`${i} Seconds`}</option>
+            >{`${i} ${t('i-seconds')}`}</option>
           ))}
         </select>
       </div>
@@ -362,66 +357,66 @@ const decksMockResponse: IDeckConfigScreen[] = [
     questions: 20,
     answers: 40,
   },
-  {
-    id: '4',
-    name: 'Baralho BR - Pedro Álvares Cabral',
-    language: 'br',
-    description: 'O nosso primeiro baralho brasileiro',
-    category: 'family_friendly',
-    icon: '/icon_cyber_chaos_cards.svg',
-    questions: 100,
-    answers: 40,
-  },
-  {
-    id: '5',
-    name: 'Baralho BR - O ouro recuperado',
-    language: 'br',
-    description: 'O nosso segundo baralho brasileiro',
-    category: 'chaos',
-    icon: '/icon_cyber_chaos_cards.svg',
-    questions: 100,
-    answers: 536,
-  },
-  {
-    id: '6',
-    name: 'Cartas Contra Tugas Base',
-    language: 'pt',
-    description: 'O baralho original, o nosso primeiro baralho',
-    category: 'safe_for_stream',
-    icon: '/icon_cyber_chaos_cards.svg',
-    questions: 20,
-    answers: 40,
-  },
-  {
-    id: '7',
-    name: 'Baralho BR - Pedro Álvares Cabral',
-    language: 'br',
-    description: 'O nosso primeiro baralho brasileiro',
-    category: 'family_friendly',
-    icon: '/icon_cyber_chaos_cards.svg',
-    questions: 100,
-    answers: 40,
-  },
-  {
-    id: '8',
-    name: 'Baralho BR - O ouro recuperado',
-    language: 'br',
-    description: 'O nosso segundo baralho brasileiro',
-    category: 'chaos',
-    icon: '/icon_cyber_chaos_cards.svg',
-    questions: 100,
-    answers: 536,
-  },
-  {
-    id: '9',
-    name: 'Cartas Contra Tugas Base',
-    language: 'pt',
-    description: 'O baralho original, o nosso primeiro baralho',
-    category: 'safe_for_stream',
-    icon: '/icon_cyber_chaos_cards.svg',
-    questions: 20,
-    answers: 40,
-  },
+  // {
+  //   id: '4',
+  //   name: 'Baralho BR - Pedro Álvares Cabral',
+  //   language: 'br',
+  //   description: 'O nosso primeiro baralho brasileiro',
+  //   category: 'family_friendly',
+  //   icon: '/icon_cyber_chaos_cards.svg',
+  //   questions: 100,
+  //   answers: 40,
+  // },
+  // {
+  //   id: '5',
+  //   name: 'Baralho BR - O ouro recuperado',
+  //   language: 'br',
+  //   description: 'O nosso segundo baralho brasileiro',
+  //   category: 'chaos',
+  //   icon: '/icon_cyber_chaos_cards.svg',
+  //   questions: 100,
+  //   answers: 536,
+  // },
+  // {
+  //   id: '6',
+  //   name: 'Cartas Contra Tugas Base',
+  //   language: 'pt',
+  //   description: 'O baralho original, o nosso primeiro baralho',
+  //   category: 'safe_for_stream',
+  //   icon: '/icon_cyber_chaos_cards.svg',
+  //   questions: 20,
+  //   answers: 40,
+  // },
+  // {
+  //   id: '7',
+  //   name: 'Baralho BR - Pedro Álvares Cabral',
+  //   language: 'br',
+  //   description: 'O nosso primeiro baralho brasileiro',
+  //   category: 'family_friendly',
+  //   icon: '/icon_cyber_chaos_cards.svg',
+  //   questions: 100,
+  //   answers: 40,
+  // },
+  // {
+  //   id: '8',
+  //   name: 'Baralho BR - O ouro recuperado',
+  //   language: 'br',
+  //   description: 'O nosso segundo baralho brasileiro',
+  //   category: 'chaos',
+  //   icon: '/icon_cyber_chaos_cards.svg',
+  //   questions: 100,
+  //   answers: 536,
+  // },
+  // {
+  //   id: '9',
+  //   name: 'Cartas Contra Tugas Base',
+  //   language: 'pt',
+  //   description: 'O baralho original, o nosso primeiro baralho',
+  //   category: 'safe_for_stream',
+  //   icon: '/icon_cyber_chaos_cards.svg',
+  //   questions: 20,
+  //   answers: 40,
+  // },
 ]
 
 function LobbyDecksTab() {

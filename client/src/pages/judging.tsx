@@ -10,6 +10,8 @@ import { toast } from 'react-toastify'
 import { CountdownCircleTimer } from 'react-countdown-circle-timer'
 import TimerTitle from '~/components/Layout/TimerScreen'
 import LoadingWithText from '~/components/Atoms/LoadingWithText'
+import { useAudio } from '~/components/AudioContext'
+import useSound from 'use-sound'
 
 interface IUpdateResultCards {
   hasNext: boolean
@@ -17,6 +19,11 @@ interface IUpdateResultCards {
 }
 
 export default function Judging() {
+
+  const { isMuted } = useAudio()
+
+  const [playSwitchOn] = useSound('/sounds/switch-on.mp3')
+
   const { myHand, socket, gameState, isCurrentUserJudge } = useGameContext()
 
   const { currentQuestionCard } = gameState
@@ -68,6 +75,8 @@ export default function Judging() {
 
   const handleGroupClick = (playerId: string, group: ICardAnswer[]) => {
     if (!isCurrentUserJudge) return
+    
+    if (!isMuted) playSwitchOn()
     setSelectedGroup({ playerId, cards: group })
   }
 
@@ -147,10 +156,17 @@ export default function Judging() {
     }
   }
 
-  const time = 10 // 10 seconds
+  const time = 99999 // 10 seconds
 
   // TODO: add a timer
   // TODO: change the layout to look more like a chat than a card game
+
+  const getAnswerCardText = () => {
+    if(seeAllResults) {
+      return selectedGroup?.cards.map((card) => card.text) || []
+    }
+    return lastCards?.map((card) => card.text) || []
+  }
 
   const answersCardText = lastCards?.map((card) => card.text) || []
 
@@ -169,7 +185,7 @@ export default function Judging() {
               {currentQuestionCard && (
                 <GameCardResult
                   question={currentQuestionCard.text}
-                  answers={answersCardText}
+                  answers={getAnswerCardText()}
                 />
               )}
             </div>

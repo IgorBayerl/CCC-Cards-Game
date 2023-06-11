@@ -1,4 +1,5 @@
 {
+  "i-back-text": "Atrás",
   "i-join": "Unirse",
   "i-create-room": "Crear sala",
   "i-how-to-play": "Como Jugar",
@@ -11,5 +12,6 @@
   "i-nickname-must-be-between-3-and-20-characters": "El nickname debe tener entre 3 y 20 caracteres",
   "i-select-your-language": "Selecciona tu idioma",
   "i-error-joining-room": "Error al unirse a la sala",
-  "i-cool-nickname": "BuenNickname"
+  "i-cool-nickname": "BuenNickname",
+  "i-link-copied": "Enlace copiado!"
 }
