@@ -68,7 +68,3 @@
 
 
 
-/* background gradient */
-body{
-  @apply dark:bg-gradient-to-br dark:from-slate-900 dark:to-slate-700 bg-gradient-to-r from-emerald-400 to-cyan-400;
-}
