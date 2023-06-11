@@ -48,6 +48,11 @@ const MyApp: AppType = ({ Component, pageProps }) => {
 
         <script
           async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3354864508700429"
+          crossOrigin="anonymous"
+        ></script>
+        <script
+          async
           src="https://www.googletagmanager.com/gtag/js?id=G-TB0SDCXYQY"
         />
         <script
