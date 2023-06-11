@@ -28,7 +28,7 @@ function generateSitemapXml(): string {
     .map((page) => {
       return `
         <url>
-          <loc>${`https://www.cyberchaoscards.com/${page}`}</loc>
+          <loc>${`https://cyberchaoscards.com/${page}`}</loc>
           <lastmod>
             ${lastMod}
           </lastmod>
