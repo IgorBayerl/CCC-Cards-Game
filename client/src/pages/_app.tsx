@@ -21,7 +21,7 @@ const queryClient = new QueryClient()
 const MyApp: AppType = ({ Component, pageProps }) => {
   return (
     <>
-      <TrackingCode/>
+      <TrackingCode />
       <Head>
         <title>CCC - Cyber Chaos Cards</title>
         <meta
@@ -48,6 +48,11 @@ const MyApp: AppType = ({ Component, pageProps }) => {
         <meta name="robots" content="index, follow" />
         <meta httpEquiv="Content-Type" content="text/html; charset=utf-8" />
         <meta name="author" content="Igor Bayerl" />
+
+        <meta
+          name="google-site-verification"
+          content="mtI8bECFOtk3xVJvSMCx-devj_czMM88dfw1pQnNlA4"
+        />
       </Head>
       <ToastContainer />
       <QueryClientProvider client={queryClient}>
