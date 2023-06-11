@@ -1,11 +1,13 @@
 {
   "i-back-text": "Atrás",
   "i-join": "Unirse",
+  "i-home": "Inicio",
   "i-create-room": "Crear sala",
   "i-how-to-play": "Como Jugar",
   "i-terms-of-service": "Terminos de Servicio",
   "i-privacy-policy": "Politica de Privacidad",
   "i-contact": "Contacto",
+  "i-about": "Sobre",
   "i-nickname": "Nickname",
   "i-select-picture-and-nickname": "Selecciona una imagen y un nickname",
   "i-invalid-nickname": "Nickname invalido",

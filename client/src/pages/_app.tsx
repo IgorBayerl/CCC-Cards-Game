@@ -27,6 +27,25 @@ const MyApp: AppType = ({ Component, pageProps }) => {
         />
         <link rel="icon" type="image/x-icon" href="icon_dark.ico" />
 
+        <meta name="title" content="Cyber Chaos Cards" />
+        <meta
+          name="description"
+          lang="en"
+          content="Join Cyber Chaos Cards - the edgy online adaptation of Cards Against Humanity. Make friends, create hilarity, challenge norms."
+        />
+        <meta
+          name="description"
+          lang="pt"
+          content="Junte-se ao Cyber Chaos Cards - a ousada adaptação online de Cartas Contra Humanidade. Faça amigos, ria muito, desafie normas."
+        />
+        <meta
+          name="keywords"
+          content="Cyber Chaos Cards, Online Game, Cards Against Humanity, Digital Card Game, Multiplayer, Social Game, Adult Humor, Interactive Entertainment, Online Gaming, Virtual Game Night"
+        />
+        <meta name="robots" content="index, follow" />
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta name="author" content="Igor Bayerl" />
+
         <script
           async
           src="https://www.googletagmanager.com/gtag/js?id=G-TB0SDCXYQY"

@@ -20,6 +20,7 @@ import CCCIconThemed from '~/components/Atoms/CCCIconThemed'
 import Link from 'next/link'
 import { z } from 'zod'
 import ConnectionStatus from '~/components/Atoms/ConnectionStatus'
+import Footer from '~/components/Footer'
 
 const profilePictures = [
   '/profile/profile_1.webp',
@@ -247,33 +248,7 @@ export default function Home() {
             <TutorialCarousel />
           </div>
         </div>
-        <footer className=" mt-5 hidden items-center justify-center md:flex">
-          <Link href="#">
-            <button className="btn-ghost btn-block btn-sm btn text-xs">
-              {howToPlayText}
-            </button>
-          </Link>
-          <div className="divider divider-horizontal" />
-          <Link href="#">
-            <button className="btn-ghost btn-block btn-sm btn text-xs">
-              {termsOfServiceText}
-            </button>
-          </Link>
-          <div className="divider divider-horizontal" />
-          <Link href="#">
-            <button className="btn-ghost btn-block btn-sm btn text-xs">
-              {privacyText}
-            </button>
-          </Link>
-          <div className="divider divider-horizontal" />
-          <Link href="#">
-            <button className="btn-ghost btn-block btn-sm btn text-xs">
-              {contactText}
-            </button>
-          </Link>
-          <div className="divider divider-horizontal" />
-          <ConnectionStatus />
-        </footer>
+        <Footer />
       </div>
       <div className="flex">
         <button

@@ -65,3 +65,10 @@
 .bg-card {
   @apply bg-black bg-opacity-[0.05] dark:bg-white dark:bg-opacity-[0.05];
 }
+
+
+
+/* background gradient */
+body{
+  @apply dark:bg-gradient-to-br dark:from-slate-900 dark:to-slate-700 bg-gradient-to-r from-emerald-400 to-cyan-400;
+}
