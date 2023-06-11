@@ -59,7 +59,7 @@ export default function Home() {
 
   const usernameSchema = z
     .string()
-    .min(3, invalidNicknameLengthText)
+    .min(1, invalidNicknameLengthText)
     .max(20, invalidNicknameLengthText)
 
   const { gameState, joinRoom, socket } = useGameContext()
@@ -67,6 +67,7 @@ export default function Home() {
 
   const [username, setUsername] = useState('')
   const [usernameError, setUsernameError] = useState('')
+  const [fallbackUsername, setFallbackUsername] = useState('')
 
   const [roomCode, setRoomCode] = useState('')
   const [isLoading, setIsLoading] = useState(false)
@@ -88,30 +89,47 @@ export default function Home() {
   }, [socket])
 
   useEffect(() => {
+    handleGenerateFallbackUsername()
     const username = localStorage.getItem('username') || ''
     setUsername(username)
   }, [])
 
+  const getName = () => {
+    return username.trim() || fallbackUsername.trim()
+  }
+
   const handleCreateRoom = () => {
     const newRoomCode = uuidv4()
-    joinRoom(username, newRoomCode, pictureUrl)
+    joinRoom(getName(), newRoomCode, pictureUrl)
   }
 
   const handleJoinRoom = () => {
-    joinRoom(username, roomCode, pictureUrl)
+    joinRoom(getName(), roomCode, pictureUrl)
   }
 
   const handleUsernameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const username = event.target.value
-    const result = usernameSchema.safeParse(username)
 
+    // const result = usernameSchema.safeParse(username)
+
+    /*
     if (result.success) {
       setUsernameError('')
     } else {
       setUsernameError(result.error.issues[0]?.message || invalidNicknameText)
-    }
+    }*/
     setUsername(username)
     localStorage.setItem('username', username)
+  }
+
+  /**
+   * The function generates a random username with the following format:
+   * CoolNickname + 4 random characters
+   */
+  const handleGenerateFallbackUsername = () => {
+    const randomUsername =
+      'CoolNickname_' + Math.random().toString(36).slice(-4).toUpperCase()
+    setFallbackUsername(randomUsername)
   }
 
   const handlePictureUrlChange = () => {
@@ -200,7 +218,7 @@ export default function Home() {
                 </label>
                 <input
                   type="text"
-                  placeholder="Type here"
+                  placeholder={fallbackUsername}
                   className="input-bordered input w-full "
                   value={username}
                   onChange={handleUsernameChange}
