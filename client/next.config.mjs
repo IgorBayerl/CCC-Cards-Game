@@ -4,17 +4,18 @@
  */
 await import("./src/env.mjs");
 import nextTranslate from 'next-translate-plugin'
+import withPWA from 'next-pwa'
 
 /** @type {import("next").NextConfig} */
 const config = {
   reactStrictMode: true,
-
-  /**
-   * If you have `experimental: { appDir: true }` set, then you must comment the below `i18n` config
-   * out.
-   *
-   * @see https://github.com/vercel/next.js/issues/41980
-   */
   ...nextTranslate(),
+  
+  ...withPWA({
+    dest: 'public',
+    register: true,
+    skipWaiting: true,
+    disable: process.env.NODE_ENV === 'development'
+  }),
 }
 export default config;
