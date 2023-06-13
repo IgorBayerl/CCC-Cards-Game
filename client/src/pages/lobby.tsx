@@ -283,10 +283,10 @@ function LobbySettingsTab() {
           disabled={!isCurrentUserLeader}
           value={scoreToWin}
         >
-          {Array.from({ length: 27 }, (_, i) => i + 4).map((i) => (
-            <option className="text-lg" key={i} value={i.toString()}>{`${i} ${t(
-              'i-points'
-            )}`}</option>
+          {Array.from({ length: 17 }, (_, i) => i + 4).map((i) => (
+            <option className="text-lg" key={i} value={i.toString()}>
+              {`${i} ${t('i-points')}`}
+            </option>
           ))}
         </select>
       </div>

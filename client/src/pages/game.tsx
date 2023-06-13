@@ -54,7 +54,7 @@ export default function Game() {
   }
 
   // const time = gameState.config.time
-  const time = 30
+  const time = gameState.config.time || 10
 
   const handleTimeout = () => {
     console.log('Timeout triggered')
@@ -120,13 +120,13 @@ export default function Game() {
 
   return (
     <InGameLayout>
-      <div className="bg-destaque-mobile flex flex-1 flex-col py-2 md:mx-4">
-        <TimerTitle
-          key="Choose your cards"
-          subtitle="Choose the best fit card(s)"
-          time={time}
-          handleTimeout={handleTimeout}
-        />
+      <TimerTitle
+        key="Choose your cards"
+        subtitle="Choose the best fit card(s)"
+        time={time}
+        handleTimeout={handleTimeout}
+      />
+      <div className="bg-destaque-mobile flex flex-1 flex-col py-2 md:mx-4 overflow-y-auto">
         <div className="flex h-full flex-1 flex-col justify-between ">
           <div className="flex flex-1 items-center justify-center px-3">
             {currentQuestionCard && (
@@ -141,7 +141,7 @@ export default function Game() {
             <LoadingWithText text="You are the Judge of the round, wait the others to play." />
           )}
           {!isCurrentUserJudge && (
-            <div className="grid grid-cols-1 gap-2 lg:grid-cols-2">
+            <div className="grid grid-cols-1 gap-2 lg:grid-cols-2 overflow-y-auto">
               {myCards.map((card, index) => {
                 const cardIndex = selectedCards.indexOf(card)
                 return (

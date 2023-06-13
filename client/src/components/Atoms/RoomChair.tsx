@@ -1,6 +1,6 @@
 import { TbMoodEmpty } from 'react-icons/tb'
 import { IPlayer } from '../GameContext'
-import PlayerItem from './PlayerItem'
+import PlayerItem, { MobilePlayerItem } from './PlayerItem'
 import useTranslation from 'next-translate/useTranslation'
 
 interface IRoomChairProps {
@@ -24,6 +24,26 @@ export default function RoomChair({ player, leader = false }: IRoomChairProps) {
   return (
     <div className="rounded-xl bg-gray-200 px-2 py-1 text-xl font-bold dark:bg-neutral ">
       <PlayerItem player={player} leader={leader} />
+    </div>
+  )
+}
+
+
+export function MobileRoomChair({ player, leader = false }: IRoomChairProps) {
+  const { t } = useTranslation('game')
+  if (!player) {
+    return (
+      <div className="flex items-center rounded-xl bg-gray-200 px-2 py-1 font-bold dark:bg-neutral bg-opacity-80 dark:bg-opacity-80 h-full justify-center w-16">
+        <div className="flex flex-col items-center gap-2 justify-center h-full">
+          <TbMoodEmpty size={25} opacity={0.5} />
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <div className="rounded-xl bg-gray-200 px-2 py-1 text-xl font-bold dark:bg-neutral ">
+      <MobilePlayerItem player={player} leader={leader} />
     </div>
   )
 }

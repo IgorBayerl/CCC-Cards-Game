@@ -5,25 +5,51 @@ import { GameProvider } from '~/components/GameContext'
 
 import Head from 'next/head'
 import Script from 'next/script'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { QueryClient, QueryClientProvider } from 'react-query'
 import { ReactQueryDevtools } from 'react-query/devtools'
+import { NextSeo } from 'next-seo';
 
 import 'react-toastify/dist/ReactToastify.css'
 import '~/styles/globals.css'
 import { AudioProvider } from '~/components/AudioContext'
 import TrackingCode from '~/components/TrackingCode'
+import { useRouter } from 'next/router'
+
+import * as gtag from '~/lib/gtag'
 
 const url = process.env.NEXT_PUBLIC_GAME_SERVER || 'http://localhost:3365'
 
 const queryClient = new QueryClient()
 
 const MyApp: AppType = ({ Component, pageProps }) => {
+  const router = useRouter()
+  useEffect(() => {
+    const handleRouteChange = (url: string) => {
+      gtag.pageview(url)
+    }
+    router.events.on('routeChangeComplete', handleRouteChange)
+    return () => {
+      router.events.off('routeChangeComplete', handleRouteChange)
+    }
+  }, [router.events])
+
   return (
     <>
       <TrackingCode />
+      <NextSeo 
+        title="Cyber Chaos Cards"
+        description="Join Cyber Chaos Cards - the edgy online adaptation of Cards Against Humanity. Make friends, create hilarity, challenge norms."
+        canonical="https://www.cyberchaoscards.com/"
+        openGraph={{
+          url: 'https://www.cyberchaoscards.com/',
+          title: 'Cyber Chaos Cards',
+          description: 'Join Cyber Chaos Cards - the edgy online adaptation of Cards Against Humanity. Make friends, create hilarity, challenge norms.',
+          siteName: 'Cyber Chaos Cards',
+        }}
+      />
       <Head>
-        <title>CCC - Cyber Chaos Cards</title>
+        <title>Cyber Chaos Cards</title>
         <meta
           name="viewport"
           content="minimum-scale=1, initial-scale=1, width=device-width"
@@ -33,7 +59,6 @@ const MyApp: AppType = ({ Component, pageProps }) => {
         <meta name="title" content="Cyber Chaos Cards" />
         <meta
           name="description"
-          lang="en"
           content="Join Cyber Chaos Cards - the edgy online adaptation of Cards Against Humanity. Make friends, create hilarity, challenge norms."
         />
         <meta

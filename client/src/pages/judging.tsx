@@ -156,10 +156,8 @@ export default function Judging() {
     }
   }
 
-  const time = 99999 // 10 seconds
+  const time = 10 // 10 seconds
 
-  // TODO: add a timer
-  // TODO: change the layout to look more like a chat than a card game
 
   const getAnswerCardText = () => {
     if(seeAllResults) {
@@ -172,13 +170,13 @@ export default function Judging() {
 
   return (
     <InGameLayout>
-      <div className="bg-destaque-mobile flex flex-1 flex-col py-2 md:mx-4">
-        <TimerTitle
-          key={resetKey}
-          subtitle="Judging"
-          time={time}
-          handleTimeout={handleTimerTimeout}
-        />
+      <TimerTitle
+        key={resetKey}
+        subtitle="Judging"
+        time={time}
+        handleTimeout={handleTimerTimeout}
+      />
+      <div className="bg-destaque-mobile flex flex-1 flex-col py-2 md:mx-4 overflow-y-auto">
         <div className="flex flex-1 flex-col">
           <div className="flex flex-1 flex-col justify-between">
             <div className="flex flex-1 items-center justify-center">
@@ -198,7 +196,7 @@ export default function Judging() {
                 ))}
             </div>
 
-            <div className="grid grid-cols-1 gap-2 lg:grid-cols-2">
+            <div className="grid grid-cols-1 gap-2 lg:grid-cols-2 overflow-y-auto">
               {
                 // all results
                 seeAllResults &&

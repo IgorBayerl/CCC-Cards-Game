@@ -83,13 +83,13 @@ export default function Results() {
 
   return (
     <InGameLayout>
+      <TimerTitle
+        key="roundWinner"
+        subtitle="Round winner!"
+        time={time}
+        handleTimeout={handleTimeout}
+      />
       <div className="bg-destaque-mobile flex flex-1 flex-col py-2 md:mx-4">
-        <TimerTitle
-          key="roundWinner"
-          subtitle="Round winner!"
-          time={time}
-          handleTimeout={handleTimeout}
-        />
         <div className="flex flex-1 items-center ">
           <div className="flex flex-1 flex-col items-center gap-3">
             <Image

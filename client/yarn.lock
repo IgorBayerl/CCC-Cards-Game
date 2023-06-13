@@ -3756,6 +3756,11 @@ next-pwa@^5.6.0:
     workbox-webpack-plugin "^6.5.4"
     workbox-window "^6.5.4"
 
+next-seo@^6.0.0:
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/next-seo/-/next-seo-6.0.0.tgz#4568dc61a44dbdf5fe5ff44156cd0ff8804889a2"
+  integrity sha512-jKKt1p1z4otMA28AyeoAONixVjdYmgFCWwpEFtu+DwRHQDllVX3RjtyXbuCQiUZEfQ9rFPBpAI90vDeLZlMBdg==
+
 next-translate-plugin@^2.0.5:
   version "2.0.5"
   resolved "https://registry.yarnpkg.com/next-translate-plugin/-/next-translate-plugin-2.0.5.tgz#9db61207fbdac724b9ab4906194bafcd0b555969"

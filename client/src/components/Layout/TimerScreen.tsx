@@ -16,7 +16,7 @@ export default function TimerTitle({
   timerKey = 'timer_1',
 }: ITimerScreenProps) {
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col bg-destaque-mobile">
       <div className=" flex w-full justify-between  p-3">
         <div className="flex flex-col font-bold">
           <h2 className="m-0 p-0 text-xl">{title}</h2>

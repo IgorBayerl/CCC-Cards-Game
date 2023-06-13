@@ -8,6 +8,7 @@ import Image from 'next/image'
 import MuteButton from '../Atoms/MuteButton'
 import ContainerFooter from './ContainerFooter'
 import ContainerHeader from './ContainerHeader'
+import MobilePlayersList from '../MobilePlayersList'
 
 interface IInGameLayoutProps {
   children: React.ReactNode
@@ -36,11 +37,7 @@ export default function InGameLayout({ children }: IInGameLayoutProps) {
         </div>
         <div className="md:hidden" id="mobile-player-list">
           <div className="flex w-screen gap-3 overflow-x-scroll px-2 py-3 ">
-            {Array.from({ length: 20 }, (_, i) => i + 1).map((i) => (
-              <div key={i} className="btn-circle btn p-5">
-                {i}
-              </div>
-            ))}
+            <MobilePlayersList players={playersList} leader={gameState.leader} roomSize={parseInt(roomSize)} />
           </div>
         </div>
         <div className="flex h-full overflow-clip">
