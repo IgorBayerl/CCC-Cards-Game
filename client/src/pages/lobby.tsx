@@ -22,6 +22,7 @@ import Image from 'next/image'
 import { AnimatePresence, motion } from 'framer-motion'
 import LoadingWithText from '~/components/Atoms/LoadingWithText'
 import useTranslation from 'next-translate/useTranslation'
+import MobilePlayersList from '~/components/MobilePlayersList'
 
 const languagesMock = [
   { id: 'en', name: 'English' },
@@ -146,11 +147,7 @@ export default function LobbyPage() {
         </div>
         <div className="md:hidden" id="mobile-player-list">
           <div className="flex w-screen gap-3 overflow-x-scroll px-2 py-3 ">
-            {Array.from({ length: 20 }, (_, i) => i + 1).map((i) => (
-              <div key={i} className="btn-circle btn p-5">
-                {i}
-              </div>
-            ))}
+            <MobilePlayersList players={playersList} leader={gameState.leader} roomSize={parseInt(roomSize)} />
           </div>
           <div className="px-2">
             <select
