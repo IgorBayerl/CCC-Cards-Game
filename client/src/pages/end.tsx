@@ -22,11 +22,13 @@ export default function End() {
     gameState,
     startingState,
     playerSelectCards,
+    admCommand,
     isCurrentUserLeader,
   } = useGameContext()
   const myCards = myHand.cards
 
   const { players } = gameState
+
   // find the player with the highest score
 
   const winner = players.reduce(
@@ -39,23 +41,37 @@ export default function End() {
     }
   )
 
+  const winnerHistory = gameState.rounds?.flatMap((round) => {
+    const winnerId = round.winner?.id
+    if (!winnerId) return []
+    if (winnerId === winner.id) {
+      return [
+        {
+          question: round.questionCard.text,
+          answer: round.answerCards[winnerId],
+        },
+      ]
+    }
+    return []
+  })
+
   const [keyTest, setKeyTest] = useState(0)
 
   function explodeConfetti() {
     setKeyTest((prev) => prev + 1)
-    // TODO: implement this
-    // socket?.emit('start-new-game')
   }
 
   function handleStartNewGame() {
-    setKeyTest((prev) => prev + 1)
-    // TODO: implement this
-    // socket?.emit('start-new-game')
+    admCommand('start-new-game')
+  }
+
+  function handleBackToLobby() {
+    admCommand('back-to-lobby')
   }
 
   return (
     <InGameLayout>
-      <div className="bg-destaque-mobile flex flex-1 flex-col py-2 md:mx-4">
+      <div className="bg-destaque-mobile flex flex-1 flex-col overflow-y-auto py-2 md:mx-4">
         <h1 className="text-xl font-bold">Match Winner</h1>
         <div className="flex flex-1 items-center ">
           <div className="flex flex-1 flex-col items-center gap-3">
@@ -73,25 +89,41 @@ export default function End() {
             </h1>
           </div>
         </div>
+        <div className="mx-5 flex flex-1 flex-col overflow-y-auto scrollbar-none">
+          {winnerHistory &&
+            winnerHistory.map((item, index) => (
+              <div key={index} className="chat chat-end ">
+                <div className="chat-image avatar">
+                  <div className="w-10 rounded-full">
+                    <Image
+                      src={winner?.pictureUrl || ''}
+                      alt={winner?.username || ''}
+                      width={100}
+                      height={100}
+                      className="rounded-full"
+                    />
+                  </div>
+                </div>
+                <div className="chat-bubble bg-gray-200 text-gray-800 dark:bg-neutral dark:text-gray-200">
+                  <GameCardResult
+                    question={item?.question || ''}
+                    answers={item?.answer?.map((answer) => answer.text) || []}
+                  />
+                </div>
+              </div>
+            ))}
+        </div>
       </div>
       {isCurrentUserLeader && (
-        <div className="flex items-center justify-center px-4 py-2">
+        <div className="flex flex-col  items-stretch justify-center gap-2 px-4 py-2 md:flex-row">
+          <button className="btn flex-1" onClick={handleBackToLobby}>
+            Back To Lobby
+          </button>
           <button className="btn flex-1" onClick={handleStartNewGame}>
             Play Again
           </button>
         </div>
       )}
     </InGameLayout>
-  )
-  return (
-    <Layout>
-      <InGameLayout>
-        <div className="">
-          <h1>End</h1>
-          {winner.username}
-          <button onClick={handleStartNewGame}>Start New Game</button>
-        </div>
-      </InGameLayout>
-    </Layout>
   )
 }

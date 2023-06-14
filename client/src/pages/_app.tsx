@@ -4,10 +4,8 @@ import { SocketProvider } from '~/components/SocketContext'
 import { GameProvider } from '~/components/GameContext'
 
 import Head from 'next/head'
-import Script from 'next/script'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { QueryClient, QueryClientProvider } from 'react-query'
-import { ReactQueryDevtools } from 'react-query/devtools'
 import { NextSeo } from 'next-seo';
 
 import 'react-toastify/dist/ReactToastify.css'

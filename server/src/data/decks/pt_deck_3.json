@@ -2,6 +2,8 @@
   "id": "3",
   "name": "Cartas Contra Tugas Base",
   "description": "O baralho original, o nosso primeiro baralho",
+  "category": 1,
+  "icon": "https://cdn.iconscout.com/icon/free/png-256/free-social-275-116309.png",
   "language": "pt",
   "cards": {
     "questions": [

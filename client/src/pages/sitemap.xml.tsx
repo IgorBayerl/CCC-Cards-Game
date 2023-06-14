@@ -1,5 +1,4 @@
 import { GetServerSideProps } from 'next'
-import { resolve } from 'path'
 
 export default function Sitemap() {
   return null

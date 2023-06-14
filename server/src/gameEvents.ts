@@ -37,7 +37,12 @@ export const handleSetConfig = (
   }
 }
 
-type AdmCommand = 'start' | 'next_round' | 'end'
+type AdmCommand =
+  | 'start'
+  | 'next_round'
+  | 'end'
+  | 'start-new-game'
+  | 'back-to-lobby'
 
 export const handleAdmCommand = (
   socket: Socket,
@@ -68,10 +73,15 @@ export const handleAdmCommand = (
     if (command === 'next_round') {
       room.nextRound()
     }
-    // const actions = {
-    //   start: room.startGame
-    // }
-    // actions[command](socket)
+
+    if (command === 'start-new-game') {
+      room.resetRoom()
+      room.startGame(socket)
+    }
+
+    if (command === 'back-to-lobby') {
+      room.resetRoom()
+    }
   }
 }
 

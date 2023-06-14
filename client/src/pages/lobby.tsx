@@ -25,30 +25,30 @@ import useTranslation from 'next-translate/useTranslation'
 import MobilePlayersList from '~/components/MobilePlayersList'
 
 const languagesMock = [
-  { id: 'en', name: 'English' },
+  // { id: 'en', name: 'English' },
   { id: 'pt', name: 'Portuguese' },
-  { id: 'es', name: 'Spanish' },
+  // { id: 'es', name: 'Spanish' },
 ]
 
 const categoriesMock = [
   {
-    id: 'family_friendly',
+    id: 0,
     name: 'Family Friendly',
   },
   {
-    id: 'safe_for_stream',
+    id: 1,
     name: 'Safe for Stream',
   },
   {
-    id: 'mature_humor',
+    id: 2,
     name: 'Mature Humor',
   },
   {
-    id: 'chaos',
+    id: 3,
     name: 'Chaos',
   },
   {
-    id: 'uncensored_raw',
+    id: 4,
     name: 'Uncensored Raw',
   },
 ]
@@ -70,7 +70,6 @@ export default function LobbyPage() {
   const roomSize = gameConfig?.roomSize?.toString() || '4'
 
   // TODO: change this to a getStaticProps with revalidate of 1 hour
-  const decksResponse = useQuery('get-decks', getDecks)
   const share = useShare()
 
   // const tabs = ['decks_selection_tab', 'settings_tab']
@@ -109,13 +108,10 @@ export default function LobbyPage() {
     admCommand('start')
   }
 
-  if (!roomId || decksResponse.isLoading) {
+  if (!roomId) {
     return <Loading />
   }
 
-  if (decksResponse.isError || !decksResponse.data) {
-    return <div>Something went wrong!</div>
-  }
   const roomInviteLink = `${window.location.origin}/?roomId=${roomId}`
 
   const handleShareClicked = () => {
@@ -147,7 +143,11 @@ export default function LobbyPage() {
         </div>
         <div className="md:hidden" id="mobile-player-list">
           <div className="flex w-screen gap-3 overflow-x-scroll px-2 py-3 ">
-            <MobilePlayersList players={playersList} leader={gameState.leader} roomSize={parseInt(roomSize)} />
+            <MobilePlayersList
+              players={playersList}
+              leader={gameState.leader}
+              roomSize={parseInt(roomSize)}
+            />
           </div>
           <div className="px-2">
             <select
@@ -314,7 +314,7 @@ function LobbySettingsTab() {
 }
 
 interface ICategory {
-  id: string
+  id: number
   name: string
 }
 
@@ -322,99 +322,6 @@ interface ILanguage {
   id: string
   name: string
 }
-
-const decksMockResponse: IDeckConfigScreen[] = [
-  {
-    id: '1',
-    name: 'Baralho BR - Pedro Álvares Cabral',
-    language: 'br',
-    description: 'O nosso primeiro baralho brasileiro',
-    category: 'family_friendly',
-    icon: '/icon_cyber_chaos_cards.svg',
-    questions: 100,
-    answers: 40,
-  },
-  {
-    id: '2',
-    name: 'Baralho BR - O ouro recuperado',
-    language: 'br',
-    description: 'O nosso segundo baralho brasileiro',
-    category: 'chaos',
-    icon: '/icon_cyber_chaos_cards.svg',
-    questions: 100,
-    answers: 536,
-  },
-  {
-    id: '3',
-    name: 'Cartas Contra Tugas Base',
-    language: 'pt',
-    description: 'O baralho original, o nosso primeiro baralho',
-    category: 'safe_for_stream',
-    icon: '/icon_cyber_chaos_cards.svg',
-    questions: 20,
-    answers: 40,
-  },
-  // {
-  //   id: '4',
-  //   name: 'Baralho BR - Pedro Álvares Cabral',
-  //   language: 'br',
-  //   description: 'O nosso primeiro baralho brasileiro',
-  //   category: 'family_friendly',
-  //   icon: '/icon_cyber_chaos_cards.svg',
-  //   questions: 100,
-  //   answers: 40,
-  // },
-  // {
-  //   id: '5',
-  //   name: 'Baralho BR - O ouro recuperado',
-  //   language: 'br',
-  //   description: 'O nosso segundo baralho brasileiro',
-  //   category: 'chaos',
-  //   icon: '/icon_cyber_chaos_cards.svg',
-  //   questions: 100,
-  //   answers: 536,
-  // },
-  // {
-  //   id: '6',
-  //   name: 'Cartas Contra Tugas Base',
-  //   language: 'pt',
-  //   description: 'O baralho original, o nosso primeiro baralho',
-  //   category: 'safe_for_stream',
-  //   icon: '/icon_cyber_chaos_cards.svg',
-  //   questions: 20,
-  //   answers: 40,
-  // },
-  // {
-  //   id: '7',
-  //   name: 'Baralho BR - Pedro Álvares Cabral',
-  //   language: 'br',
-  //   description: 'O nosso primeiro baralho brasileiro',
-  //   category: 'family_friendly',
-  //   icon: '/icon_cyber_chaos_cards.svg',
-  //   questions: 100,
-  //   answers: 40,
-  // },
-  // {
-  //   id: '8',
-  //   name: 'Baralho BR - O ouro recuperado',
-  //   language: 'br',
-  //   description: 'O nosso segundo baralho brasileiro',
-  //   category: 'chaos',
-  //   icon: '/icon_cyber_chaos_cards.svg',
-  //   questions: 100,
-  //   answers: 536,
-  // },
-  // {
-  //   id: '9',
-  //   name: 'Cartas Contra Tugas Base',
-  //   language: 'pt',
-  //   description: 'O baralho original, o nosso primeiro baralho',
-  //   category: 'safe_for_stream',
-  //   icon: '/icon_cyber_chaos_cards.svg',
-  //   questions: 20,
-  //   answers: 40,
-  // },
-]
 
 function LobbyDecksTab() {
   const { gameConfig, setConfig, isCurrentUserLeader } = useGameContext()
@@ -424,10 +331,17 @@ function LobbyDecksTab() {
   const [playSwitchOff] = useSound('/sounds/switch-off.mp3')
 
   const defaultLanguage =
-    languagesMock.find((language) => language.id === router.locale) || null
+    languagesMock.find((language) => language.id === router.locale) || {
+      id: 'pt',
+      name: 'Português',
+    } ||
+    null //TODO: Remove this default language in the future
+
+  const defaultCategory =
+    categoriesMock.find((category) => category.id === 1) || null
 
   const [selectedCategory, setSelectedCategory] = useState<ICategory | null>(
-    null
+    defaultCategory
   )
   const [isModalCategoryOpen, setIsModalCategoryOpen] = useState<boolean>(false)
 
@@ -436,7 +350,14 @@ function LobbyDecksTab() {
   )
   const [isModalLanguageOpen, setIsModalLanguageOpen] = useState<boolean>(false)
 
-  const [selectedDecks, setSelectedDecks] = useState<string[]>([])
+  const decksResponse = useQuery(
+    ['get-decks', selectedLanguage, selectedCategory],
+    () =>
+      getDecks({
+        language: selectedLanguage?.id,
+        category: selectedCategory?.id,
+      })
+  )
 
   const toggleCategorySelection = (category: ICategory) => {
     if (selectedCategory && selectedCategory.id === category.id) {
@@ -456,6 +377,16 @@ function LobbyDecksTab() {
     setIsModalLanguageOpen(false)
   }
 
+  if (decksResponse.isLoading) {
+    return <Loading />
+  }
+
+  if (decksResponse.isError || !decksResponse.data) {
+    return <div>Something went wrong!</div>
+  }
+
+  const decksData = decksResponse.data
+
   const handleDeckChange = (
     event: React.ChangeEvent<HTMLInputElement>,
     id: string
@@ -466,7 +397,7 @@ function LobbyDecksTab() {
 
     let newSelectedDecks: IDeckConfigScreen[] = []
     if (checked) {
-      const deckToAdd = decksMockResponse.find((deck) => deck.id === id)
+      const deckToAdd = decksData.find((deck) => deck.id === id)
       if (!deckToAdd) return console.error(`Deck not found with id ${id}`)
       newSelectedDecks = [...gameConfig.decks, deckToAdd]
     } else {
@@ -477,7 +408,7 @@ function LobbyDecksTab() {
   }
 
   const decksList: IDeckConfigScreen[] = isCurrentUserLeader
-    ? decksMockResponse.map((deck) => ({
+    ? decksData.map((deck) => ({
         ...deck,
         selected: gameConfig.decks.some(
           (selectedDeck) => selectedDeck.id === deck.id
@@ -539,7 +470,8 @@ function LobbyDecksTab() {
               >
                 <div className="flex items-center gap-3">
                   <Image
-                    src={deck.icon}
+                    // src={deck.icon}
+                    src="/icon_dark.png"
                     alt={deck.name}
                     width={100}
                     height={100}
@@ -576,7 +508,7 @@ function LobbyDecksTab() {
           <ul className="flex flex-col gap-3">
             {categoriesMock.map((category) => (
               <label
-                htmlFor={category.id}
+                htmlFor={String(category.id)}
                 className={`btn ${
                   selectedCategory && selectedCategory.id === category.id
                     ? ''
@@ -587,14 +519,14 @@ function LobbyDecksTab() {
                 <input
                   type="checkbox"
                   name=""
-                  id={category.id}
+                  id={String(category.id)}
                   className="hidden"
                   checked={
                     !!(selectedCategory && selectedCategory.id === category.id)
                   }
                   onChange={() => toggleCategorySelection(category)}
                 />
-                <label htmlFor={category.id}>{category.name}</label>
+                <label htmlFor={String(category.id)}>{category.name}</label>
               </label>
             ))}
           </ul>

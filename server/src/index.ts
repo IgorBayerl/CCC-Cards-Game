@@ -16,12 +16,17 @@ import cors from 'cors'
 import fs from 'fs'
 import path from 'path'
 import { ICardAnswer } from './models/Deck'
+import { listDecks } from './lib/deckUtils'
+import { z, ZodParsedType } from 'zod'
+import { DecksQuerySchema } from './validation/endpointsValidation'
 
 // Read and parse all deck JSON files
 const decksDirectory = path.join(__dirname, './data/decks')
 const deckFiles = fs.readdirSync(decksDirectory)
 const decks = deckFiles.map((file) => {
-  const deck = JSON.parse(fs.readFileSync(path.join(decksDirectory, file), 'utf-8'))
+  const deck = JSON.parse(
+    fs.readFileSync(path.join(decksDirectory, file), 'utf-8')
+  )
   const [language, _rest, id] = file.split('_')
   deck.id = id.split('.')[0] // remove .json extension
   deck.language = language
@@ -44,19 +49,19 @@ app.get('/', (req, res) => {
 })
 
 app.get('/decks', (req, res) => {
-  const language = req.query.language
-  const filteredDecks = !language
-    ? decks
-    : decks.filter((deck) => deck.language.includes(language as string))
+  const result = DecksQuerySchema.safeParse(req.query)
 
-  const deckSummaries = filteredDecks.map((deck) => ({
-    id: deck.id,
-    name: deck.name,
-    language: deck.language,
-    description: deck.description,
-  }))
+  if (!result.success) {
+    res.status(400).json({
+      message: 'Invalid query parameters',
+      errors: result.error.issues,
+    })
+    return
+  }
 
-  res.json(deckSummaries)
+  const { language, category } = result.data
+  const decksList = listDecks({ language, category })
+  res.json(decksList)
 })
 
 app.get('/decks/:id', (req, res) => {

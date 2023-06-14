@@ -35,7 +35,12 @@ interface IGameContextValue {
   playerSelectCards: (cards: ICardAnswer[]) => void
 }
 
-type AdmCommand = 'start' | 'next_round' | 'end'
+type AdmCommand =
+  | 'start'
+  | 'next_round'
+  | 'end'
+  | 'start-new-game'
+  | 'back-to-lobby'
 
 interface IGameConfig {
   decks: IDeckConfigScreen[]
@@ -64,6 +69,7 @@ export interface IGameState {
   currentQuestionCard: ICardQuestion | null
   lastRound: IGameRound | null
   config: IGameConfig
+  rounds?: IGameRound[]
 }
 
 export interface IGameRound {
@@ -246,7 +252,7 @@ const GameProvider: React.FC<IGameProviderProps> = ({ children }) => {
   }
 
   const admCommand = (command: string) => {
-    // Send an adm command message to the server -> example command: "start" || "kick"
+    // Send an adm command message to the server -> example command: "start" || "kick" || "start-new-game"
     socket?.emit('game:admCommand', command)
   }
 

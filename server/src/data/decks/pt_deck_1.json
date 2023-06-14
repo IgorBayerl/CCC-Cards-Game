@@ -2,7 +2,9 @@
   "id": "1",
   "name": "Baralho BR - Pedro Álvares Cabral",
   "description": "O nosso primeiro baralho brasileiro",
-  "language": "br",
+  "category": 1,
+  "icon": "https://cdn.iconscout.com/icon/free/png-256/free-social-275-116309.png",
+  "language": "pt",
   "cards": {
     "questions": [
       {

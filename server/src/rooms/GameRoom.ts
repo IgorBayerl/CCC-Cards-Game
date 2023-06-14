@@ -14,6 +14,7 @@ interface IGameState {
   currentQuestionCard: ICardQuestion | null
   lastRound: IGameRound | null
   config: IGameConfig
+  rounds?: IGameRound[]
 }
 
 interface IGameRound {
@@ -378,6 +379,28 @@ export default class GameRoom extends Room {
     this.broadcastState()
   }
 
+  resetRoom(): void {
+    this.status = 'waiting'
+    this.judge = null
+    this.currentJudgeIndex = null
+    this.currentQuestionCard = null
+    this.rounds = []
+    this.availableQuestionCards = []
+    this.availableAnswerCards = []
+    this.resetAllGamePlayers()
+    this.updatePlayerStatuses()
+    this.broadcastState()
+  }
+
+  resetAllGamePlayers() {
+    this.players.forEach((player) => {
+      player.cards = []
+      player.score = 0
+      player.status = 'pending'
+      player.hasSubmittedCards = false
+    })
+  }
+
   updatePlayerStatuses(): void {
     switch (this.status) {
       case 'waiting':
@@ -469,6 +492,7 @@ export default class GameRoom extends Room {
         scoreToWin: this.scoreToWin,
         time: this.time,
       },
+      rounds: this.status === 'finished' ? this.rounds : undefined,
     }
   }
 
