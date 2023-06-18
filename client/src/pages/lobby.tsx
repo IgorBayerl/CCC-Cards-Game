@@ -1,56 +1,29 @@
 import { useGameContext } from '~/components/GameContext'
-import Loading from '~/components/Atoms/Loading'
 import PlayersList from '~/components/PlayersList'
 import React, { useEffect, useState } from 'react'
 import router from 'next/router'
-import Layout from '~/components/Layout/Layout'
 import { CopyToClipboard } from '~/components/Atoms/CopyToClipboard'
 import { useQuery } from 'react-query'
 import { getDecks } from '~/api/deck'
-import CheckBoxCard from '~/components/Atoms/CheckBoxCard'
-import { IDeck, type IDeckConfigScreen } from '~/models/Deck'
+import { type IDeckConfigScreen } from '~/models/Deck'
 import ContainerHeader from '~/components/Layout/ContainerHeader'
-import ContainerFooter from '~/components/Layout/ContainerFooter'
 import { toast } from 'react-toastify'
 import useSound from 'use-sound'
 import { useAudio } from '~/components/AudioContext'
 import { Globe, Link, Play, Timer, Trophy } from '@phosphor-icons/react'
 import useShare from '~/hooks/useShare'
 import classNames from 'classnames'
-import { TypeOf } from 'zod'
 import Image from 'next/image'
 import { AnimatePresence, motion } from 'framer-motion'
 import LoadingWithText from '~/components/Atoms/LoadingWithText'
 import useTranslation from 'next-translate/useTranslation'
 import MobilePlayersList from '~/components/MobilePlayersList'
+import LoadingFullScreen from '~/components/Atoms/LoadingFullScreen'
 
 const languagesMock = [
   // { id: 'en', name: 'English' },
   { id: 'pt', name: 'Portuguese' },
   // { id: 'es', name: 'Spanish' },
-]
-
-const categoriesMock = [
-  {
-    id: 0,
-    name: 'Family Friendly',
-  },
-  {
-    id: 1,
-    name: 'Safe for Stream',
-  },
-  {
-    id: 2,
-    name: 'Mature Humor',
-  },
-  {
-    id: 3,
-    name: 'Chaos',
-  },
-  {
-    id: 4,
-    name: 'Uncensored Raw',
-  },
 ]
 
 export default function LobbyPage() {
@@ -101,7 +74,8 @@ export default function LobbyPage() {
   const handleStartGame = () => {
     //verify if there are enough players
     if (gameState.players.length < 2) {
-      toast.error('You need at least 2 players to start the game, sorry!')
+      const message = t('i-you-need-at-least-2-players-to-start-a-game')
+      toast.error(message)
       return
     }
 
@@ -109,7 +83,7 @@ export default function LobbyPage() {
   }
 
   if (!roomId) {
-    return <Loading />
+    return <LoadingFullScreen />
   }
 
   const roomInviteLink = `${window.location.origin}/?roomId=${roomId}`
@@ -324,6 +298,31 @@ interface ILanguage {
 }
 
 function LobbyDecksTab() {
+  const { t } = useTranslation('lobby')
+
+  const categoriesMock = [
+    {
+      id: 0,
+      name: t('i-family-friendly'),
+    },
+    {
+      id: 1,
+      name: t('i-safe-for-stream'),
+    },
+    {
+      id: 2,
+      name: t('i-mature-humor'),
+    },
+    {
+      id: 3,
+      name: t('i-chaos'),
+    },
+    {
+      id: 4,
+      name: t('i-uncensored-raw'),
+    },
+  ]
+
   const { gameConfig, setConfig, isCurrentUserLeader } = useGameContext()
   const { isMuted } = useAudio()
 
@@ -378,7 +377,7 @@ function LobbyDecksTab() {
   }
 
   if (decksResponse.isLoading) {
-    return <Loading />
+    return <LoadingFullScreen />
   }
 
   if (decksResponse.isError || !decksResponse.data) {
@@ -422,7 +421,7 @@ function LobbyDecksTab() {
   return (
     <div className="flex h-full flex-col px-2 pt-2 md:px-0">
       {isCurrentUserLeader && (
-        <div className="flex gap-3 rounded-md bg-accent p-2 dark:bg-base-300 md:mx-3">
+        <div className="flex gap-3 rounded-md bg-white bg-opacity-70 p-2 md:mx-3">
           <label
             htmlFor="modal-language"
             className="btn-outline btn justify-between gap-2"
@@ -463,7 +462,7 @@ function LobbyDecksTab() {
                     'btn-ghost btn': isCurrentUserLeader,
                     'btn-disabled btn-ghost btn-active btn':
                       !isCurrentUserLeader,
-                    'border-accent hover:border-accent': deck.selected,
+                    'border-white hover:border-white': deck.selected,
                     'border-transparent': !deck.selected,
                   }
                 )}
@@ -475,7 +474,7 @@ function LobbyDecksTab() {
                     alt={deck.name}
                     width={100}
                     height={100}
-                    className="aspect-square h-16 w-16 rounded-xl bg-neutral"
+                    className="aspect-square h-16 w-16 rounded-xl bg-neutral bg-opacity-70 object-contain"
                   />
                   <div className="truncate">
                     <h1 className="card-title ">{deck.name}</h1>
@@ -504,7 +503,9 @@ function LobbyDecksTab() {
           >
             ✕
           </label>
-          <h1 className="card-title py-4">How bad will the cards be?</h1>
+          <h1 className="card-title py-4">
+            {t('i-how-bad-will-the-cards-be')}
+          </h1>
           <ul className="flex flex-col gap-3">
             {categoriesMock.map((category) => (
               <label
@@ -548,7 +549,7 @@ function LobbyDecksTab() {
           >
             ✕
           </label>
-          <h1 className="card-title py-4">Filter by language</h1>
+          <h1 className="card-title py-4">{t('i-filter-by-language')}</h1>
           <ul className="flex flex-col gap-3">
             {languagesMock.map((language) => (
               <label

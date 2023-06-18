@@ -4,7 +4,6 @@ interface ITimerScreenProps {
   title?: string
   subtitle?: string
   time: number
-  handleTimeout: () => void
   timerKey?: string
 }
 
@@ -12,7 +11,6 @@ export default function TimerTitle({
   title = '',
   subtitle = '',
   time,
-  handleTimeout,
   timerKey = 'timer_1',
 }: ITimerScreenProps) {
   return (
@@ -29,7 +27,6 @@ export default function TimerTitle({
           duration={time}
           colors={['#004777', '#F7B801', '#A30000', '#A30000']}
           colorsTime={[7, 5, 2, 0]}
-          onComplete={handleTimeout}
         >
           {({ remainingTime }) => remainingTime}
         </CountdownCircleTimer>

@@ -15,5 +15,11 @@
   "i-select-your-language": "Selecione seu idioma",
   "i-error-joining-room": "Erro ao entrar na sala",
   "i-cool-nickname": "NomeLegal",
-  "i-link-copied": "Link Copiado!"
+  "i-link-copied": "Link Copiado!",
+  "i-developed-by": "Desenvolvido por",
+  "i-send": "Enviar",
+  "i-message": "Mensagem",
+  "i-what-is-your-name": "Qual é o seu nome?",
+  "i-message-sent": "Mensagem enviada",
+  "i-message-failed-to-send": "Falha ao enviar mensagem"
 }

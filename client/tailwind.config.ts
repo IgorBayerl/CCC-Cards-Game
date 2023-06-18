@@ -2,7 +2,7 @@ import { type Config } from "tailwindcss";
 
 const config: Config = {
   content: ['./src/**/*.{js,ts,jsx,tsx}'],
-  // darkMode: 'class', //'media' or 'class
+  darkMode: 'class', // or 'media' or 'class'
   theme: {
     extend: {},
   },
@@ -10,6 +10,9 @@ const config: Config = {
     require('daisyui'),
     require('tailwind-scrollbar')({ nocompatible: true }),
   ],
+  daisyui: {
+    themes: ['light'],
+  },
   options: {
     prefix: 'tw-',
   },

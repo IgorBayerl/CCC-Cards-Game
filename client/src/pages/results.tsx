@@ -3,13 +3,15 @@ import Layout from '~/components/Layout/Layout'
 
 import InGameLayout from '~/components/Layout/InGameLayout'
 import  { GameCardResult } from '~/components/Atoms/GameCard'
-import { ICard } from '~/models/Deck'
+import { type ICard } from '~/models/Deck'
 
 import Image from 'next/image'
 import TimerTitle from '~/components/Layout/TimerScreen'
+import useTranslation from 'next-translate/useTranslation'
 
 export default function Results() {
   const { socket, gameState, isCurrentUserLeader } = useGameContext()
+  const { t } = useTranslation('game')
 
   const handleGoToNextRound = () => {
     socket?.emit('game:admCommand', 'next_round')
@@ -22,48 +24,7 @@ export default function Results() {
   const lastRoundQuestionCard = lastRoundResults?.questionCard as ICard
   const lastRoundWinnerAnswers = lastRoundResults?.answerCards[winner?.id || '']
 
-  const time = 10 // 10 seconds on the screen before going to the next round
-
-  // const [timerId, setTimerId] = useState<ReturnType<typeof setTimeout> | null>(
-  //   null
-  // )
-
-  // Cleanup function to clear the timer when the component unmounts
-  // useEffect(() => {
-  //   return () => {
-  //     if (timerId !== null) {
-  //       clearTimeout(timerId)
-  //     }
-  //   }
-  // }, [timerId])
-
-  // const startTimer = () => {
-  //   // Clear the old timer if it exists
-  //   if (timerId !== null) {
-  //     clearTimeout(timerId)
-  //   }
-
-  //   // Convert the time to milliseconds
-  //   const timeout = time * 1000
-
-  //   const id = setTimeout(() => {
-  //     handleGoToNextRound()
-  //   }, timeout)
-
-  //   // Store the timer id so it can be cleared later
-  //   setTimerId(id)
-  // }
-
-  // Start the timer when the component mounts or time changes
-  // useEffect(() => {
-  //   startTimer()
-  // }, [time])
-
-  // function handleStartNewGame(){
-
-  function handleTimeout() {
-    handleGoToNextRound()
-  }
+  const time = gameState.config.time || 10 // 10 seconds on the screen before going to the next round
 
   if (!gameState.lastRound) {
     return (
@@ -82,9 +43,8 @@ export default function Results() {
     <InGameLayout>
       <TimerTitle
         key="roundWinner"
-        subtitle="Round winner!"
+        subtitle={t('i-round-winner')}
         time={time}
-        handleTimeout={handleTimeout}
       />
       <div className="bg-destaque-mobile flex flex-1 flex-col py-2 md:mx-4">
         <div className="flex flex-1 items-center ">
@@ -94,7 +54,7 @@ export default function Results() {
               alt={winner?.username || ''}
               width={100}
               height={100}
-              className="rounded-full border-4 border-neutral dark:border-white"
+              className="rounded-full border-4  border-white"
             />
             <h1 className="text-xl font-bold">{winner?.username}</h1>
             <div className="mx-5 flex  flex-1 flex-col items-center gap-10 lg:flex-row">
@@ -110,7 +70,7 @@ export default function Results() {
                     />
                   </div>
                 </div>
-                <div className="chat-bubble bg-gray-200 text-gray-800 dark:bg-neutral dark:text-gray-200">
+                <div className="chat-bubble bg-neutral text-gray-200">
                   <GameCardResult
                     question={lastRoundQuestionCard.text}
                     answers={resultCardAnswer}
@@ -124,7 +84,7 @@ export default function Results() {
       {isCurrentUserLeader && (
         <div className="flex items-center justify-center px-4 py-2">
           <button className="btn flex-1" onClick={handleGoToNextRound}>
-            Next Round
+            {t('i-next-round')}
           </button>
         </div>
       )}

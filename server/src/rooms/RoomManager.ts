@@ -15,14 +15,15 @@ export default class RoomManager {
     socket: Socket,
     roomId: string,
     username: string,
-    pictureUrl: string
+    pictureUrl: string,
+    oldSocketId?: string
   ): GameRoom {
     let room = this.getRoomById(roomId)
     if (!room) {
       room = new GameRoom(roomId, this.io)
       this.rooms.set(roomId, room)
     }
-    room.addPlayer(socket, username, pictureUrl)
+    room.addPlayer(socket, username, pictureUrl, oldSocketId)
     socket.join(room.id)
     room.notifyPlayerState(socket)
     console.log(`Player ${socket.id} joined room ${room.id}`)
@@ -35,6 +36,21 @@ export default class RoomManager {
         console.log(`Player ${socket.id} left room ${room.id}`)
         socket.leave(room.id)
         if (room.isEmpty) {
+          this.rooms.delete(room.id)
+        } else {
+          return room
+        }
+      }
+    }
+    return null
+  }
+
+  disconnectFromRoom(socket: Socket) {
+    for (const room of this.rooms.values()) {
+      if (room.disconnectPlayer(socket)) {
+        console.log(`Player ${socket.id} went offline in room ${room.id}`)
+        socket.leave(room.id)
+        if (room.players.every((p) => p.isOffline)) {
           this.rooms.delete(room.id)
         } else {
           return room

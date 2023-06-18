@@ -9,7 +9,17 @@ interface IProps {
 }
 
 export default function PlayersList({ players, leader, roomSize }: IProps) {
-  const sortedPlayers = [...players].sort((a, b) => b.score - a.score)
+  // const sortedPlayers = [...players].sort((a, b) => b.score - a.score)
+  const sortedPlayers = [...players].sort((a, b) => {
+    if (a.isOffline && !b.isOffline) {
+      return 1 // Place offline players at the end
+    } else if (!a.isOffline && b.isOffline) {
+      return -1 // Place online players before offline players
+    } else {
+      // If both players are online or both are offline, sort by score
+      return b.score - a.score
+    }
+  })
 
   const freeSpaces = Array.from(
     { length: roomSize - players.length },

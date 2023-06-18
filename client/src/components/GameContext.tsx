@@ -87,6 +87,7 @@ export interface IPlayer {
   roundRole: 'player' | 'judge'
   score: number
   status: TPlayerStatus
+  isOffline: boolean
 }
 
 interface ISocketError {
@@ -110,6 +111,7 @@ const initialGameState: IGameState = {
     roundRole: 'player',
     score: 0,
     status: 'pending',
+    isOffline: false,
   },
   judge: null,
   status: 'waiting',
@@ -170,10 +172,12 @@ const GameProvider: React.FC<IGameProviderProps> = ({ children }) => {
 
     socket?.on('room:joinedRoom', (roomId: string) => {
       setRoomId(roomId)
+      localStorage.setItem('oldSocketId', socket?.id || '')
     })
 
     socket?.on('game:updateCards', handleUpdateCards)
     socket?.on('message:status', setStartingState)
+    socket?.on('message:notify', handleNotify)
 
     socket?.on('game:error', handleError)
     socket?.on('room:error', handleError)
@@ -185,6 +189,7 @@ const GameProvider: React.FC<IGameProviderProps> = ({ children }) => {
       socket?.off('room:joinedRoom')
       socket?.off('game:updateCards')
       socket?.off('message:status')
+      socket?.off('message:notify')
       socket?.off('game:error')
       socket?.off('room:error')
       socket?.off('disconnect')
@@ -217,6 +222,10 @@ const GameProvider: React.FC<IGameProviderProps> = ({ children }) => {
     }))
   }
 
+  const handleNotify = (message: string) => {
+    toast.info(message)
+  }
+
   const handleError = (socketError: ISocketError) => {
     const { message, error } = socketError
     console.log('SERVER:', message)
@@ -233,7 +242,13 @@ const GameProvider: React.FC<IGameProviderProps> = ({ children }) => {
   }
 
   const joinRoom = (username: string, roomId: string, pictureUrl: string) => {
-    socket?.emit('room:joinRoom', { username, roomId, pictureUrl })
+    const oldSocketId = localStorage.getItem('oldSocketId') || ''
+    socket?.emit('room:joinRoom', {
+      username,
+      roomId,
+      pictureUrl,
+      oldSocketId: oldSocketId,
+    })
   }
 
   const leaveRoom = () => {

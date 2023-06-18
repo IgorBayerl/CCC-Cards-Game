@@ -1,10 +1,17 @@
 // src/rooms/GameRoom.ts
 import { type Server, type Socket } from 'socket.io'
-import { ICardAnswer, ICardQuestion, IDeck, IDeckConfigScreen } from '../models/Deck'
+import {
+  ICard,
+  ICardAnswer,
+  ICardQuestion,
+  IDeck,
+  IDeckConfigScreen,
+} from '../models/Deck'
 import { getDeckById, shuffleCards } from '../lib/deckUtils'
 import Room from './Room'
 import GamePlayer, { TPlayerStatus } from './GamePlayer'
 import Player from './Player'
+import { delay } from '../lib/utils'
 
 interface IGameState {
   players: Player[]
@@ -57,6 +64,8 @@ export default class GameRoom extends Room {
   private availableAnswerCards: ICardAnswer[] = []
   private usedQuestionCards: ICardQuestion[] = []
 
+  private timer: NodeJS.Timeout | null = null
+
   constructor(
     id: string,
     io: Server,
@@ -75,18 +84,182 @@ export default class GameRoom extends Room {
     this.time = config.time
   }
 
-  addPlayer(socket: Socket, username: string, pictureUrl: string) {
-    const player = new GamePlayer(socket.id, username, pictureUrl, socket.id)
-    this.players.push(player)
-    if (!this.leader) {
-      this.leader = player
+  // /**
+  //  * @deprecated Use addPlayer instead
+  //  */
+  // addPlayerNew(
+  //   socket: Socket,
+  //   username: string,
+  //   pictureUrl: string,
+  //   oldSocketId?: string
+  // ) {
+  //   // Call the parent class method first
+  //   super.addPlayer(socket, username, pictureUrl, oldSocketId)
+
+  //   // Retrieve the player (either newly created or existing one)
+  //   const player = this.players.find((p) => p.id === socket.id)
+
+  //   // If player is found (it should be) and the game has already started, give the player cards
+  //   if (player && this.status !== 'waiting' && this.status !== 'starting') {
+  //     // Only give cards to new players (those who don't have cards yet)
+  //     if (player.cards.length === 0) {
+  //       this.giveCardsToPlayer(player)
+  //       const socketId = player.socketId
+  //       this.io.to(socketId).emit('game:updateCards', player.cards)
+  //     }
+  //   }
+  // }
+
+  addPlayer(
+    socket: Socket,
+    username: string,
+    pictureUrl: string,
+    oldSocketId?: string
+  ) {
+    // Check if the player already exists using oldSocketId
+    const existingPlayerIndex = oldSocketId
+      ? this.players.findIndex((p) => p.id === oldSocketId)
+      : -1
+
+    if (existingPlayerIndex > -1) {
+      // If the player exists, update their details
+      this.players[existingPlayerIndex].id = socket.id // Update the new socket id
+      this.players[existingPlayerIndex].isOffline = false // Set the player back to online
+    } else {
+      // If player does not exist, create a new player
+      const player = new GamePlayer(socket.id, username, pictureUrl, socket.id)
+      this.players.push(player)
+      if (!this.leader) {
+        this.leader = player
+      }
+
+      // Give the player cards if the game has already started
+      if (this.status !== 'waiting' && this.status !== 'starting') {
+        this.giveCardsToPlayer(player)
+        const socketId = player.socketId
+        this.io.to(socketId).emit('game:updateCards', player.cards)
+      }
+    }
+  }
+
+  removePlayer(socket: Socket): boolean {
+    const result = super.disconnectPlayer(socket) // Call the parent method
+    result && this.handleJudgeDisconnect()
+    return result
+  }
+
+  disconnectPlayer(socket: Socket): boolean {
+    const result = super.disconnectPlayer(socket) // Call the parent method
+    result && this.handleJudgeDisconnect()
+    return result
+  }
+
+  private setStatus(status: TRoomStatus) {
+    this.status = status
+    this.clearTimer()
+
+    const autoplayStatuses = ['playing', 'judging', 'results']
+
+    // the +2 is to give some time for the client to render the status change
+    const timeInMs = (this.time + 2) * 1000
+
+    if (autoplayStatuses.includes(status)) {
+      this.timer = setTimeout(() => {
+        this.autoPlay()
+      }, timeInMs)
     }
 
-    // Give the player cards if the game has already started
-    if (this.status !== 'waiting' && this.status !== 'starting') {
-      this.giveCardsToPlayer(player)
-      const socketId = player.socketId
-      this.io.to(socketId).emit('game:updateCards', player.cards)
+    this.broadcastState()
+  }
+
+  private clearTimer() {
+    if (this.timer) {
+      clearTimeout(this.timer)
+      this.timer = null
+    }
+  }
+
+  private autoPlay() {
+    const statusActions: { [key in TRoomStatus]?: () => void } = {
+      playing: () => this.autoPlayPlaying(),
+      judging: () => this.autoPlayJudging(),
+      results: () => this.autoPlayResults(),
+    }
+
+    const action = statusActions[this.status]
+
+    if (!action)
+      return console.warn(`No autoplay action for status: ${this.status}`)
+
+    action()
+  }
+
+  private autoPlayPlaying() {
+    console.log('AUTO >>> autoPlayPlaying')
+    // Get all the players that didn't play yet
+    const playersThatDidntPlay = this.players.filter(
+      (p) => p.status === 'pending' && !p.isOffline
+    )
+
+    //get the number of cards each player need to select
+    const cardsPerPlayer = this.currentQuestionCard?.spaces || 1
+
+    // Select random cards from each player
+    playersThatDidntPlay.forEach((player) => {
+      // Select random cards from the player hand
+      const randomCards = this.selectRandomCards(player.cards, cardsPerPlayer)
+      this.playerSelection(randomCards, player.socketId)
+    })
+  }
+
+  private async autoPlayJudging() {
+    let nextCardsExist = true
+
+    const timeInMs = this.time * 1000
+    // keep requesting next card until no next card
+    while (nextCardsExist) {
+      nextCardsExist = this.showNextCard()
+      await delay(timeInMs)
+    }
+
+    this.seeAllRoundAnswers()
+    await delay(timeInMs)
+    // Select the winning player after going through all cards
+    const notJudgePlayers = this.players.filter(
+      (p) => p.id !== this.judge?.id && !p.isOffline
+    )
+    const randomPlayerIndex = Math.floor(Math.random() * notJudgePlayers.length)
+    const randomPlayer = notJudgePlayers[randomPlayerIndex]
+    const winningPlayerId = randomPlayer.id
+
+    this.judgeSelection(winningPlayerId)
+  }
+
+  // Method to check if there are next cards available
+  private checkNextCardsExist(): boolean {
+    const { hasNext } = this.getNextPlayerCardsResults()
+    return hasNext
+  }
+
+  private autoPlayResults() {
+    this.nextRound()
+  }
+
+  private selectRandomCards(cards: ICard[], count: number): ICard[] {
+    const randomCards: ICard[] = []
+    for (let i = 0; i < count; i++) {
+      const randomIndex = Math.floor(Math.random() * cards.length)
+      randomCards.push(cards[randomIndex])
+    }
+    return randomCards
+  }
+
+  private handleJudgeDisconnect(): void {
+    if (this.judge && this.judge.isOffline) {
+      // If the judge disconnects, skip to the next round
+      this.nextRound()
+      // Emit a message
+      this.broadcast('message:notify', 'Judge disconnected. Skipping round.')
     }
   }
 
@@ -173,7 +346,8 @@ export default class GameRoom extends Room {
     return {}
   }
 
-  requestNextCard(socket: Socket): void {
+  requestNextCard(): void {
+    console.log('>>> requesting next card')
     const { cards: nextCards, hasNext } = this.getNextPlayerCardsResults()
     if (nextCards) {
       // Emit the entire 'cards' object instead of just the array for the next player
@@ -189,7 +363,26 @@ export default class GameRoom extends Room {
     }
   }
 
-  seeAllRoundAnswers(socket: Socket): void {
+  showNextCard(): boolean {
+    console.log('>>> showing next card')
+    const { cards: nextCards, hasNext } = this.getNextPlayerCardsResults()
+    if (nextCards) {
+      // Emit the entire 'cards' object instead of just the array for the next player
+      this.broadcast('game:updateResultCards', { cards: nextCards, hasNext })
+    } else {
+      // When no next cards are available, emit all the cards with hasNext set to false
+      const allCards = this.getAllCards()
+      this.broadcast('game:updateResultCards', {
+        cards: allCards,
+        hasNext: false,
+      })
+      console.log('All cards have been sent.')
+    }
+    return hasNext
+  }
+
+  seeAllRoundAnswers(): void {
+    console.log('>>> seeing all round answers')
     const allCards = this.getAllCards()
     this.broadcast('game:showAllCards', { cards: allCards, hasNext: false })
   }
@@ -298,7 +491,8 @@ export default class GameRoom extends Room {
       return
     }
 
-    this.status = 'starting'
+    this.setStatus('starting')
+    // this.status = 'starting'
     this.broadcastState()
 
     this.selectJudge()
@@ -315,14 +509,6 @@ export default class GameRoom extends Room {
     this.dealQuestionCardsForEveryone()
     this.notifyPlayerCards()
 
-    // // Give 6 cards to each player
-    // console.log('>>> giving 6 cards to each player...')
-    // this.startingStatusUpdate('>>> giving 6 cards to each player...')
-    // for (let player of this.players) {
-    //   this.giveCardsToPlayer(player)
-    // }
-    // this.notifyPlayerCards()
-
     // Add a round here
     if (this.judge && this.currentQuestionCard) {
       this.addRound(this.currentQuestionCard, this.judge)
@@ -334,7 +520,8 @@ export default class GameRoom extends Room {
     }
 
     // setTimeout(() => {
-    this.status = 'playing'
+    // this.status = 'playing'
+    this.setStatus('playing')
     this.updatePlayerStatuses()
     this.broadcastState()
     // }, 4000)
@@ -346,8 +533,11 @@ export default class GameRoom extends Room {
 
     // Select the next player as a judge
     if (this.players.length > 0 && this.currentJudgeIndex !== null) {
-      this.currentJudgeIndex =
-        (this.currentJudgeIndex + 1) % this.players.length
+      do {
+        this.currentJudgeIndex =
+          (this.currentJudgeIndex + 1) % this.players.length
+      } while (this.players[this.currentJudgeIndex].isOffline)
+
       this.judge = this.players[this.currentJudgeIndex]
 
       // Reset hasSubmittedCards for all players
@@ -357,7 +547,9 @@ export default class GameRoom extends Room {
         'Cannot select a judge, no players available or current judge index is null'
       )
     }
-    this.status = 'playing'
+
+    // this.status = 'playing'
+    this.setStatus('playing')
     this.updatePlayerStatuses()
 
     // Add a round here
@@ -380,7 +572,8 @@ export default class GameRoom extends Room {
   }
 
   resetRoom(): void {
-    this.status = 'waiting'
+    // this.status = 'waiting'
+    this.setStatus('waiting')
     this.judge = null
     this.currentJudgeIndex = null
     this.currentQuestionCard = null
@@ -456,7 +649,8 @@ export default class GameRoom extends Room {
   checkForWinner(): boolean {
     for (let player of this.players) {
       if (player.score >= this.scoreToWin) {
-        this.status = 'finished'
+        // this.status = 'finished'
+        this.setStatus('finished')
         this.updatePlayerStatuses()
         console.log(`${player.username} has won the game!`)
         this.broadcastState()
@@ -474,6 +668,7 @@ export default class GameRoom extends Room {
         pictureUrl: player.pictureUrl,
         score: player.score,
         status: player.status,
+        isOffline: player.isOffline,
       }
     })
   }
@@ -516,7 +711,7 @@ export default class GameRoom extends Room {
     return this.rounds
   }
 
-  judgeSelection(winningPlayerId: string, socket: Socket): void {
+  judgeSelection(winningPlayerId: string): void {
     console.log('>>> judge selection', winningPlayerId)
     const winningPlayerName = this.players.find(
       (p) => p.id === winningPlayerId
@@ -533,63 +728,78 @@ export default class GameRoom extends Room {
       this.rounds[this.rounds.length - 1].winner = winningPlayer
     }
 
-    // If the winning player has reached the score to win, update the game state to 'finished'.
-    // if (winningPlayer.score === this.scoreToWin) {
-    //   // TODO: move this in a place where it will be shown after the round results
-    //   this.status = 'finished'
-    //   this.broadcastState()
-    //   return
-    // }
-
-    this.status = 'results'
+    // this.status = 'results'
+    this.setStatus('results')
     this.broadcastState()
   }
 
-  playerSelection(selectedCards: ICardAnswer[], socket: Socket): void {
-    console.log('>>> player Selection')
-    // Find the player and update their cards.
-    const player = this.players.find((p) => p.socketId === socket.id)
-    if (player && this.rounds.length > 0) {
-      console.log(
-        `Player ${player.username} has submitted their cards: ${selectedCards
-          .map((card) => card.text)
-          .join(', ')}.`
-      )
+  // playerSelection(selectedCards: ICardAnswer[], socket: Socket): void {
+  //   const player = this.getPlayer(socket)
+  //   if (!player) return
 
-      // Remove the selected cards from the player's hand
-      console.log(
-        `>>> 1 >> Player ${player.username} has submitted their cards.`,
-        player.cards
-      )
-      const selectedCardTexts = new Set(selectedCards.map((card) => card.text))
-      player.cards = player.cards.filter(
-        (card) => !selectedCardTexts.has(card.text)
-      )
-      console.log(
-        `>>> 2 >> Player ${player.username} has submitted their cards.`,
-        player.cards
-      )
+  //   this.removePlayerCards(player, selectedCards)
+  //   this.storeRoundCards(player, selectedCards)
 
-      // Store the selected cards for the round
-      this.rounds[this.rounds.length - 1].answerCards[player.id] = selectedCards
+  //   player.hasSubmittedCards = true
+  //   this.updatePlayerStatuses()
 
-      // Mark the player as having submitted cards
-      player.hasSubmittedCards = true
+  //   if (this.allPlayersSubmittedCards()) {
+  //     // this.status = 'judging'
+  //     this.setStatus('judging')
+  //     this.updatePlayerStatuses()
+  //   }
 
-      // Update player statuses
+  //   this.notifyPlayerCards()
+  //   this.broadcastState()
+  // }
+  playerSelection(selectedCards: ICardAnswer[], socketId: string): void {
+    console.log('>>> player selection', selectedCards)
+    const player = this.getPlayer(socketId)
+    if (!player) return
+
+    this.removePlayerCards(player, selectedCards)
+    this.storeRoundCards(player, selectedCards)
+
+    player.hasSubmittedCards = true
+    this.updatePlayerStatuses()
+
+    if (this.allPlayersSubmittedCards()) {
+      // this.status = 'judging'
+      this.setStatus('judging')
       this.updatePlayerStatuses()
-
-      // Check if all players have submitted their cards
-      const allPlayersSubmitted = this.players.every(
-        (p) => p === this.judge || p.hasSubmittedCards
-      )
-      if (allPlayersSubmitted) {
-        this.status = 'judging'
-        this.updatePlayerStatuses()
-      }
-      this.notifyPlayerCards()
-      this.broadcastState()
     }
+
+    this.notifyPlayerCards()
+    this.broadcastState()
+  }
+
+  getPlayer(socketId: string): GamePlayer | undefined {
+    return this.players.find((p) => p.socketId === socketId)
+  }
+
+  private removePlayerCards(
+    player: GamePlayer,
+    selectedCards: ICardAnswer[]
+  ): void {
+    const selectedCardTexts = new Set(selectedCards.map((card) => card.text))
+    player.cards = player.cards.filter(
+      (card) => !selectedCardTexts.has(card.text)
+    )
+  }
+
+  private storeRoundCards(
+    player: GamePlayer,
+    selectedCards: ICardAnswer[]
+  ): void {
+    if (this.rounds.length > 0) {
+      this.rounds[this.rounds.length - 1].answerCards[player.id] = selectedCards
+    }
+  }
+
+  private allPlayersSubmittedCards(): boolean {
+    return this.players.every(
+      (p) => p.isOffline || p === this.judge || p.hasSubmittedCards
+    )
   }
 
   broadcast(messageType: string, content: any): void {

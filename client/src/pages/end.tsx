@@ -1,35 +1,17 @@
 import { useGameContext } from '~/components/GameContext'
-import router from 'next/router'
-import Layout from '~/components/Layout/Layout'
-
 import InGameLayout from '~/components/Layout/InGameLayout'
-import GameCard, { GameCardResult } from '~/components/Atoms/GameCard'
-import { ICard, ICardAnswer } from '~/models/Deck'
-import { useEffect, useState } from 'react'
-import { toast } from 'react-toastify'
+import { GameCardResult } from '~/components/Atoms/GameCard'
+import { useState } from 'react'
 import Image from 'next/image'
 import ConfettiExplosion from 'react-confetti-explosion'
-
-interface IUpdateResultCards {
-  hasNext: boolean
-  cards: { [playerId: string]: ICardAnswer[] }
-}
+import useTranslation from 'next-translate/useTranslation'
 
 export default function End() {
-  const {
-    myHand,
-    socket,
-    gameState,
-    startingState,
-    playerSelectCards,
-    admCommand,
-    isCurrentUserLeader,
-  } = useGameContext()
-  const myCards = myHand.cards
+  const { gameState, admCommand, isCurrentUserLeader } = useGameContext()
 
   const { players } = gameState
 
-  // find the player with the highest score
+  const { t } = useTranslation('game')
 
   const winner = players.reduce(
     (prev, current) => (prev.score > current.score ? prev : current),
@@ -72,7 +54,7 @@ export default function End() {
   return (
     <InGameLayout>
       <div className="bg-destaque-mobile flex flex-1 flex-col overflow-y-auto py-2 md:mx-4">
-        <h1 className="text-xl font-bold">Match Winner</h1>
+        <h1 className="text-xl font-bold">{t('i-match-winner')}</h1>
         <div className="flex flex-1 items-center ">
           <div className="flex flex-1 flex-col items-center gap-3">
             <ConfettiExplosion key={keyTest} />
@@ -81,7 +63,7 @@ export default function End() {
               alt={winner?.username || ''}
               width={100}
               height={100}
-              className="rounded-full border-4 border-neutral dark:border-white"
+              className="rounded-full border-4 border-white"
               onClick={explodeConfetti}
             />
             <h1 className="text-xl font-bold" onClick={explodeConfetti}>
@@ -104,7 +86,7 @@ export default function End() {
                     />
                   </div>
                 </div>
-                <div className="chat-bubble bg-gray-200 text-gray-800 dark:bg-neutral dark:text-gray-200">
+                <div className="chat-bubble bg-neutral text-gray-200">
                   <GameCardResult
                     question={item?.question || ''}
                     answers={item?.answer?.map((answer) => answer.text) || []}
@@ -117,10 +99,10 @@ export default function End() {
       {isCurrentUserLeader && (
         <div className="flex flex-col  items-stretch justify-center gap-2 px-4 py-2 md:flex-row">
           <button className="btn flex-1" onClick={handleBackToLobby}>
-            Back To Lobby
+            {t('i-back-to-lobby')}
           </button>
           <button className="btn flex-1" onClick={handleStartNewGame}>
-            Play Again
+            {t('i-play-again')}
           </button>
         </div>
       )}

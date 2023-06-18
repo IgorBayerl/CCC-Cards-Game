@@ -93,7 +93,7 @@ export const handleJudgeDecision = (
   const roomId = Array.from(socket.rooms)[1]
   const room = roomManager.getRoomById(roomId)
   if (room && room.currentJudge && room.currentJudge.id === socket.id) {
-    room.judgeSelection(winningPlayerId, socket)
+    room.judgeSelection(winningPlayerId)
   }
 }
 
@@ -104,9 +104,9 @@ export const handlePlayerSelection = (
 ) => {
   const roomId = Array.from(socket.rooms)[1]
   const room = roomManager.getRoomById(roomId)
-  if (room) {
-    room.playerSelection(selectedCards, socket)
-  }
+
+  if (!room) return
+  room.playerSelection(selectedCards, socket.id)
 }
 
 export const handleRequestNextCard = (
@@ -116,7 +116,7 @@ export const handleRequestNextCard = (
   const roomId = Array.from(socket.rooms)[1]
   const room = roomManager.getRoomById(roomId)
   if (room && room.currentJudge && room.currentJudge.id === socket.id) {
-    room.requestNextCard(socket)
+    room.requestNextCard()
   }
 }
 
@@ -127,7 +127,7 @@ export const handleSeeAllRoundAnswers = (
   const roomId = Array.from(socket.rooms)[1]
   const room = roomManager.getRoomById(roomId)
   if (room && room.currentJudge && room.currentJudge.id === socket.id) {
-    room.seeAllRoundAnswers(socket)
+    room.seeAllRoundAnswers()
   }
 }
 

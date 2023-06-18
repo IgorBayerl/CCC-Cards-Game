@@ -7,7 +7,12 @@ import { JoinRequestSchema } from './validation/roomEventsValidation'
 export const handleJoinRoom = (
   socket: Socket,
   roomManager: RoomManager,
-  joinRequest: { roomId: string; username: string; pictureUrl: string }
+  joinRequest: {
+    roomId: string
+    username: string
+    pictureUrl: string
+    oldSocketId?: string
+  }
 ) => {
   const result = JoinRequestSchema.safeParse(joinRequest)
 
@@ -19,8 +24,14 @@ export const handleJoinRoom = (
     socket.emit('join:error')
     return
   }
-  const { roomId, username, pictureUrl } = result.data
-  const room = roomManager.joinRoom(socket, roomId, username, pictureUrl)
+  const { roomId, username, pictureUrl, oldSocketId } = result.data
+  const room = roomManager.joinRoom(
+    socket,
+    roomId,
+    username,
+    pictureUrl,
+    oldSocketId
+  )
   socket.emit('room:joinedRoom', roomId)
   room.notifyState(socket)
 }

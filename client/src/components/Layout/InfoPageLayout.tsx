@@ -25,7 +25,7 @@ export default function InfoPageLayout({
           <Info size={25} weight="bold" />
         </label>
       </header>
-      <div className="game-container-border flex flex-col gap-3 ">
+      <div className="game-container-border flex flex-1 flex-col gap-3 md:flex-none">
         <div className="hidden w-full items-center justify-between md:flex">
           <Link href="/">
             <label
@@ -44,8 +44,8 @@ export default function InfoPageLayout({
             <DiscordLogo size={25} weight="bold" />
           </Link>
         </div>
-        <div className="gap-5 py-10 md:flex">
-          <div className="w-full gap-5 md:flex  md:rounded-xl md:bg-black md:bg-opacity-10 md:p-5 dark:md:bg-white dark:md:bg-opacity-10 lg:flex lg:flex-row">
+        <div className="flex-1 gap-5 py-10 md:flex">
+          <div className="w-full flex-1 gap-5 md:flex  md:rounded-xl  md:bg-white md:bg-opacity-50 md:p-5 lg:flex lg:flex-row">
             {children}
           </div>
         </div>

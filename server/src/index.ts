@@ -79,6 +79,7 @@ interface IJoinRequest {
   username: string
   roomId: string
   pictureUrl: string
+  oldSocketId?: string
 }
 
 const roomManager = new RoomManager(io)
@@ -120,7 +121,8 @@ io.on('connection', (socket) => {
 
   socket.on('disconnect', () => {
     console.log('A user disconnected!')
-    const room = roomManager.leaveRoom(socket)
+    // Change leaveRoom to disconnectFromRoom
+    const room = roomManager.disconnectFromRoom(socket)
     room?.notifyState(socket)
   })
 })

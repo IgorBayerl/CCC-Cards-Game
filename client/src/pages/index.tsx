@@ -2,8 +2,6 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import { v4 as uuidv4 } from 'uuid'
 import { useGameContext } from '~/components/GameContext'
-import Layout from '~/components/Layout/Layout'
-
 import { TutorialCarousel } from '~/components/Atoms/TutorialCarousel'
 import Image from 'next/image'
 import { useShuffleArray } from '~/hooks/useShuffleArray'
@@ -18,8 +16,6 @@ import {
 } from '@phosphor-icons/react'
 import CCCIconThemed from '~/components/Atoms/CCCIconThemed'
 import Link from 'next/link'
-import { z } from 'zod'
-import ConnectionStatus from '~/components/Atoms/ConnectionStatus'
 import Footer from '~/components/Footer'
 
 const profilePictures = [
@@ -42,31 +38,15 @@ export default function Home() {
   const playText = t('i-join')
   const createRoomText = t('i-create-room')
 
-  const howToPlayText = t('i-how-to-play')
-  const termsOfServiceText = t('i-terms-of-service')
-  const privacyText = t('i-privacy-policy')
-  const contactText = t('i-contact')
-
   const instructionText = t('i-select-picture-and-nickname')
   const nicknameText = t('i-nickname')
-  const invalidNicknameText = t('i-invalid-nickname')
-  const invalidNicknameLengthText = t(
-    'i-nickname-must-be-between-3-and-20-characters'
-  )
 
   const selectYourLanguageText = t('i-select-your-language')
-  const errorMsgText = t('i-error-joining-room')
-
-  const usernameSchema = z
-    .string()
-    .min(1, invalidNicknameLengthText)
-    .max(20, invalidNicknameLengthText)
 
   const { gameState, joinRoom, socket } = useGameContext()
   const [pictureUrl, nextPicture] = useShuffleArray(profilePictures)
 
   const [username, setUsername] = useState('')
-  const [usernameError, setUsernameError] = useState('')
   const [fallbackUsername, setFallbackUsername] = useState('')
 
   const [roomCode, setRoomCode] = useState('')
@@ -110,14 +90,6 @@ export default function Home() {
   const handleUsernameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const username = event.target.value
 
-    // const result = usernameSchema.safeParse(username)
-
-    /*
-    if (result.success) {
-      setUsernameError('')
-    } else {
-      setUsernameError(result.error.issues[0]?.message || invalidNicknameText)
-    }*/
     setUsername(username)
     localStorage.setItem('username', username)
   }
@@ -151,7 +123,7 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen-safe flex flex-col justify-between px-5 py-5 md:justify-center">
+    <div className="min-h-screen-safe flex flex-col justify-between px-5 py-5 text-gray-800 md:justify-center">
       <header className="flex justify-between md:hidden">
         <label htmlFor="my-modal-1" className="btn">
           <DotsThree size={25} weight="bold" />
@@ -179,7 +151,7 @@ export default function Home() {
           </Link>
         </div>
         <div className="gap-5 py-10 md:flex">
-          <div className="w-full gap-5 md:flex  md:rounded-xl md:bg-black md:bg-opacity-10 md:p-5 dark:md:bg-white dark:md:bg-opacity-10 lg:flex lg:flex-row">
+          <div className="w-full gap-5 md:flex  md:rounded-xl md:bg-white md:bg-opacity-50 md:p-5 lg:flex lg:flex-row">
             <div className="flex justify-center">
               {profilePictures.map((picture, index) => {
                 return (
@@ -203,6 +175,8 @@ export default function Home() {
                     height={200}
                   />
                   <button
+                    name="change-picture"
+                    title="Change picture"
                     className="btn-circle btn absolute bottom-0 right-0 "
                     onClick={handlePictureUrlChange}
                   >
@@ -213,23 +187,18 @@ export default function Home() {
             </div>
             <div className="flex w-full flex-1 flex-col justify-center gap-3 ">
               <div className="form-control w-full text-2xl">
-                <label className="label">{instructionText}</label>
+                <label className="label font-bold">{instructionText}</label>
                 <label className="label">
-                  <span className="label-text">{nicknameText}</span>
+                  <span className="label-text text-black">{nicknameText}</span>
                 </label>
                 <input
                   type="text"
                   placeholder={fallbackUsername}
-                  className="input-bordered input w-full "
+                  className="tex-white input-bordered input w-full bg-black bg-opacity-20 text-lg font-bold text-white placeholder-gray-100 focus:bg-opacity-30 "
                   value={username}
                   onChange={handleUsernameChange}
                   maxLength={20}
                 />
-                {usernameError && (
-                  <label className="label">
-                    <span className="label-text-alt">{usernameError}</span>
-                  </label>
-                )}
               </div>
 
               <button
@@ -244,7 +213,7 @@ export default function Home() {
               </button>
             </div>
           </div>
-          <div className=" hidden aspect-[8/10] p-2 dark:border-gray-600 md:h-full md:w-1/3 md:rounded-xl md:border-2 lg:block lg:h-96 lg:w-auto">
+          <div className=" hidden aspect-[8/10] border-gray-200 p-2 md:h-full md:w-1/3 md:rounded-xl md:border-2 lg:block lg:h-96 lg:w-auto">
             {/* <TutorialCarousel /> */}
           </div>
         </div>

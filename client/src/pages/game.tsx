@@ -13,6 +13,7 @@ import { useAudio } from '~/components/AudioContext'
 import TimerTitle from '~/components/Layout/TimerScreen'
 import Loading from '~/components/Atoms/Loading'
 import LoadingWithText from '~/components/Atoms/LoadingWithText'
+import useTranslation from 'next-translate/useTranslation'
 
 export default function Game() {
   const {
@@ -24,6 +25,8 @@ export default function Game() {
     playerSelectCards,
   } = useGameContext()
   const myCards = myHand.cards
+
+  const { t } = useTranslation('game')
 
   const [playSwitchOn] = useSound('/sounds/switch-on.mp3')
   const [playSwitchOff] = useSound('/sounds/switch-off.mp3')
@@ -56,43 +59,6 @@ export default function Game() {
   // const time = gameState.config.time
   const time = gameState.config.time || 10
 
-  const handleTimeout = () => {
-    console.log('Timeout triggered')
-    if (isCurrentUserJudge) {
-      console.log('isCurrentUserJudge is true, returning')
-      return
-    }
-    if (!gameState.currentQuestionCard?.spaces) {
-      console.log('No cards are required, returning')
-      return
-    }
-    if (selectedCards.length === gameState.currentQuestionCard?.spaces) {
-      console.log(
-        'The user has already selected the required number of cards, returning'
-      )
-      return
-    }
-
-    // Randomly select cards
-    const cardsToSelect =
-      gameState.currentQuestionCard?.spaces - selectedCards.length
-    const unselectedCards = myCards.filter(
-      (card) => !selectedCards.includes(card)
-    )
-    const randomCards = unselectedCards
-      .sort(() => 0.5 - Math.random())
-      .slice(0, cardsToSelect)
-
-    // Add randomly selected cards to the selected ones and submit
-    const finalSelectedCards = [...selectedCards, ...randomCards]
-    setSelectedCards(finalSelectedCards)
-    // wait 1 second to submit
-    // setTimeout(() => {
-    playerSelectCards(finalSelectedCards)
-    toast.success('Cards selected')
-    // }, 1000)
-  }
-
   const handleConfirm = () => {
     if (selectedCards.length === gameState.currentQuestionCard?.spaces) {
       playerSelectCards(selectedCards)
@@ -122,11 +88,10 @@ export default function Game() {
     <InGameLayout>
       <TimerTitle
         key="Choose your cards"
-        subtitle="Choose the best fit card(s)"
+        subtitle={t('i-choose-the-cards-that-best-fit')}
         time={time}
-        handleTimeout={handleTimeout}
       />
-      <div className="bg-destaque-mobile flex flex-1 flex-col py-2 md:mx-4 overflow-y-auto">
+      <div className="bg-destaque-mobile flex flex-1 flex-col overflow-y-auto py-2 md:mx-4">
         <div className="flex h-full flex-1 flex-col justify-between ">
           <div className="flex flex-1 items-center justify-center px-3">
             {currentQuestionCard && (
@@ -141,7 +106,7 @@ export default function Game() {
             <LoadingWithText text="You are the Judge of the round, wait the others to play." />
           )}
           {!isCurrentUserJudge && (
-            <div className="grid grid-cols-1 gap-2 lg:grid-cols-2 overflow-y-auto">
+            <div className="grid grid-cols-1 gap-2 overflow-y-auto lg:grid-cols-2">
               {myCards.map((card, index) => {
                 const cardIndex = selectedCards.indexOf(card)
                 return (
@@ -165,7 +130,7 @@ export default function Game() {
             onClick={handleConfirm}
             disabled={!canConfirm}
           >
-            Confirm
+            {t('i-confirm')}
           </button>
         </div>
       )}

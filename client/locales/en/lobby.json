@@ -9,5 +9,13 @@
   "i-points": "Points",
   "i-score-to-win": "Score To Win",
   "i-time": "Time",
-  "i-seconds": "Seconds"
+  "i-seconds": "Seconds",
+  "i-you-need-at-least-2-players-to-start-a-game": "You need at least 2 players to start the game, sorry!",
+  "i-family-friendly": "Family Friendly",
+  "i-safe-for-stream": "Safe For Stream",
+  "i-mature-humor": "Mature Humor",
+  "i-chaos": "Chaos",
+  "i-uncensored-raw": "Uncensored Raw",
+  "i-how-bad-will-the-cards-be": "How bad will the cards be?",
+  "i-filter-by-language": "Filter by language"
 }

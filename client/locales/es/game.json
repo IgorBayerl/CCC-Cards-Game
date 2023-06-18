@@ -1,4 +1,14 @@
 {
   "i-test": "Teste",
-  "i-empty": "Vacío"
+  "i-empty": "Vacío",
+  "i-confirm": "Confirmar",
+  "i-match-winner": "Ganador del partido",
+  "i-back-to-lobby": "Volver al lobby",
+  "i-play-again": "Jugar de nuevo",
+  "i-next-round": "Siguiente ronda",
+  "i-see-all-results": "Ver todos los resultados",
+  "i-next": "Siguiente",
+  "i-choose-the-cards-that-best-fit": "Elige las cartas que mejor se adapten a la frase",
+  "i-round-winner": "Ganador de la ronda",
+  "i-judging": "Juzgando"
 }

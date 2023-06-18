@@ -1,4 +1,4 @@
-import { IGameState, IPlayer } from '~/components/GameContext'
+import { type IGameState, type IPlayer } from '~/components/GameContext'
 
 export function isPlayerLeader(
   player: IPlayer,

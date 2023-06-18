@@ -4,7 +4,7 @@ import Layout from '~/components/Layout/Layout'
 export default function NotFoundPage() {
   return (
     <Layout>
-      <div className="h-screen justify-center bg-gray-100">
+      <div className="h-screen justify-center ">
         <center className="m-auto mt-24">
           <svg
             className="emoji-404 "
@@ -23,7 +23,7 @@ export default function NotFoundPage() {
               fill="none"
               opacity="0.29"
               stroke="#6E6E96"
-              stroke-linecap="round"
+              strokeLinecap="round"
               stroke-linejoin="round"
               stroke-width="8"
               x1="88.866"
@@ -36,7 +36,7 @@ export default function NotFoundPage() {
               fill="none"
               opacity="0.17"
               stroke="#6E6E96"
-              stroke-linecap="round"
+              strokeLinecap="round"
               stroke-linejoin="round"
               stroke-width="8"
               x1="154.732"
@@ -49,7 +49,7 @@ export default function NotFoundPage() {
               fill="none"
               opacity="0.17"
               stroke="#6E6E96"
-              stroke-linecap="round"
+              strokeLinecap="round"
               stroke-linejoin="round"
               stroke-width="8"
               x1="69.732"

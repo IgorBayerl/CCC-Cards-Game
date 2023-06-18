@@ -1,17 +1,15 @@
 import { useGameContext } from '~/components/GameContext'
-import router from 'next/router'
-import Layout from '~/components/Layout/Layout'
 
 import InGameLayout from '~/components/Layout/InGameLayout'
 import GameCard, { GameCardResult } from '~/components/Atoms/GameCard'
-import { ICard, ICardAnswer } from '~/models/Deck'
+import { ICardAnswer } from '~/models/Deck'
 import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
-import { CountdownCircleTimer } from 'react-countdown-circle-timer'
 import TimerTitle from '~/components/Layout/TimerScreen'
 import LoadingWithText from '~/components/Atoms/LoadingWithText'
 import { useAudio } from '~/components/AudioContext'
 import useSound from 'use-sound'
+import useTranslation from 'next-translate/useTranslation'
 
 interface IUpdateResultCards {
   hasNext: boolean
@@ -19,12 +17,12 @@ interface IUpdateResultCards {
 }
 
 export default function Judging() {
-
   const { isMuted } = useAudio()
+  const { t } = useTranslation('game')
 
   const [playSwitchOn] = useSound('/sounds/switch-on.mp3')
 
-  const { myHand, socket, gameState, isCurrentUserJudge } = useGameContext()
+  const { socket, gameState, isCurrentUserJudge } = useGameContext()
 
   const { currentQuestionCard } = gameState
 
@@ -75,7 +73,7 @@ export default function Judging() {
 
   const handleGroupClick = (playerId: string, group: ICardAnswer[]) => {
     if (!isCurrentUserJudge) return
-    
+
     if (!isMuted) playSwitchOn()
     setSelectedGroup({ playerId, cards: group })
   }
@@ -113,15 +111,6 @@ export default function Judging() {
     socket?.emit('game:seeAllRoundAnswers')
     console.log('>> see results')
   }
-  // useEffect(() => {
-  //   const timer = setTimeout(() => {
-  //     handleTimerTimeout()
-  //   }, 10000)
-  //   setTimerId(timer)
-  //   return () => {
-  //     void clearTimeout(timer)
-  //   }
-  // }, [])
 
   useEffect(() => {
     return () => {
@@ -131,52 +120,19 @@ export default function Judging() {
     }
   }, [timerId])
 
-  const handleTimerTimeout = () => {
-    if (!isCurrentUserJudge) return
-    if (seeNextBtn) {
-      handleNextCard()
-      return
-    }
-
-    if (seeGoToAllResultsBtn) {
-      handleSeeResults()
-      return
-    }
-    if (seeConfirmBtn) {
-      // TODO: select a random group
-      resultCards.cards
-      const randomPlayerId = Object.keys(resultCards.cards)[0]! //BUG: not that random
-      const randomGroup = resultCards.cards[randomPlayerId]!
-      handleGroupClick(randomPlayerId, randomGroup)
-
-      // TODO: wait for a second and then confirm
-      // setTimeout(() => {
-      handleConfirm() //BUG: this is throwing the you must select a group error, but it is selecting a group
-      // }, 1000)
-    }
-  }
-
-  const time = 10 // 10 seconds
-
+  const time = gameState.config.time || 10 // 10 seconds
 
   const getAnswerCardText = () => {
-    if(seeAllResults) {
+    if (seeAllResults) {
       return selectedGroup?.cards.map((card) => card.text) || []
     }
     return lastCards?.map((card) => card.text) || []
   }
 
-  const answersCardText = lastCards?.map((card) => card.text) || []
-
   return (
     <InGameLayout>
-      <TimerTitle
-        key={resetKey}
-        subtitle="Judging"
-        time={time}
-        handleTimeout={handleTimerTimeout}
-      />
-      <div className="bg-destaque-mobile flex flex-1 flex-col py-2 md:mx-4 overflow-y-auto">
+      <TimerTitle key={resetKey} subtitle={t('i-judging')} time={time} />
+      <div className="bg-destaque-mobile flex flex-1 flex-col overflow-y-auto py-2 md:mx-4">
         <div className="flex flex-1 flex-col">
           <div className="flex flex-1 flex-col justify-between">
             <div className="flex flex-1 items-center justify-center">
@@ -196,7 +152,7 @@ export default function Judging() {
                 ))}
             </div>
 
-            <div className="grid grid-cols-1 gap-2 lg:grid-cols-2 overflow-y-auto">
+            <div className="grid grid-cols-1 gap-2 overflow-y-auto lg:grid-cols-2">
               {
                 // all results
                 seeAllResults &&
@@ -262,6 +218,7 @@ export const JudgeActions: React.FC<IJudgeActionsProps> = ({
   enableConfirmBtn,
   handleConfirm,
 }) => {
+  const { t } = useTranslation('game')
   if (!isCurrentUserJudge) {
     return null
   }
@@ -269,12 +226,12 @@ export const JudgeActions: React.FC<IJudgeActionsProps> = ({
     <div className="flex items-center justify-center px-4 py-2">
       {seeGoToAllResultsBtn && (
         <button className="btn flex-1" onClick={handleSeeResults}>
-          See all results
+          {t('i-see-all-results')}
         </button>
       )}
       {seeNextBtn && (
         <button className="btn flex-1" onClick={handleNextCard}>
-          Next
+          {t('i-next')}
         </button>
       )}
       {seeConfirmBtn && (
@@ -283,21 +240,9 @@ export const JudgeActions: React.FC<IJudgeActionsProps> = ({
           disabled={!enableConfirmBtn}
           onClick={handleConfirm}
         >
-          Confirm
+          {t('i-confirm')}
         </button>
       )}
     </div>
   )
-}
-
-{
-  /* <div className="flex items-center justify-center px-4 py-2">
-          <button
-            className="btn flex-1"
-            onClick={handleConfirm}
-            disabled={!canConfirm}
-          >
-            Confirm
-          </button>
-        </div> */
 }

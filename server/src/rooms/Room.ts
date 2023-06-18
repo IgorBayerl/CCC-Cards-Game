@@ -25,11 +25,28 @@ export default class Room {
     this.roomSize = config.roomSize
   }
 
-  addPlayer(socket: Socket, username: string, pictureUrl: string) {
-    const player = new Player(socket.id, username, pictureUrl)
-    this.players.push(player)
-    if (!this.leader) {
-      this.leader = player
+  addPlayer(
+    socket: Socket,
+    username: string,
+    pictureUrl: string,
+    oldSocketId?: string
+  ) {
+    // Check if the player already exists using oldSocketId
+    const existingPlayerIndex = oldSocketId
+      ? this.players.findIndex((p) => p.id === oldSocketId)
+      : -1
+
+    if (existingPlayerIndex > -1) {
+      // If the player exists, update their details
+      this.players[existingPlayerIndex].id = socket.id // Update the new socket id
+      this.players[existingPlayerIndex].isOffline = false // Set the player back to online
+    } else {
+      // If player does not exist, create a new player
+      const player = new Player(socket.id, username, pictureUrl)
+      this.players.push(player)
+      if (!this.leader) {
+        this.leader = player
+      }
     }
   }
 
@@ -38,7 +55,20 @@ export default class Room {
     if (index >= 0) {
       this.players.splice(index, 1)
       if (this.leader && this.leader.id === socket.id) {
-        this.leader = this.players[0] || null
+        // this.leader = this.players[0] || null
+        this.leader = this.players.find((p) => !p.isOffline) || null
+      }
+      return true
+    }
+    return false
+  }
+
+  disconnectPlayer(socket: Socket): boolean {
+    const player = this.players.find((player) => player.id === socket.id)
+    if (player) {
+      player.isOffline = true
+      if (this.leader && this.leader.id === socket.id) {
+        this.leader = this.players.find((p) => !p.isOffline) || null
       }
       return true
     }

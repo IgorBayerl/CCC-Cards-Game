@@ -1,4 +1,14 @@
 {
   "i-test": "Test",
-  "i-empty": "Empty"
+  "i-empty": "Empty",
+  "i-confirm": "Confirm",
+  "i-match-winner": "Match Winner",
+  "i-back-to-lobby": "Back to Lobby",
+  "i-play-again": "Play Again",
+  "i-next-round": "Next Round",
+  "i-see-all-results": "See All Results",
+  "i-next": "Next",
+  "i-choose-the-cards-that-best-fit": "Choose the cards that best fit",
+  "i-round-winner": "Round Winner",
+  "i-judging": "Judging"
 }

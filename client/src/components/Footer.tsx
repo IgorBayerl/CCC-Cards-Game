@@ -12,36 +12,36 @@ export default function Footer(): JSX.Element {
   const aboutText = t('i-about')
 
   return (
-    <footer className=" mt-5 hidden items-center justify-center md:flex">
-      <Link href="howToPlay">
-        <button className="btn-ghost btn-block btn-sm btn text-xs">
+    <footer className=" mt-5 hidden items-center justify-center text-gray-800 md:flex">
+      {/* <Link href="howToPlay">
+        <button className="btn-ghost btn-block btn-sm btn text-xs font-bold hover:bg-white hover:bg-opacity-50">
           {howToPlayText}
         </button>
       </Link>
-      <div className="divider divider-horizontal" />
+      <div className="divider divider-horizontal" /> */}
       <Link href="/terms">
-        <button className="btn-ghost btn-block btn-sm btn text-xs">
+        <button className="btn-ghost btn-block btn-sm btn text-xs font-bold hover:bg-white hover:bg-opacity-50">
           {termsOfServiceText}
         </button>
       </Link>
       <div className="divider divider-horizontal" />
       <Link href="privacy">
-        <button className="btn-ghost btn-block btn-sm btn text-xs">
+        <button className="btn-ghost btn-block btn-sm btn text-xs font-bold hover:bg-white hover:bg-opacity-50">
           {privacyText}
         </button>
       </Link>
       <div className="divider divider-horizontal" />
       <Link href="/contact">
-        <button className="btn-ghost btn-block btn-sm btn text-xs">
+        <button className="btn-ghost btn-block btn-sm btn text-xs font-bold hover:bg-white hover:bg-opacity-50">
           {contactText}
         </button>
       </Link>
-      <div className="divider divider-horizontal" />
+      {/* <div className="divider divider-horizontal" />
       <Link href="/about">
-        <button className="btn-ghost btn-block btn-sm btn text-xs">
+        <button className="btn-ghost btn-block btn-sm btn text-xs font-bold hover:bg-white hover:bg-opacity-50">
           {aboutText}
         </button>
-      </Link>
+      </Link> */}
       <div className="divider divider-horizontal" />
       <ConnectionStatus />
     </footer>
