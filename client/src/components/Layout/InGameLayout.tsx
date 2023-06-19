@@ -30,14 +30,18 @@ export default function InGameLayout({ children }: IInGameLayoutProps) {
   }, [roomId])
 
   return (
-    <div className="flex min-h-screen flex-col justify-between md:justify-center md:p-5">
+    <div className="min-h-screen-safe flex flex-col justify-between md:justify-center md:p-5">
       <div className="game-container-border flex h-[100svh] flex-col justify-between gap-3 md:h-[80vh] ">
         <div className="px-1">
           <ContainerHeader />
         </div>
         <div className="md:hidden" id="mobile-player-list">
           <div className="flex w-screen gap-3 overflow-x-scroll px-2 py-3 ">
-            <MobilePlayersList players={playersList} leader={gameState.leader} roomSize={parseInt(roomSize)} />
+            <MobilePlayersList
+              players={playersList}
+              leader={gameState.leader}
+              roomSize={parseInt(roomSize)}
+            />
           </div>
         </div>
         <div className="flex h-full overflow-clip">
