@@ -28,7 +28,7 @@ export default function TrackingCode(): JSX.Element {
             `,
         }}
       />
-      <Script
+      {/* <Script
         id="adsterra"
         dangerouslySetInnerHTML={{
           __html: `
@@ -42,7 +42,7 @@ export default function TrackingCode(): JSX.Element {
             document.write('<scr' + 'ipt type="text/javascript" src="http' + (location.protocol === 'https:' ? 's' : '') + '://www.profitabledisplaynetwork.com/8fc0e4790d8173eaee59bfb8d2881922/invoke.js"></scr' + 'ipt>');
         `,
         }}
-      />
+      /> */}
     </>
   )
 }
