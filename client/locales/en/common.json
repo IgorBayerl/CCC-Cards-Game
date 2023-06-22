@@ -21,5 +21,6 @@
   "i-message": "Message",
   "i-what-is-your-name": "What is your name?",
   "i-message-sent": "Message sent!",
-  "i-message-failed-to-send": "Message failed to send"
+  "i-message-failed-to-send": "Message failed to send",
+  "i-disable-ad-blocker": "Our game is free, you can support us by disabling the adblock."
 }

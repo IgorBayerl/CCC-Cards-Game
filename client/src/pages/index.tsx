@@ -17,7 +17,8 @@ import {
 import CCCIconThemed from '~/components/Atoms/CCCIconThemed'
 import Link from 'next/link'
 import Footer from '~/components/Footer'
-import Banner from '~/components/Atoms/Banner'
+import BannerVertical from '~/components/Ads/Banner_160x600'
+import BannerHorizontal from '~/components/Ads/Banner_468x60'
 
 const profilePictures = [
   '/profile/profile_1.webp',
@@ -135,7 +136,7 @@ export default function Home() {
         </label>
       </header>
       <div className="flex items-center justify-center">
-        <Banner />
+        <BannerVertical />
         <div className="game-container-border flex flex-col gap-3">
           <div className="hidden w-full items-center justify-between md:flex">
             <label

@@ -28,21 +28,6 @@ export default function TrackingCode(): JSX.Element {
             `,
         }}
       />
-      {/* <Script
-        id="adsterra"
-        dangerouslySetInnerHTML={{
-          __html: `
-            atOptions = {
-              'key' : '8fc0e4790d8173eaee59bfb8d2881922',
-              'format' : 'iframe',
-              'height' : 600,
-              'width' : 160,
-              'params' : {}
-            };
-            document.write('<scr' + 'ipt type="text/javascript" src="http' + (location.protocol === 'https:' ? 's' : '') + '://www.profitabledisplaynetwork.com/8fc0e4790d8173eaee59bfb8d2881922/invoke.js"></scr' + 'ipt>');
-        `,
-        }}
-      /> */}
     </>
   )
 }

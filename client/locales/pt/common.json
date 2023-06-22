@@ -21,5 +21,6 @@
   "i-message": "Mensagem",
   "i-what-is-your-name": "Qual é o seu nome?",
   "i-message-sent": "Mensagem enviada",
-  "i-message-failed-to-send": "Falha ao enviar mensagem"
+  "i-message-failed-to-send": "Falha ao enviar mensagem",
+  "i-disable-ad-blocker": "Nosso jogo é gratuito, você pode nos apoiar desativando o bloqueador de anúncios."
 }
