@@ -227,9 +227,6 @@ export default function Home() {
           </div>
           <Footer />
         </div>
-        <div className="hidden 2xl:block">
-          <BannerVertical />
-        </div>
       </div>
       <div className="flex">
         <button

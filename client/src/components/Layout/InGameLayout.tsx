@@ -62,9 +62,6 @@ export default function InGameLayout({ children }: IInGameLayoutProps) {
             </div>
           </div>
         </div>
-        <div className="hidden 2xl:block">
-          <BannerVertical />
-        </div>
       </div>
     </div>
   )
