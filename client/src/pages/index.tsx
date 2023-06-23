@@ -17,7 +17,7 @@ import {
 import CCCIconThemed from '~/components/Atoms/CCCIconThemed'
 import Link from 'next/link'
 import Footer from '~/components/Footer'
-import BannerVertical from '~/components/Ads/Banner_160x600'
+import BannerVertical from '~/components/Ads/BannerVertical'
 import BannerHorizontal from '~/components/Ads/Banner_468x60'
 
 const profilePictures = [
@@ -136,7 +136,9 @@ export default function Home() {
         </label>
       </header>
       <div className="flex items-center justify-center">
-        <BannerVertical />
+        <div className="hidden md:block">
+          <BannerVertical />
+        </div>
         <div className="game-container-border flex flex-col gap-3">
           <div className="hidden w-full items-center justify-between md:flex">
             <label
@@ -224,6 +226,9 @@ export default function Home() {
             </div>
           </div>
           <Footer />
+        </div>
+        <div className="hidden 2xl:block">
+          <BannerVertical />
         </div>
       </div>
       <div className="flex">

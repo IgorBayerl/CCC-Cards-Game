@@ -19,6 +19,7 @@ import LoadingWithText from '~/components/Atoms/LoadingWithText'
 import useTranslation from 'next-translate/useTranslation'
 import MobilePlayersList from '~/components/MobilePlayersList'
 import LoadingFullScreen from '~/components/Atoms/LoadingFullScreen'
+import BannerVertical from '~/components/Ads/BannerVertical'
 
 const languagesMock = [
   // { id: 'en', name: 'English' },
@@ -111,112 +112,122 @@ export default function LobbyPage() {
 
   return (
     <div className="min-h-screen-safe flex flex-col justify-between md:justify-center md:p-5">
-      <div className="game-container-border flex h-[100svh] flex-col justify-between gap-3 md:h-[80vh] ">
-        <div className="px-1">
-          <ContainerHeader />
+      <div className="flex items-center justify-center">
+        <div className="hidden md:block">
+          <BannerVertical />
         </div>
-        <div className="md:hidden" id="mobile-player-list">
-          <div className="flex w-screen gap-3 overflow-x-scroll px-2 py-3 ">
-            <MobilePlayersList
-              players={playersList}
-              leader={gameState.leader}
-              roomSize={parseInt(roomSize)}
-            />
+        <div className="game-container-border flex h-[100svh] flex-col justify-between gap-3 md:h-[80vh] ">
+          <div className="px-1">
+            <ContainerHeader />
           </div>
-          <div className="px-2">
-            <select
-              className="select-bordered select w-full"
-              disabled={!isCurrentUserLeader}
-              value={roomSize}
-              onChange={handleChangeRoomSize}
-            >
-              {Array.from({ length: 17 }, (_, i) => i + 4).map((i) => (
-                <option
-                  className="text-lg"
-                  key={i}
-                  value={i.toString()}
-                >{`${i} ${t('i-players')}`}</option>
-              ))}
-            </select>
-          </div>
-        </div>
-        <div className="flex h-full overflow-clip">
-          <div className="hidden flex-col gap-2 p-1 md:flex">
-            <select
-              className="select-bordered select w-full"
-              disabled={!isCurrentUserLeader}
-              value={roomSize}
-              onChange={handleChangeRoomSize}
-            >
-              {Array.from({ length: 17 }, (_, i) => i + 4).map((i) => (
-                <option
-                  className="text-lg"
-                  key={i}
-                  value={i.toString()}
-                >{`${i} ${t('i-players')}`}</option>
-              ))}
-            </select>
-
-            <PlayersList
-              players={playersList}
-              leader={gameState.leader}
-              roomSize={parseInt(roomSize)}
-            />
-          </div>
-          <div className="flex w-full flex-col justify-between ">
-            <div className="tabs md:px-3">
-              {tabs.map((tab) => (
-                <a
-                  key={tab}
-                  className={classNames(
-                    'tab-bordered tab tab-lg flex-1 whitespace-nowrap  text-white',
-                    {
-                      'tab-active': activeTab === tab,
-                    }
-                  )}
-                  onClick={() => setActiveTab(tab)}
-                >
-                  {t(tabsNames[tab])}
-                </a>
-              ))}
+          <div className="md:hidden" id="mobile-player-list">
+            <div className="flex w-screen gap-3 overflow-x-scroll px-2 py-3 ">
+              <MobilePlayersList
+                players={playersList}
+                leader={gameState.leader}
+                roomSize={parseInt(roomSize)}
+              />
             </div>
-
-            <div className="bg-destaque-mobile flex-1 overflow-y-clip ">
-              {renderTabContent()}
+            <div className="px-2">
+              <select
+                className="select-bordered select w-full"
+                disabled={!isCurrentUserLeader}
+                value={roomSize}
+                onChange={handleChangeRoomSize}
+              >
+                {Array.from({ length: 17 }, (_, i) => i + 4).map((i) => (
+                  <option
+                    className="text-lg"
+                    key={i}
+                    value={i.toString()}
+                  >{`${i} ${t('i-players')}`}</option>
+                ))}
+              </select>
             </div>
-            {isCurrentUserLeader && (
-              <div className="flex justify-center gap-5 px-4 py-2">
-                <div className="hidden flex-1 md:flex">
-                  <CopyToClipboard
-                    text={t('i-invite')}
-                    content={roomInviteLink}
-                  />
-                </div>
-                <div className="flex flex-1 md:hidden">
-                  <button
-                    className="btn-outline btn flex w-full flex-1 items-center justify-between gap-3 md:hidden"
-                    onClick={handleShareClicked}
+          </div>
+          <div className="flex h-full overflow-clip">
+            <div className="hidden flex-col gap-2 p-1 md:flex">
+              <select
+                className="select-bordered select w-full"
+                disabled={!isCurrentUserLeader}
+                value={roomSize}
+                onChange={handleChangeRoomSize}
+              >
+                {Array.from({ length: 17 }, (_, i) => i + 4).map((i) => (
+                  <option
+                    className="text-lg"
+                    key={i}
+                    value={i.toString()}
+                  >{`${i} ${t('i-players')}`}</option>
+                ))}
+              </select>
+
+              <PlayersList
+                players={playersList}
+                leader={gameState.leader}
+                roomSize={parseInt(roomSize)}
+              />
+            </div>
+            <div className="flex w-full flex-col justify-between ">
+              <div className="tabs md:px-3">
+                {tabs.map((tab) => (
+                  <a
+                    key={tab}
+                    className={classNames(
+                      'tab-bordered tab tab-lg flex-1 whitespace-nowrap  text-white',
+                      {
+                        'tab-active': activeTab === tab,
+                      }
+                    )}
+                    onClick={() => setActiveTab(tab)}
                   >
-                    <Link size={25} weight="bold" />
-                    <div>{t('i-invite')}</div>
+                    {t(tabsNames[tab])}
+                  </a>
+                ))}
+              </div>
+
+              <div className="bg-destaque-mobile flex-1 overflow-y-clip ">
+                {renderTabContent()}
+              </div>
+              {isCurrentUserLeader && (
+                <div className="flex justify-center gap-5 px-4 py-2">
+                  <div className="hidden flex-1 md:flex">
+                    <CopyToClipboard
+                      text={t('i-invite')}
+                      content={roomInviteLink}
+                    />
+                  </div>
+                  <div className="flex flex-1 md:hidden">
+                    <button
+                      className="btn-outline btn flex w-full flex-1 items-center justify-between gap-3 md:hidden"
+                      onClick={handleShareClicked}
+                    >
+                      <Link size={25} weight="bold" />
+                      <div>{t('i-invite')}</div>
+                      <div />
+                    </button>
+                  </div>
+                  <button
+                    className=" btn flex w-full flex-1 flex-nowrap items-center justify-between gap-3 whitespace-nowrap"
+                    disabled={!isCurrentUserLeader}
+                    onClick={handleStartGame}
+                  >
+                    <Play size={25} weight="bold" />
+                    <div>{t('i-start-game')}</div>
                     <div />
                   </button>
                 </div>
-                <button
-                  className=" btn flex w-full flex-1 flex-nowrap items-center justify-between gap-3 whitespace-nowrap"
-                  disabled={!isCurrentUserLeader}
-                  onClick={handleStartGame}
-                >
-                  <Play size={25} weight="bold" />
-                  <div>{t('i-start-game')}</div>
-                  <div />
-                </button>
-              </div>
-            )}
-            {!isCurrentUserLeader && (
-              <LoadingWithText text={t('i-waiting-the-host-start-the-game')} />
-            )}
+              )}
+              {!isCurrentUserLeader && (
+                <LoadingWithText
+                  text={t('i-waiting-the-host-start-the-game')}
+                />
+              )}
+            </div>
           </div>
+        </div>
+        <div className="hidden 2xl:block">
+          <BannerVertical />
         </div>
       </div>
     </div>
@@ -243,7 +254,7 @@ function LobbySettingsTab() {
   return (
     <div className="flex h-full flex-col overflow-y-auto px-2 pt-2 md:px-3">
       <div className="flex flex-col gap-2">
-        <label htmlFor="score-to-win" className="flex gap-3">
+        <label htmlFor="score-to-win" className="flex gap-3 text-white">
           <Trophy size={24} weight="bold" />
           {t('i-score-to-win')}
         </label>
@@ -261,9 +272,9 @@ function LobbySettingsTab() {
           ))}
         </select>
       </div>
-      <div className="divider " />
+      <div className="divider" />
       <div className="flex flex-col gap-2">
-        <label htmlFor="score-to-win" className="flex gap-3">
+        <label htmlFor="score-to-win" className="flex gap-3 text-white">
           <Timer size={24} weight="bold" />
           {t('i-time')}
         </label>
