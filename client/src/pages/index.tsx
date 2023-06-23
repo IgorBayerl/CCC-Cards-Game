@@ -147,7 +147,7 @@ export default function Home() {
             </label>
             <CCCIconThemed />
             <Link
-              className="btn-outline btn"
+              className=" btn-outline btn"
               href="https://discord.gg/eZsFkPuADE"
               target="_blank"
             >

@@ -7,7 +7,7 @@ export default class _Document extends Document {
         <Head>
           <link rel="manifest" href="/manifest.json" />
         </Head>
-        <body className="bg-gradient-to-br from-emerald-400 to-cyan-400">
+        <body className="bg-gradient-to-br from-[#56126a] to-[#a22744]">
           <div
             style={{
               backgroundImage: `url("/texture.png")`,

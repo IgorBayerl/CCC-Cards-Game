@@ -12,7 +12,7 @@ export default function Footer(): JSX.Element {
   const aboutText = t('i-about')
 
   return (
-    <footer className=" mt-5 hidden items-center justify-center text-gray-800 md:flex">
+    <footer className=" mt-5 hidden items-center justify-center text-gray-100 md:flex">
       {/* <Link href="howToPlay">
         <button className="btn-ghost btn-block btn-sm btn text-xs font-bold hover:bg-white hover:bg-opacity-50">
           {howToPlayText}
@@ -20,19 +20,19 @@ export default function Footer(): JSX.Element {
       </Link>
       <div className="divider divider-horizontal" /> */}
       <Link href="/terms">
-        <button className="btn-ghost btn-block btn-sm btn text-xs font-bold hover:bg-white hover:bg-opacity-50">
+        <button className="btn-ghost btn-block btn-sm btn text-xs font-bold hover:bg-white hover:bg-opacity-30">
           {termsOfServiceText}
         </button>
       </Link>
       <div className="divider divider-horizontal" />
       <Link href="privacy">
-        <button className="btn-ghost btn-block btn-sm btn text-xs font-bold hover:bg-white hover:bg-opacity-50">
+        <button className="btn-ghost btn-block btn-sm btn text-xs font-bold hover:bg-white hover:bg-opacity-30">
           {privacyText}
         </button>
       </Link>
       <div className="divider divider-horizontal" />
       <Link href="/contact">
-        <button className="btn-ghost btn-block btn-sm btn text-xs font-bold hover:bg-white hover:bg-opacity-50">
+        <button className="btn-ghost btn-block btn-sm btn text-xs font-bold hover:bg-white hover:bg-opacity-30">
           {contactText}
         </button>
       </Link>

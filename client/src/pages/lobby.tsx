@@ -163,13 +163,13 @@ export default function LobbyPage() {
               roomSize={parseInt(roomSize)}
             />
           </div>
-          <div className="flex w-full flex-col justify-between">
+          <div className="flex w-full flex-col justify-between ">
             <div className="tabs md:px-3">
               {tabs.map((tab) => (
                 <a
                   key={tab}
                   className={classNames(
-                    'tab-bordered tab tab-lg flex-1 whitespace-nowrap',
+                    'tab-bordered tab tab-lg flex-1 whitespace-nowrap  text-white',
                     {
                       'tab-active': activeTab === tab,
                     }
@@ -181,7 +181,7 @@ export default function LobbyPage() {
               ))}
             </div>
 
-            <div className="bg-destaque-mobile flex-1 overflow-y-clip">
+            <div className="bg-destaque-mobile flex-1 overflow-y-clip ">
               {renderTabContent()}
             </div>
             {isCurrentUserLeader && (
