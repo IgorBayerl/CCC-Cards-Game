@@ -109,7 +109,7 @@ export default function InfoPageLayout({
               id="language-mobile"
               className="select-bordered select w-full uppercase"
               onChange={(e) => {
-                router.push(router.pathname, router.pathname, {
+                void router.push(router.pathname, router.pathname, {
                   locale: e.target.value,
                 })
               }}
