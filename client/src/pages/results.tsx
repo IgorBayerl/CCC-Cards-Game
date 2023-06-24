@@ -2,7 +2,7 @@ import { useGameContext } from '~/components/GameContext'
 import Layout from '~/components/Layout/Layout'
 
 import InGameLayout from '~/components/Layout/InGameLayout'
-import  { GameCardResult } from '~/components/Atoms/GameCard'
+import { GameCardResult } from '~/components/Atoms/GameCard'
 import { type ICard } from '~/models/Deck'
 
 import Image from 'next/image'

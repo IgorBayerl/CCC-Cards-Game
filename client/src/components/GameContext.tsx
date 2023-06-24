@@ -171,16 +171,20 @@ const GameProvider: React.FC<IGameProviderProps> = ({ children }) => {
   const [myId, setMyId] = useState<string>('')
   const { isMuted } = useAudio()
 
-  const [playTumDum] = useSound('/sounds/tundom_down.mp3')
-  const [playPartyHorn] = useSound('/sounds/party-horn.mp3')
-  const [playNewRound] = useSound('/sounds/tudududum_up.mp3')
-  const [playEnterLobby] = useSound('/sounds/tudududum_up_2.mp3')
+  const audioConfig = {
+    volume: 0.5,
+  }
+
+  const [playTumDum] = useSound('/sounds/tundom_down.mp3', audioConfig)
+  const [playPartyHorn] = useSound('/sounds/party-horn.mp3', audioConfig)
+  const [playNewRound] = useSound('/sounds/tudududum_up.mp3', audioConfig)
+  const [playEnterLobby] = useSound('/sounds/tudududum_up_3.mp3', audioConfig)
 
   const soundsPerPage: Record<string, PlayFunction | undefined> = {
-    '/lobby': playEnterLobby,
-    '/game': playNewRound,
-    '/judging': playTumDum,
-    '/results': playTumDum,
+    '/lobby': playEnterLobby, //OK
+    '/game': playNewRound, //OK
+    '/judging': playTumDum, //OK
+    '/results': playTumDum, //OK
     '/end': playPartyHorn,
   }
 
@@ -188,7 +192,9 @@ const GameProvider: React.FC<IGameProviderProps> = ({ children }) => {
     // console.log('playSound', url)
     // console.log('isMuted', isMuted)
     // if (isMuted) return
-    soundsPerPage[url]?.()
+    setTimeout(() => {
+      soundsPerPage[url]?.()
+    }, 1000)
   }
 
   useEffect(() => {
@@ -232,8 +238,8 @@ const GameProvider: React.FC<IGameProviderProps> = ({ children }) => {
 
     const newPath = statusToUrl[newState.status]
     if (newPath && router.pathname !== newPath) {
-      void router.push(newPath)
       void playSound(newPath)
+      void router.push(newPath)
     }
 
     setGameState(newState)

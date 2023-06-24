@@ -119,6 +119,7 @@ io.on('connection', (socket) => {
     handleJudgeDecision(socket, roomManager, winningPlayerId)
   })
 
+  //BUG: When everyone leaves the room, the server is breaking, its not possible to connect anymore
   socket.on('disconnect', () => {
     console.log('A user disconnected!')
     // Change leaveRoom to disconnectFromRoom
