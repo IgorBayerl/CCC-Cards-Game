@@ -78,9 +78,8 @@ export default function Contact() {
   return (
     <InfoPageLayout>
       <div className="flex w-full flex-col gap-5 md:flex-row">
-        <div className="flex flex-1 flex-col items-center gap-5 sm:flex-row md:flex-col">
+        <div className="flex flex-1 flex-col items-center gap-5 sm:flex-row md:flex-col ">
           <div className="flex flex-col gap-5 md:items-center">
-            <h1 className="text-2xl">Igor Bayerl</h1>
             <Image
               src="https://github.com/IgorBayerl.png"
               alt="Igor Bayerl"
@@ -88,6 +87,7 @@ export default function Contact() {
               height={150}
               className="rounded-full border-4  border-white"
             />
+            <h1 className="text-center text-2xl">Igor Bayerl</h1>
           </div>
           <ul className="md:text-normal flex w-full flex-1 flex-col justify-center gap-3 rounded-lg bg-white bg-opacity-30 p-5 text-sm font-bold">
             <li>
@@ -96,7 +96,7 @@ export default function Contact() {
                 aria-label="GITHUB"
                 target="_blank"
                 rel="noopener"
-                className="flex w-min items-center rounded-md  px-1 py-1 text-black transition hover:translate-x-2"
+                className="flex w-min items-center rounded-md  px-1 py-1  transition hover:translate-x-2"
               >
                 <GithubLogo size={33} weight="bold" />
                 <span className="ml-2">Github</span>
@@ -108,7 +108,7 @@ export default function Contact() {
                 aria-label="INSTAGRAM"
                 target="_blank"
                 rel="noopener"
-                className="flex w-min items-center rounded-md px-1 py-1 text-black transition hover:translate-x-2 "
+                className="flex w-min items-center rounded-md px-1 py-1  transition hover:translate-x-2 "
               >
                 <InstagramLogo size={33} weight="bold" />
                 <span className="ml-2">Instagram</span>
@@ -120,7 +120,7 @@ export default function Contact() {
                 aria-label="LINKEDIN"
                 target="_blank"
                 rel="noopener"
-                className="flex w-min items-center rounded-md  px-1 py-1 text-black transition hover:translate-x-2 "
+                className="flex w-min items-center rounded-md  px-1 py-1  transition hover:translate-x-2 "
               >
                 <LinkedinLogo size={33} weight="bold" />
                 <span className="ml-2">LinkedIn</span>
@@ -132,7 +132,7 @@ export default function Contact() {
                 aria-label="EMAIL"
                 target="_blank"
                 rel="noopener"
-                className="flex w-min items-center rounded-md  px-1 py-1 text-black transition hover:translate-x-2 "
+                className="flex w-min items-center rounded-md  px-1 py-1  transition hover:translate-x-2 "
               >
                 <EnvelopeSimple size={33} weight="bold" />
                 <span className="ml-2">dev.igorbayerl@gmail.com</span>
@@ -149,7 +149,7 @@ export default function Contact() {
                 {submitError && <div>{submitError}</div>}
                 <div className="form-control w-full">
                   <label className="label" htmlFor="name">
-                    <span className="label-text">
+                    <span className="label-text text-white   md:text-gray-800">
                       {t('i-what-is-your-name')}
                     </span>
                   </label>
@@ -183,7 +183,9 @@ export default function Contact() {
 
                 <div className="form-control w-full">
                   <label className="label" htmlFor="email">
-                    <span className="label-text">Email</span>
+                    <span className="label-text text-white md:text-gray-800">
+                      Email
+                    </span>
                   </label>
                   <Field
                     id="email"
@@ -214,7 +216,9 @@ export default function Contact() {
                 </div>
                 <div className="form-control w-full">
                   <label className="label" htmlFor="message">
-                    <span className="label-text">{t('i-message')}</span>
+                    <span className="label-text text-white md:text-gray-800">
+                      {t('i-message')}
+                    </span>
                   </label>
                   <Field
                     name="message"

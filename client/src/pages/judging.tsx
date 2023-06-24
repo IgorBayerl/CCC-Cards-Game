@@ -132,7 +132,7 @@ export default function Judging() {
   return (
     <InGameLayout>
       <TimerTitle key={resetKey} subtitle={t('i-judging')} time={time} />
-      <div className="bg-destaque-mobile flex flex-1 flex-col overflow-y-auto py-2 md:mx-4">
+      <div className="bg-destaque-mobile flex flex-1 flex-col overflow-y-auto py-2 text-accent md:mx-4">
         <div className="flex flex-1 flex-col">
           <div className="flex flex-1 flex-col justify-between">
             <div className="flex flex-1 items-center justify-center">

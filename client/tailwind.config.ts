@@ -16,18 +16,20 @@ const config: Config = {
         mytheme: {
           primary: '#a991f7',
           secondary: '#f6d860',
-          accent: '#37cdbe',
+          accent: '#e2e8f0',
           neutral: '#3d4451',
           'base-100': '#ffffff',
-          '.btn-outline': {
+          '.btn-accent.btn-outline': {
             'background-color': 'transparent',
             'border-color': '#e5e7eb',
             color: '#e5e7eb',
           },
-          '.btn-outline:hover': {
+          '.btn-accent.btn-outline:hover': {
             'background-color': '#e5e7eb30',
             'border-color': '#ffffff00',
+            color: '#ffffff',
           },
+
           // '.btn.btn-select.btn-select-active': { // usar isso aqui nos "safe for stream" e language selctor
           //   'background-color': '#e5e7eb30',
           //   'border-color': '#ffffff00',

@@ -17,11 +17,11 @@ export default function InfoPageLayout({
   return (
     <div className="min-h-screen-safe flex flex-col justify-between px-5 py-5 md:justify-center">
       <header className="flex justify-between md:hidden">
-        <label htmlFor="my-modal-1" className="btn">
+        <label htmlFor="my-modal-1" className="btn-accent btn">
           <DotsThree size={25} weight="bold" />
         </label>
         <CCCIconThemed />
-        <label htmlFor="my-modal-2" className="btn">
+        <label htmlFor="my-modal-2" className="btn-accent btn">
           <Info size={25} weight="bold" />
         </label>
       </header>
@@ -30,14 +30,14 @@ export default function InfoPageLayout({
           <Link href="/">
             <label
               htmlFor="my-modal-language"
-              className="btn-outline btn flex gap-2 font-bold"
+              className="btn-outline btn-accent btn flex gap-2 font-bold"
             >
               <House size={25} weight="bold" /> {homeText}
             </label>
           </Link>
           <CCCIconThemed />
           <Link
-            className="btn-outline btn"
+            className="btn-outline btn-accent btn"
             href="https://discord.gg/eZsFkPuADE"
             target="_blank"
           >
@@ -45,7 +45,7 @@ export default function InfoPageLayout({
           </Link>
         </div>
         <div className="flex-1 gap-5 py-10 md:flex">
-          <div className="w-full flex-1 gap-5 md:flex  md:rounded-xl  md:bg-white md:bg-opacity-50 md:p-5 lg:flex lg:flex-row">
+          <div className="w-full flex-1 gap-5  text-white  md:flex md:rounded-xl md:bg-white md:bg-opacity-60 md:p-5 md:text-gray-800 lg:flex lg:flex-row">
             {children}
           </div>
         </div>

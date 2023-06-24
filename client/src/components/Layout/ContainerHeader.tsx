@@ -17,7 +17,7 @@ export default function ContainerHeader() {
 
   return (
     <div className="hidden w-full items-center justify-between md:flex">
-      <button className="btn-outline btn " onClick={handleLeaveRoom}>
+      <button className="btn-outline btn-accent btn" onClick={handleLeaveRoom}>
         <SignOut size={25} weight="bold" />
         {t('i-back-text')}
       </button>

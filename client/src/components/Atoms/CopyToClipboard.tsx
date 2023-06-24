@@ -26,7 +26,7 @@ export function CopyToClipboard({ content, text }: ICopyToClipboardProps) {
 
   return (
     <button
-      className="btn-outline btn flex-1"
+      className="btn-outline btn-accent btn flex-1"
       onClick={() => clipboard.copy(content)}
     >
       <div className={tooltipCN} data-tip={t('i-link-copied')}>

@@ -68,3 +68,8 @@
 
 
 
+@media screen and (max-width: 768px){
+  .no-animate-mobile {
+    @apply  no-animation;
+  }
+}

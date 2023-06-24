@@ -199,7 +199,7 @@ export default function LobbyPage() {
                   </div>
                   <div className="flex flex-1 md:hidden">
                     <button
-                      className="btn-outline btn flex w-full flex-1 items-center justify-between gap-3 md:hidden"
+                      className="btn-outline btn-accent btn flex w-full flex-1 items-center justify-between gap-3 md:hidden"
                       onClick={handleShareClicked}
                     >
                       <Link size={25} weight="bold" />
@@ -429,15 +429,18 @@ function LobbyDecksTab() {
   return (
     <div className="flex h-full flex-col px-2 pt-2 md:px-0">
       {isCurrentUserLeader && (
-        <div className="flex gap-3 rounded-md bg-white bg-opacity-70 p-2 md:mx-3">
+        <div className="flex gap-3 rounded-md bg-white bg-opacity-20 p-2 md:mx-3">
           <label
             htmlFor="modal-language"
-            className="btn-outline btn justify-between gap-2"
+            className="btn-outline btn-accent btn justify-between gap-2"
           >
             <Globe size={25} weight="bold" /> {selectedLanguage?.id || 'All'}
             <div />
           </label>
-          <label htmlFor="modal-category" className="btn-outline btn flex-1">
+          <label
+            htmlFor="modal-category"
+            className="btn-outline btn-accent btn flex-1"
+          >
             {selectedCategory ? (
               <span className="flex gap-2">
                 <span>{selectedCategory.name}</span>
@@ -449,8 +452,8 @@ function LobbyDecksTab() {
         </div>
       )}
 
-      <div className="divider mx-3 my-0" />
-      <div className="flex flex-col gap-2 overflow-y-auto bg-opacity-50 scrollbar-none md:px-3">
+      {isCurrentUserLeader && <div className="divider mx-3 my-0" />}
+      <div className="flex flex-col gap-2 overflow-y-auto bg-opacity-50 text-accent scrollbar-none md:px-3">
         <AnimatePresence mode="popLayout">
           {decksList.map((deck) => (
             <React.Fragment key={`${deck.id}_deck`}>
@@ -468,7 +471,7 @@ function LobbyDecksTab() {
                   'flex h-auto flex-nowrap items-center justify-between gap-2 border-2 py-2 pl-2 text-left normal-case',
                   {
                     'btn-ghost btn': isCurrentUserLeader,
-                    'btn-disabled btn-ghost btn-active btn':
+                    'btn-disabled btn-ghost btn-active btn text-accent':
                       !isCurrentUserLeader,
                     'border-white hover:border-white': deck.selected,
                     'border-transparent': !deck.selected,
@@ -521,7 +524,7 @@ function LobbyDecksTab() {
                 className={`btn ${
                   selectedCategory && selectedCategory.id === category.id
                     ? ''
-                    : 'btn-outline'
+                    : 'btn-neutral btn-outline'
                 } flex gap-3`}
                 key={category.id}
               >

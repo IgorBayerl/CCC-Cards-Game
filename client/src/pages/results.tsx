@@ -46,7 +46,7 @@ export default function Results() {
         subtitle={t('i-round-winner')}
         time={time}
       />
-      <div className="bg-destaque-mobile flex flex-1 flex-col py-2 md:mx-4">
+      <div className="bg-destaque-mobile flex flex-1 flex-col py-2 text-accent md:mx-4">
         <div className="flex flex-1 items-center ">
           <div className="flex flex-1 flex-col items-center gap-3">
             <Image

@@ -125,7 +125,7 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen-safe flex flex-col justify-between px-5 py-5 text-gray-800 md:justify-center">
+    <div className="min-h-screen-safe flex flex-col justify-between px-5 py-5 md:justify-center">
       <header className="flex justify-between md:hidden">
         <label htmlFor="my-modal-1" className="btn">
           <DotsThree size={25} weight="bold" />
@@ -143,13 +143,13 @@ export default function Home() {
           <div className="hidden w-full items-center justify-between md:flex">
             <label
               htmlFor="my-modal-language"
-              className="btn-outline btn flex gap-2 font-bold"
+              className="btn-outline btn-accent btn flex gap-2 font-bold"
             >
               <Globe size={25} weight="bold" /> {router.locale}
             </label>
             <CCCIconThemed />
             <Link
-              className=" btn-outline btn"
+              className=" btn-outline btn-accent btn"
               href="https://discord.gg/eZsFkPuADE"
               target="_blank"
             >
@@ -157,22 +157,10 @@ export default function Home() {
             </Link>
           </div>
           <div className="gap-5 py-10 md:flex">
-            <div className="w-full gap-5 md:flex  md:rounded-xl md:bg-white md:bg-opacity-50 md:p-5 lg:flex lg:flex-row">
+            <div className="w-full gap-5 md:flex  md:rounded-xl md:bg-white md:bg-opacity-30 md:p-5 lg:flex lg:flex-row">
               <div className="flex justify-center">
-                {profilePictures.map((picture, index) => {
-                  return (
-                    <div className="hidden" key={index}>
-                      <Image
-                        src={picture}
-                        alt="Profile Picture"
-                        width={200}
-                        height={200}
-                      />
-                    </div>
-                  )
-                })}
-                <div className=" flex items-center justify-center ">
-                  <div className="relative aspect-square rounded-full border-4 border-neutral shadow-lg   ">
+                <div className=" flex items-center justify-center">
+                  <div className="relative aspect-square rounded-full border-4 border-gray-200 shadow-lg">
                     <Image
                       src={pictureUrl || '/profile_1.jpg'}
                       alt="profile_picture"
@@ -183,7 +171,7 @@ export default function Home() {
                     <button
                       name="change-picture"
                       title="Change picture"
-                      className="btn-circle btn absolute bottom-0 right-0 "
+                      className="btn-accent btn-circle btn absolute bottom-0 right-0 text-neutral"
                       onClick={handlePictureUrlChange}
                     >
                       <ArrowClockwise size={25} weight="bold" />
@@ -192,10 +180,10 @@ export default function Home() {
                 </div>
               </div>
               <div className="flex w-full flex-1 flex-col justify-center gap-3 ">
-                <div className="form-control w-full text-2xl">
+                <div className="form-control w-full text-2xl text-white">
                   <label className="label font-bold">{instructionText}</label>
                   <label className="label">
-                    <span className="label-text text-black">
+                    <span className="label-text text-gray-200">
                       {nicknameText}
                     </span>
                   </label>
@@ -210,7 +198,7 @@ export default function Home() {
                 </div>
 
                 <button
-                  className="btn hidden items-center md:flex "
+                  className="btn hidden items-center text-white  md:flex"
                   disabled={isLoading}
                   onClick={handleButtonClick}
                 >

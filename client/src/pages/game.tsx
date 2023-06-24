@@ -91,7 +91,7 @@ export default function Game() {
         subtitle={t('i-choose-the-cards-that-best-fit')}
         time={time}
       />
-      <div className="bg-destaque-mobile flex flex-1 flex-col overflow-y-auto py-2 md:mx-4">
+      <div className="bg-destaque-mobile flex flex-1 flex-col overflow-y-auto py-2 text-accent md:mx-4">
         <div className="flex h-full flex-1 flex-col justify-between ">
           <div className="flex flex-1 items-center justify-center px-3">
             {currentQuestionCard && (
