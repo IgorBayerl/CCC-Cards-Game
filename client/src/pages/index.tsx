@@ -221,7 +221,7 @@ export default function Home() {
           <Footer />
         </div>
       </div>
-      <div className="flex flex-col">
+      <div className="flex flex-col overflow-clip">
         <button
           className="btn my-5 w-full md:hidden"
           disabled={isLoading}
