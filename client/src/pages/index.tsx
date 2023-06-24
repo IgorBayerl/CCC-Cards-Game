@@ -18,7 +18,7 @@ import CCCIconThemed from '~/components/Atoms/CCCIconThemed'
 import Link from 'next/link'
 import Footer from '~/components/Footer'
 import BannerVertical from '~/components/Ads/BannerVertical'
-import BannerHorizontal from '~/components/Ads/Banner_468x60'
+import BannerHorizontal from '~/components/Ads/BannerHorizontal'
 
 const profilePictures = [
   '/profile/profile_1.webp',
@@ -42,6 +42,11 @@ export default function Home() {
 
   const instructionText = t('i-select-picture-and-nickname')
   const nicknameText = t('i-nickname')
+
+  const termsOfServiceText = t('i-terms-of-service')
+  const privacyText = t('i-privacy-policy')
+  const contactText = t('i-contact')
+  const homeText = t('i-home')
 
   const selectYourLanguageText = t('i-select-your-language')
 
@@ -127,11 +132,11 @@ export default function Home() {
   return (
     <div className="min-h-screen-safe flex flex-col justify-between px-5 py-5 md:justify-center">
       <header className="flex justify-between md:hidden">
-        <label htmlFor="my-modal-1" className="btn">
+        <label htmlFor="my-modal-1" className="btn-accent btn">
           <DotsThree size={25} weight="bold" />
         </label>
         <CCCIconThemed />
-        <label htmlFor="my-modal-2" className="btn">
+        <label htmlFor="my-modal-2" className="btn-accent btn">
           <Info size={25} weight="bold" />
         </label>
       </header>
@@ -216,7 +221,7 @@ export default function Home() {
           <Footer />
         </div>
       </div>
-      <div className="flex">
+      <div className="flex flex-col">
         <button
           className="btn my-5 w-full md:hidden"
           disabled={isLoading}
@@ -227,23 +232,71 @@ export default function Home() {
             {buttonText}
           </div>
         </button>
+        <BannerHorizontal />
       </div>
       <input type="checkbox" id="my-modal-1" className="modal-toggle" />
-      <div className="modal">
-        <div className="modal-box relative">
+      <label className="modal bg-white bg-opacity-30 p-0" htmlFor="my-modal-1">
+        <label className="modal-box relative flex h-full flex-col" htmlFor="">
           <label
             htmlFor="my-modal-1"
-            className="btn-sm btn-circle btn absolute right-2 top-2"
+            className="btn-circle btn-lg btn absolute right-2 top-2 md:btn-sm"
           >
             ✕
           </label>
-          <h3 className="text-lg font-bold">Modal 1</h3>
-          <p className="py-4">
-            {`You've been selected for a chance to get one year of subscription to
-            use Wikipedia for free!`}
-          </p>
-        </div>
-      </div>
+          <h3 className=" text-xl font-bold">Cyber Chaos Cards</h3>
+          <ul className="flex flex-1 flex-col items-center py-6 text-xl font-bold ">
+            <div className="divider" />
+            <Link
+              href="/"
+              className="w-full px-4 py-4 text-center hover:bg-gray-200"
+            >
+              {homeText}
+            </Link>
+            <div className="divider" />
+            <Link
+              href="/terms"
+              className="w-full px-4 py-4 text-center hover:bg-gray-200"
+            >
+              {termsOfServiceText}
+            </Link>
+            <div className="divider" />
+            <Link
+              href="/privacy"
+              className="w-full px-4 py-4 text-center hover:bg-gray-200"
+            >
+              {privacyText}
+            </Link>
+            <div className="divider" />
+            <Link
+              href="/contact"
+              className="w-full px-4 py-4 text-center hover:bg-gray-200"
+            >
+              {contactText}
+            </Link>
+          </ul>
+          <div className="divider" />
+          <div>
+            <h1 className="card-title py-4">{selectYourLanguageText}</h1>
+            <select
+              name="language-mobile"
+              id="language-mobile"
+              className="select-bordered select w-full uppercase"
+              onChange={(e) => {
+                router.push(router.pathname, router.pathname, {
+                  locale: e.target.value,
+                })
+              }}
+            >
+              {router.locales &&
+                router.locales.map((locale) => (
+                  <option className="uppercase" key={locale} value={locale}>
+                    {locale}
+                  </option>
+                ))}
+            </select>
+          </div>
+        </label>
+      </label>
       <input type="checkbox" id="my-modal-2" className="modal-toggle" />
       <label htmlFor="my-modal-2" className="modal">
         <label className="modal-box relative py-10" htmlFor="">
@@ -254,7 +307,7 @@ export default function Home() {
             ✕
           </label>
           <div className="py-4">
-            <TutorialCarousel />
+            <h1 className="card-title py-4">{t('i-how-to-play')}</h1>
           </div>
         </label>
       </label>

@@ -18,6 +18,7 @@ interface AudioProviderProps {
 export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
   const [isMuted, setMuted] = useState(false)
 
+
   return (
     <AudioContext.Provider value={{ isMuted, setMuted }}>
       {children}

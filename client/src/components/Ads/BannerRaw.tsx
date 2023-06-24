@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
 import useTranslation from 'next-translate/useTranslation'
+import classNames from 'classnames'
 
 interface BannerRawProps {
   height: number
@@ -40,6 +41,10 @@ const BannerRaw: React.FC<BannerRawProps> = ({
     }
   }, [banner])
 
+  const isHorizontal = width > height
+
+  const imageStyle = classNames('w-full', isHorizontal ? 'hidden' : 'block')
+
   return (
     <div
       className={className}
@@ -57,7 +62,7 @@ const BannerRaw: React.FC<BannerRawProps> = ({
             height="100"
             alt="crying jordan"
             objectFit="fill"
-            className="w-full"
+            className={imageStyle}
           />
         </div>
       )}

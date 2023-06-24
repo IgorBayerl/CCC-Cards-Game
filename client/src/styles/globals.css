@@ -51,7 +51,7 @@
 }
 
 .min-h-screen-safe {
-  min-height: 100svh;
+  height: 100svh;
 }
 
 .bg-accent-translucid {

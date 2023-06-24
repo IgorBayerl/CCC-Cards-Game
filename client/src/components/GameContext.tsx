@@ -169,13 +169,12 @@ const GameProvider: React.FC<IGameProviderProps> = ({ children }) => {
   const [isCurrentUserLeader, setIsCurrentUserLeader] = useState(false)
   const [isCurrentUserJudge, setIsCurrentUserJudge] = useState(false)
   const [myId, setMyId] = useState<string>('')
+  const { isMuted } = useAudio()
 
   const [playTumDum] = useSound('/sounds/tundom_down.mp3')
   const [playPartyHorn] = useSound('/sounds/party-horn.mp3')
   const [playNewRound] = useSound('/sounds/tudududum_up.mp3')
   const [playEnterLobby] = useSound('/sounds/tudududum_up_2.mp3')
-
-  const { isMuted } = useAudio()
 
   const soundsPerPage: Record<string, PlayFunction | undefined> = {
     '/lobby': playEnterLobby,
@@ -186,12 +185,10 @@ const GameProvider: React.FC<IGameProviderProps> = ({ children }) => {
   }
 
   const playSound = (url: string) => {
-    console.log('playSound', url)
-    if (isMuted) return
-    const soundFunction = soundsPerPage[url]
-    if (soundFunction) {
-      soundFunction()
-    }
+    // console.log('playSound', url)
+    // console.log('isMuted', isMuted)
+    // if (isMuted) return
+    soundsPerPage[url]?.()
   }
 
   useEffect(() => {

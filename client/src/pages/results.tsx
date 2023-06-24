@@ -24,7 +24,7 @@ export default function Results() {
   const lastRoundQuestionCard = lastRoundResults?.questionCard as ICard
   const lastRoundWinnerAnswers = lastRoundResults?.answerCards[winner?.id || '']
 
-  const time = gameState.config.time || 10 // 10 seconds on the screen before going to the next round
+  const time = 10 || gameState.config.time // 10 seconds on the screen before going to the next round
 
   if (!gameState.lastRound) {
     return (
