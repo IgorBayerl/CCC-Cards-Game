@@ -53,7 +53,7 @@ export default function End() {
 
   return (
     <InGameLayout>
-      <div className="bg-destaque-mobile flex flex-1 flex-col overflow-y-auto py-2 md:mx-4">
+      <div className="bg-destaque-mobile flex flex-1 flex-col overflow-y-auto py-2 text-gray-200 md:mx-4">
         <h1 className="text-xl font-bold">{t('i-match-winner')}</h1>
         <div className="flex flex-1 items-center ">
           <div className="flex flex-1 flex-col items-center gap-3">

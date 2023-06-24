@@ -11,6 +11,8 @@ import {
   LinkedinLogo,
 } from '@phosphor-icons/react'
 import useTranslation from 'next-translate/useTranslation'
+import ConfettiExplosion from 'react-confetti-explosion'
+import { useState } from 'react'
 
 const NameSchema = z.string().nonempty({ message: 'Required' })
 const EmailSchema = z.string().email({ message: 'Invalid email address' })
@@ -36,6 +38,7 @@ const mapZodErrorToFinalForm = (error: z.ZodError) => {
 
 export default function Contact() {
   const { t } = useTranslation('common')
+  const [keyTest, setKeyTest] = useState(0)
 
   const onSubmit = async (values: {
     name: string
@@ -74,18 +77,23 @@ export default function Contact() {
       }
     }
   }
+  function explodeConfetti() {
+    setKeyTest((prev) => prev + 1)
+  }
 
   return (
     <InfoPageLayout>
       <div className="flex w-full flex-col gap-5 md:flex-row">
         <div className="flex flex-1 flex-col items-center gap-5 sm:flex-row md:flex-col ">
           <div className="flex flex-col gap-5 md:items-center">
+            <ConfettiExplosion key={keyTest} />
             <Image
               src="https://github.com/IgorBayerl.png"
               alt="Igor Bayerl"
               width={150}
               height={150}
               className="rounded-full border-4  border-white"
+              onClick={explodeConfetti}
             />
             <h1 className="text-center text-2xl">Igor Bayerl</h1>
           </div>

@@ -1,5 +1,4 @@
 import { useGameContext } from '~/components/GameContext'
-import router from 'next/router'
 import Layout from '~/components/Layout/Layout'
 
 import InGameLayout from '~/components/Layout/InGameLayout'
@@ -7,11 +6,9 @@ import GameCard, { GameCardResult } from '~/components/Atoms/GameCard'
 import { ICard } from '~/models/Deck'
 import { useState } from 'react'
 import { toast } from 'react-toastify'
-import { CountdownCircleTimer } from 'react-countdown-circle-timer'
 import useSound from 'use-sound'
 import { useAudio } from '~/components/AudioContext'
 import TimerTitle from '~/components/Layout/TimerScreen'
-import Loading from '~/components/Atoms/Loading'
 import LoadingWithText from '~/components/Atoms/LoadingWithText'
 import useTranslation from 'next-translate/useTranslation'
 

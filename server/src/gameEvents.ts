@@ -33,7 +33,7 @@ export const handleSetConfig = (
   const room = roomManager.getRoomById(roomId)
   if (room && room.leader && room.leader.id === socket.id) {
     room.setConfig(config) // Call the setConfig method on the room instance
-    room.notifyState(socket)
+    room.broadcastState()
   }
 }
 

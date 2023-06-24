@@ -8,6 +8,7 @@ import {
 } from 'react'
 import { toast } from 'react-toastify'
 import { type Socket } from 'socket.io-client'
+import useSound from 'use-sound'
 import { useSocketContext } from '~/components/SocketContext'
 import { TPlayerStatus } from '~/lib/playerUtils'
 import {
@@ -16,6 +17,7 @@ import {
   ICardQuestion,
   IDeckConfigScreen,
 } from '~/models/Deck'
+import { useAudio } from './AudioContext'
 
 interface IGameContextValue {
   myId: string
@@ -61,6 +63,7 @@ type TRoomStatus =
   | 'results'
   | 'finished'
 
+type PlayFunction = () => void
 export interface IGameState {
   players: IPlayer[]
   leader: IPlayer
@@ -167,6 +170,30 @@ const GameProvider: React.FC<IGameProviderProps> = ({ children }) => {
   const [isCurrentUserJudge, setIsCurrentUserJudge] = useState(false)
   const [myId, setMyId] = useState<string>('')
 
+  const [playTumDum] = useSound('/sounds/tundom_down.mp3')
+  const [playPartyHorn] = useSound('/sounds/party-horn.mp3')
+  const [playNewRound] = useSound('/sounds/tudududum_up.mp3')
+  const [playEnterLobby] = useSound('/sounds/tudududum_up_2.mp3')
+
+  const { isMuted } = useAudio()
+
+  const soundsPerPage: Record<string, PlayFunction | undefined> = {
+    '/lobby': playEnterLobby,
+    '/game': playNewRound,
+    '/judging': playTumDum,
+    '/results': playTumDum,
+    '/end': playPartyHorn,
+  }
+
+  const playSound = (url: string) => {
+    console.log('playSound', url)
+    if (isMuted) return
+    const soundFunction = soundsPerPage[url]
+    if (soundFunction) {
+      soundFunction()
+    }
+  }
+
   useEffect(() => {
     socket?.on('game:updateState', handleChangeState)
 
@@ -209,6 +236,7 @@ const GameProvider: React.FC<IGameProviderProps> = ({ children }) => {
     const newPath = statusToUrl[newState.status]
     if (newPath && router.pathname !== newPath) {
       void router.push(newPath)
+      void playSound(newPath)
     }
 
     setGameState(newState)

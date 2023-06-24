@@ -123,7 +123,7 @@ io.on('connection', (socket) => {
     console.log('A user disconnected!')
     // Change leaveRoom to disconnectFromRoom
     const room = roomManager.disconnectFromRoom(socket)
-    room?.notifyState(socket)
+    room?.broadcastState()
   })
 })
 

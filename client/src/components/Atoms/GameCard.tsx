@@ -55,7 +55,7 @@ export const GameCardResult: React.FC<IGameCardResultProps> = ({
       return (
         <React.Fragment key={index}>
           {part}
-          <span className="text-blue-600">{answer}</span>
+          <span className="font-bold text-gray-400">{answer}</span>
         </React.Fragment>
       )
     }

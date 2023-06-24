@@ -11,6 +11,9 @@
     "esModuleInterop": true,
     "resolveJsonModule": true
   },
-  "include": ["src/**/*.ts"],
-  "exclude": ["node_modules", "test/**/*", "./build"]
+  "include": ["src/**/*.ts", "src/tests/GameRoom.test.ts"],
+  "exclude": ["node_modules", "test/**/*", "./build"],
+  "paths": {
+    "~/*": ["./*"]
+  }
 }

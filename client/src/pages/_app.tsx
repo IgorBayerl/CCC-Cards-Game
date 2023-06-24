@@ -35,14 +35,15 @@ const MyApp: AppType = ({ Component, pageProps }) => {
   return (
     <>
       <TrackingCode />
-      <NextSeo 
+      <NextSeo
         title="Cyber Chaos Cards"
         description="Join Cyber Chaos Cards - the edgy online adaptation of Cards Against Humanity. Make friends, create hilarity, challenge norms."
         canonical="https://www.cyberchaoscards.com/"
         openGraph={{
           url: 'https://www.cyberchaoscards.com/',
           title: 'Cyber Chaos Cards',
-          description: 'Join Cyber Chaos Cards - the edgy online adaptation of Cards Against Humanity. Make friends, create hilarity, challenge norms.',
+          description:
+            'Join Cyber Chaos Cards - the edgy online adaptation of Cards Against Humanity. Make friends, create hilarity, challenge norms.',
           siteName: 'Cyber Chaos Cards',
         }}
       />
@@ -80,11 +81,11 @@ const MyApp: AppType = ({ Component, pageProps }) => {
       <ToastContainer />
       <QueryClientProvider client={queryClient}>
         <SocketProvider url={url}>
-          <GameProvider>
-            <AudioProvider>
+          <AudioProvider>
+            <GameProvider>
               <Component {...pageProps} />
-            </AudioProvider>
-          </GameProvider>
+            </GameProvider>
+          </AudioProvider>
         </SocketProvider>
         {/* <ReactQueryDevtools /> */}
       </QueryClientProvider>

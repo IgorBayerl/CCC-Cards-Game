@@ -33,13 +33,13 @@ export const handleJoinRoom = (
     oldSocketId
   )
   socket.emit('room:joinedRoom', roomId)
-  room.notifyState(socket)
+  room.broadcastState()
 }
 
 export const handleLeaveRoom = (socket: Socket, roomManager: RoomManager) => {
   const room = roomManager.leaveRoom(socket)
   if (room) {
-    room.notifyState(socket)
+    room.broadcastState()
   }
 }
 
@@ -52,6 +52,6 @@ export const handleAdmCommand = (
   const room = roomManager.getRoomById(roomId)
   if (room && room.leader && room.leader.id === socket.id) {
     // Implement admin command logic here (e.g., start game)
-    room.notifyState(socket)
+    room.broadcastState()
   }
 }
