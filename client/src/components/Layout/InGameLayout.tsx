@@ -34,7 +34,7 @@ export default function InGameLayout({ children }: IInGameLayoutProps) {
     <div className="min-h-screen-safe flex flex-col justify-between md:justify-center md:p-5">
       <div className="flex items-center justify-center">
         <div className="hidden md:block">
-          <BannerVertical />
+          {/* <BannerVertical /> */}
         </div>
         <div className="game-container-border flex h-[100svh] flex-col justify-between gap-3 md:h-[80vh] ">
           <div className="px-1">

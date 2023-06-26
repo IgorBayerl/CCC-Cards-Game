@@ -141,9 +141,7 @@ export default function Home() {
         </label>
       </header>
       <div className="flex items-center justify-center">
-        <div className="hidden md:block">
-          <BannerVertical />
-        </div>
+        <div className="hidden md:block">{/* <BannerVertical /> */}</div>
         <div className="game-container-border flex flex-col gap-3">
           <div className="hidden w-full items-center justify-between md:flex">
             <label
@@ -232,7 +230,7 @@ export default function Home() {
             {buttonText}
           </div>
         </button>
-        <BannerHorizontal />
+        {/* <BannerHorizontal /> */}
       </div>
       <input type="checkbox" id="my-modal-1" className="modal-toggle" />
       <label className="modal bg-white bg-opacity-30 p-0" htmlFor="my-modal-1">
