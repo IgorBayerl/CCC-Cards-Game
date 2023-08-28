@@ -2,18 +2,22 @@
   "compilerOptions": {
     "outDir": "build",
     "target": "ESNext",
-    "module": "CommonJS",
+    "module": "ESNext",
     "moduleResolution": "node",
     "strict": true,
     "allowJs": true,
-    "strictNullChecks": false,
+    "strictNullChecks": true,
     "esModuleInterop": true,
     "experimentalDecorators": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "useDefineForClassFields": false
+    "useDefineForClassFields": true,
+    "lib": ["DOM", "DOM.Iterable", "ESNext"]
   },
   "include": [
-    "src"
+    "src",
+    "config.ts",
+    "src/routes/schemas",
+    "../schemas/schemas/deckSchemas.ts"
   ]
 }

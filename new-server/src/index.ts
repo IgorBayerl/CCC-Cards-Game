@@ -8,7 +8,7 @@
  *
  * See: https://docs.colyseus.io/server/api/#constructor-options
  */
-import { listen } from "@colyseus/tools";
+import {listen} from "@colyseus/tools";
 
 // Import Colyseus config
 import app from "./app.config";

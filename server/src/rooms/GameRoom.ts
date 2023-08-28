@@ -362,9 +362,6 @@ export default class GameRoom extends Room {
     this.broadcast('game:showAllCards', { cards: allCards, hasNext: false })
   }
 
-  // TODO: handle judge quitting
-  // TODO: handle player quitting
-
   /**
    * Selects a random judge from the players array.
    */

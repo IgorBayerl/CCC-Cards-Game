@@ -1,0 +1,43 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Deck {
+  id           String   @id @default(uuid()) @map("id")
+  title        String?  @map("title")
+  description  String?  @map("description")
+  language     String?  @map("language")
+  icon         String?  @map("icon")
+  darknessLevel Int?    @map("darknessLevel")
+
+  questions    Question[]
+  answers      Answer[]
+
+  @@map("decks")
+}
+
+model Question {
+  id       String @id @default(uuid()) @map("id")
+  text     String? @map("text")
+  spaces   Int?    @map("spaces")
+  deckId   String  @map("deck_id")
+
+  deck     Deck    @relation(fields: [deckId], references: [id])
+
+  @@map("questions")
+}
+
+model Answer {
+  id      String @id @default(uuid()) @map("id")
+  text    String? @map("text")
+  deckId  String  @map("deck_id")
+
+  deck    Deck    @relation(fields: [deckId], references: [id])
+
+  @@map("answers")
+}

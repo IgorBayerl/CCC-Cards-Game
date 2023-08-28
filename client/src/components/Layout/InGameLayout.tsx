@@ -18,7 +18,8 @@ interface IInGameLayoutProps {
 export default function InGameLayout({ children }: IInGameLayoutProps) {
   const { roomId, gameState, gameConfig, leaveRoom } = useGameContext()
 
-  const playersList = gameState.players
+  const playersList = Array.from(gameState.players.values())
+
   const roomSize = gameConfig?.roomSize?.toString() || '4'
 
   const handleLeaveRoom = () => {
@@ -33,9 +34,7 @@ export default function InGameLayout({ children }: IInGameLayoutProps) {
   return (
     <div className="min-h-screen-safe flex flex-col justify-between md:justify-center md:p-5">
       <div className="flex items-center justify-center">
-        <div className="hidden md:block">
-          {/* <BannerVertical /> */}
-        </div>
+        <div className="hidden md:block">{/* <BannerVertical /> */}</div>
         <div className="game-container-border flex h-[100svh] flex-col justify-between gap-3 md:h-[80vh] ">
           <div className="px-1">
             <ContainerHeader />
@@ -44,7 +43,7 @@ export default function InGameLayout({ children }: IInGameLayoutProps) {
             <div className="flex w-screen gap-3 overflow-x-scroll px-2 py-3 ">
               <MobilePlayersList
                 players={playersList}
-                leader={gameState.leader}
+                leaderId={gameState.leader}
                 roomSize={parseInt(roomSize)}
               />
             </div>
@@ -53,7 +52,7 @@ export default function InGameLayout({ children }: IInGameLayoutProps) {
             <div className="hidden flex-col gap-2 md:flex">
               <PlayersList
                 players={playersList}
-                leader={gameState.leader}
+                leaderId={gameState.leader}
                 roomSize={parseInt(roomSize)}
               />
             </div>

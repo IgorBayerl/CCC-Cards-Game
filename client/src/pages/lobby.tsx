@@ -32,6 +32,7 @@ export default function LobbyPage() {
     roomId,
     gameState,
     isCurrentUserLeader,
+    myId,
     gameConfig,
     leaveRoom,
     setConfig,
@@ -40,7 +41,8 @@ export default function LobbyPage() {
 
   const { t } = useTranslation('lobby')
 
-  const playersList = gameState.players
+  const playersList = Array.from(gameState.players.values())
+
   const roomSize = gameConfig?.roomSize?.toString() || '4'
 
   // TODO: change this to a getStaticProps with revalidate of 1 hour
@@ -74,7 +76,7 @@ export default function LobbyPage() {
 
   const handleStartGame = () => {
     //verify if there are enough players
-    if (gameState.players.length < 2) {
+    if (playersList.length < 2) {
       const message = t('i-you-need-at-least-2-players-to-start-a-game')
       toast.error(message)
       return
@@ -122,7 +124,7 @@ export default function LobbyPage() {
             <div className="flex w-screen gap-3 overflow-x-scroll px-2 py-3 ">
               <MobilePlayersList
                 players={playersList}
-                leader={gameState.leader}
+                leaderId={gameState.leader}
                 roomSize={parseInt(roomSize)}
               />
             </div>
@@ -162,7 +164,7 @@ export default function LobbyPage() {
 
               <PlayersList
                 players={playersList}
-                leader={gameState.leader}
+                leaderId={gameState.leader}
                 roomSize={parseInt(roomSize)}
               />
             </div>
@@ -240,11 +242,11 @@ function LobbySettingsTab() {
 
   const handleChangeTimeToPlay = (value: string) => {
     const newTimeToPlay = parseInt(value)
-    setConfig({ ...gameConfig, time: newTimeToPlay })
+    setConfig({ ...gameConfig, roundTime: newTimeToPlay })
   }
 
   const scoreToWin = gameConfig?.scoreToWin?.toString() || '10'
-  const timeToPlay = gameConfig?.time?.toString() || '60'
+  const timeToPlay = gameConfig?.roundTime?.toString() || '60'
 
   return (
     <div className="flex h-full flex-col overflow-y-auto px-2 pt-2 md:px-3">
@@ -404,22 +406,24 @@ function LobbyDecksTab() {
     if (checked) {
       const deckToAdd = decksData.find((deck) => deck.id === id)
       if (!deckToAdd) return console.error(`Deck not found with id ${id}`)
-      newSelectedDecks = [...gameConfig.decks, deckToAdd]
+      newSelectedDecks = [...gameConfig.availableDecks, deckToAdd]
     } else {
-      newSelectedDecks = gameConfig.decks.filter((deck) => deck.id !== id)
+      newSelectedDecks = gameConfig.availableDecks.filter(
+        (deck) => deck.id !== id
+      )
     }
 
-    setConfig({ ...gameConfig, decks: newSelectedDecks })
+    setConfig({ ...gameConfig, availableDecks: newSelectedDecks })
   }
 
   const decksList: IDeckConfigScreen[] = isCurrentUserLeader
     ? decksData.map((deck) => ({
         ...deck,
-        selected: gameConfig.decks.some(
+        selected: gameConfig.availableDecks.some(
           (selectedDeck) => selectedDeck.id === deck.id
         ),
       }))
-    : gameConfig.decks.map((deck) => ({
+    : gameConfig.availableDecks.map((deck) => ({
         ...deck,
         selected: true,
       }))

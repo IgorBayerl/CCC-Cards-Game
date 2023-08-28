@@ -16,7 +16,7 @@ import { useRouter } from 'next/router'
 
 // import * as gtag from '~/lib/gtag'
 
-const url = process.env.NEXT_PUBLIC_GAME_SERVER || 'http://localhost:3365'
+const url = process.env.NEXT_PUBLIC_GAME_SERVER || 'http://localhost:2567'
 
 const queryClient = new QueryClient()
 

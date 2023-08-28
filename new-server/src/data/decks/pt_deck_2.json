@@ -1,0 +1,846 @@
+{
+  "title": "Baralho BR - O ouro recuperado",
+  "description": "O nosso segundo baralho brasileiro",
+  "darknessLevel": 2,
+  "icon": "https://cdn.iconscout.com/icon/free/png-256/free-social-275-116309.png",
+  "language": "pt",
+  "cards": {
+    "questions": [
+      {
+        "text": "Eu como ___ no café da manhã. Tem gosto de frango",
+        "spaces": 1
+      },
+      {
+        "text": "___ é lindo como ___",
+        "spaces": 2
+      },
+      {
+        "text": "50 tons de ___",
+        "spaces": 1
+      },
+      {
+        "text": "Toc, toc. Quem é? ___",
+        "spaces": 1
+      },
+      {
+        "text": "___. Véi, na boa",
+        "spaces": 1
+      },
+      {
+        "text": "Ontem eu vi a Anitta no ___",
+        "spaces": 1
+      },
+      {
+        "text": "Globo Filmes apresenta: ___, a história de ___",
+        "spaces": 2
+      },
+      {
+        "text": "Estou louco para ___",
+        "spaces": 1
+      },
+      {
+        "text": "Pessoas idosas tem cheiro de ___",
+        "spaces": 1
+      },
+      {
+        "text": "Racismo é bom para ___",
+        "spaces": 1
+      },
+      {
+        "text": "O que Vin Diesel teve no jantar? ___",
+        "spaces": 1
+      },
+      {
+        "text": "Comprei uma PS2 mas tive que dar ___ para conseguir comprar uma",
+        "spaces": 1
+      },
+      {
+        "text": "É algum crime ___? ",
+        "spaces": 1
+      },
+      {
+        "text": "Não sabia que ___ era tão bonito",
+        "spaces": 1
+      },
+      {
+        "text": "Quem nunca teve ___?",
+        "spaces": 1
+      },
+      {
+        "text": "Bandido bom é ___",
+        "spaces": 1
+      },
+      {
+        "text": "CBF proíbe ___ por proporcionar vantagem desleal aos jogadores",
+        "spaces": 1
+      },
+      {
+        "text": "A Copa de 2014 foi uma ___",
+        "spaces": 1
+      },
+      {
+        "text": "Eu brochei por causa de ___",
+        "spaces": 1
+      },
+      {
+        "text": "Dadinho é o caralho. Meu nome agora é ___, porra!",
+        "spaces": 1
+      },
+      {
+        "text": "Eu tentei tirar uma foto com a Xuxa mas não deu porque ___ tava lá",
+        "spaces": 1
+      },
+      {
+        "text": "A minha mulher é uma puta porque ela não me fez ___",
+        "spaces": 1
+      },
+      {
+        "text": "Abri uma loja para vender ___",
+        "spaces": 1
+      },
+      {
+        "text": "Um dia vou ficar rico com este simples truque de ___",
+        "spaces": 1
+      },
+      {
+        "text": "Tentei roubar dinheiro mas o Super ___ apareceu e bateu em mim",
+        "spaces": 1
+      },
+      {
+        "text": "Lula é inocente porque ___",
+        "spaces": 1
+      },
+      {
+        "text": "Não sei nadar mas não é problema porque tenho um ___",
+        "spaces": 1
+      },
+      {
+        "text": "Não há nada mais foda que ___",
+        "spaces": 1
+      },
+      {
+        "text": "Descobri que o Skype também serve para ___",
+        "spaces": 1
+      },
+      {
+        "text": "Gostei de ___. Faria de novo",
+        "spaces": 1
+      },
+      {
+        "text": "Flagrei meu filho se preparando para ___",
+        "spaces": 1
+      },
+      {
+        "text": "Droga! Estou cercado de ___!",
+        "spaces": 1
+      },
+      {
+        "text": "Homem que é homem não vai a ___",
+        "spaces": 1
+      },
+      {
+        "text": "Você me pediu hamburguer. Eu te trouxe ___",
+        "spaces": 1
+      },
+      {
+        "text": "Meu mais novo esporte é ___",
+        "spaces": 1
+      },
+      {
+        "text": "As nudes do ___",
+        "spaces": 1
+      },
+      {
+        "text": "Olha este epokémon que apanhei! É o ___!",
+        "spaces": 1
+      },
+      {
+        "text": "Quero agradecer ao meu amigo ___ por ___",
+        "spaces": 2
+      },
+      {
+        "text": "Quem me dera ter aqui um ___",
+        "spaces": 1
+      },
+      {
+        "text": "___ e ___: combinação explosiva",
+        "spaces": 2
+      },
+      {
+        "text": "Nova moda da nação: ___",
+        "spaces": 1
+      },
+      {
+        "text": "Quando penso em ___, penso sempre em ___",
+        "spaces": 2
+      },
+      {
+        "text": "A nossa relação acabou porque ___",
+        "spaces": 1
+      },
+      {
+        "text": "Um novo estudo revolucionário provou que os ratos são capazes de ___",
+        "spaces": 1
+      },
+      {
+        "text": "Eras capaz de piratear um ___?",
+        "spaces": 1
+      },
+      {
+        "text": "Dinheiro não compra amor, mas compra ___",
+        "spaces": 1
+      },
+      {
+        "text": "No 8º dia, o Senhor criou ___",
+        "spaces": 1
+      },
+      {
+        "text": "Qual o mais crocante? ___ ou ___?",
+        "spaces": 2
+      },
+      {
+        "text": "Que som foi aquele? ___",
+        "spaces": 1
+      },
+      {
+        "text": "Quem participou na orgia do vizinho? ___",
+        "spaces": 1
+      },
+      {
+        "text": "Ela está um pouco doente. Acho que tem ___",
+        "spaces": 1
+      },
+      {
+        "text": "___ devia de ser elgal",
+        "spaces": 1
+      },
+      {
+        "text": "___ é uma boa ideia para um excelente filme de família",
+        "spaces": 1
+      },
+      {
+        "text": "___ nunca fez algo de errado",
+        "spaces": 1
+      },
+      {
+        "text": "Eles os dois fazem-me lembrar ___",
+        "spaces": 1
+      },
+      {
+        "text": "O que é que garante uma noite na cama com alguém? ___",
+        "spaces": 1
+      },
+      {
+        "text": "Já a seguir, na SporTV: o Torneio Mundial de ___",
+        "spaces": 1
+      },
+      {
+        "text": "Odeio ___",
+        "spaces": 1
+      },
+      {
+        "text": "___? É uma armadilha!",
+        "spaces": 1
+      },
+      {
+        "text": "Para sermos melhores pessoas, devemos fazer ___",
+        "spaces": 1
+      },
+      {
+        "text": "Quando eu crescer quero ser ___",
+        "spaces": 1
+      },
+      {
+        "text": "Já não faço ___ há anos",
+        "spaces": 1
+      },
+      {
+        "text": "Vou pedir ao pai natal ___",
+        "spaces": 1
+      },
+      {
+        "text": "O meu maior sonho é ___",
+        "spaces": 1
+      },
+      {
+        "text": "A grande novidade do Iphone 8 é ___",
+        "spaces": 1
+      },
+      {
+        "text": "Durante sexo, gosto de pensar em ___",
+        "spaces": 1
+      },
+      {
+        "text": "Aquele que controla ___ controla o mundo",
+        "spaces": 1
+      },
+      {
+        "text": "Ciência nunca vai explicar ___",
+        "spaces": 1
+      },
+      {
+        "text": "O que é que parou a orgia? ___",
+        "spaces": 1
+      },
+      {
+        "text": "Eu sempre dependi de ___",
+        "spaces": 1
+      },
+      {
+        "text": "Não sou capaz de sair de casa sem ___",
+        "spaces": 1
+      },
+      {
+        "text": "Armas não matam pessoas. ___, sim",
+        "spaces": 1
+      },
+      {
+        "text": "Escovo meus dentes com ___",
+        "spaces": 1
+      },
+      {
+        "text": "O familiar sabor a ___",
+        "spaces": 1
+      }
+    ],
+    "answers": [
+      {
+        "text": "Se ta na internet é verdade"
+      },
+      {
+        "text": "Suzane Von Richthofen"
+      },
+      {
+        "text": "House of Cards"
+      },
+      {
+        "text": "Aliens"
+      },
+      {
+        "text": "São Paulo"
+      },
+      {
+        "text": "Uma morte lenta e dolorosa"
+      },
+      {
+        "text": "Culpa do PT"
+      },
+      {
+        "text": "Bater com gato morto e só parar quando ele miar"
+      },
+      {
+        "text": "The Voice Brasil"
+      },
+      {
+        "text": "Rede Globo"
+      },
+      {
+        "text": "Tentar ir para Portugal para fingir ser rico"
+      },
+      {
+        "text": "Comer terra"
+      },
+      {
+        "text": "São Paulo"
+      },
+      {
+        "text": "Alemanha"
+      },
+      {
+        "text": "Transar com uma cabrita"
+      },
+      {
+        "text": "Descobrir que estupro não é um nome de um bolo"
+      },
+      {
+        "text": "Trabalho honesto é no governo"
+      },
+      {
+        "text": "Merda, mas muita Merda"
+      },
+      {
+        "text": "Sexo em família"
+      },
+      {
+        "text": "Narcos"
+      },
+      {
+        "text": "Wagner Moura"
+      },
+      {
+        "text": "Sexo, drogas e Copa"
+      },
+      {
+        "text": "Roubar aos pobres e dar para os ricos"
+      },
+      {
+        "text": "Jota Quest"
+      },
+      {
+        "text": "Uma merda mole no canto"
+      },
+      {
+        "text": "Motorola"
+      },
+      {
+        "text": "Inês Brasil"
+      },
+      {
+        "text": "Praias"
+      },
+      {
+        "text": "Indios"
+      },
+      {
+        "text": "Pablo Escobar"
+      },
+      {
+        "text": "Funk"
+      },
+      {
+        "text": "Bater na mulher porque ela não tem pila"
+      },
+      {
+        "text": "Monica"
+      },
+      {
+        "text": "Neymar"
+      },
+      {
+        "text": "Participante do BBB"
+      },
+      {
+        "text": "Sair à rua e não levar um tiro"
+      },
+      {
+        "text": "Levar um tiro"
+      },
+      {
+        "text": "Viver no Norte"
+      },
+      {
+        "text": "Primeira Guerra de memes"
+      },
+      {
+        "text": "HUE HUE HUE"
+      },
+      {
+        "text": "Memes"
+      },
+      {
+        "text": "Ficar famoso no youtube com minecraft"
+      },
+      {
+        "text": "Separar o Mar Vermelho"
+      },
+      {
+        "text": "A enorme quantidade de brasileiros no japão"
+      },
+      {
+        "text": "Sexo Oral"
+      },
+      {
+        "text": "CBF"
+      },
+      {
+        "text": "Nintendo"
+      },
+      {
+        "text": "Meu pau"
+      },
+      {
+        "text": "Igreja Universal"
+      },
+      {
+        "text": "Buffet de camarão livre por R$ 4,99"
+      },
+      {
+        "text": "Pai de família"
+      },
+      {
+        "text": "Lamber a cabeça de um rato"
+      },
+      {
+        "text": "Celso Portioli"
+      },
+      {
+        "text": "Axé Music"
+      },
+      {
+        "text": "Coroinhas"
+      },
+      {
+        "text": "Giovana"
+      },
+      {
+        "text": "Motosserras"
+      },
+      {
+        "text": "PM do Rio"
+      },
+      {
+        "text": "Lágrimas de crianças"
+      },
+      {
+        "text": "Argentino"
+      },
+      {
+        "text": "Rei Pelé"
+      },
+      {
+        "text": "Marcelo Augusto"
+      },
+      {
+        "text": "Seu animal imundo"
+      },
+      {
+        "text": "Miriam vende Mary Kay"
+      },
+      {
+        "text": "Para nossa alegria"
+      },
+      {
+        "text": "Seiya de Pégaso"
+      },
+      {
+        "text": "Cinco reais"
+      },
+      {
+        "text": "Rolezeira. "
+      },
+      {
+        "text": "Alexandre Frota"
+      },
+      {
+        "text": "Depender do SUS"
+      },
+      {
+        "text": "Gritar o nome de seu gato na hora da transa"
+      },
+      {
+        "text": "Fofão"
+      },
+      {
+        "text": "Bruna Surfistinha"
+      },
+      {
+        "text": "Judeus"
+      },
+      {
+        "text": "Nazis"
+      },
+      {
+        "text": "Muro do Trump"
+      },
+      {
+        "text": "Mais ricos que um Grego"
+      },
+      {
+        "text": "Cheirar pus de macaco"
+      },
+      {
+        "text": "Beliscar azulejo"
+      },
+      {
+        "text": "Perereca suicida. "
+      },
+      {
+        "text": "Um virjão flatulento"
+      },
+      {
+        "text": "Xingar a sogra"
+      },
+      {
+        "text": "Funk proibidão"
+      },
+      {
+        "text": "Boneca insuflável"
+      },
+      {
+        "text": "Bicha muda"
+      },
+      {
+        "text": "Minha vida sexual"
+      },
+      {
+        "text": "Peidar no elevador. "
+      },
+      {
+        "text": "Tatuar um pênis nas costas"
+      },
+      {
+        "text": "Sair mijando pelo cu"
+      },
+      {
+        "text": "Morte cerebral pós-sexo"
+      },
+      {
+        "text": "Arroz"
+      },
+      {
+        "text": "Sapos gays"
+      },
+      {
+        "text": "Uma Fleshlight"
+      },
+      {
+        "text": "Humor negro"
+      },
+      {
+        "text": "Taxistas"
+      },
+      {
+        "text": "Café"
+      },
+      {
+        "text": "Jessie Rogers"
+      },
+      {
+        "text": "A série Super Campeões"
+      },
+      {
+        "text": "Uma porta"
+      },
+      {
+        "text": "Uma sandes de esporra"
+      },
+      {
+        "text": "Um lápis"
+      },
+      {
+        "text": "Uma calculadora com Pacman"
+      },
+      {
+        "text": "Um lenço de papel sujo"
+      },
+      {
+        "text": "Liberais"
+      },
+      {
+        "text": "Testemunha de Jeová"
+      },
+      {
+        "text": "Sabor refrescante da Coca-Cola"
+      },
+      {
+        "text": "Broche zangado"
+      },
+      {
+        "text": "Os mamilos do fato do Batman"
+      },
+      {
+        "text": "Lactação masculina"
+      },
+      {
+        "text": "Amostras grátis"
+      },
+      {
+        "text": "Estrangular um cão"
+      },
+      {
+        "text": "Um amante latino"
+      },
+      {
+        "text": "Um amante ibérico"
+      },
+      {
+        "text": "O gigantesco par de bolas do Pai Natal"
+      },
+      {
+        "text": "Sonhos eróticos com o Papa Francisco"
+      },
+      {
+        "text": "Dançar Kizomba"
+      },
+      {
+        "text": "Perna amputada da minha avó"
+      },
+      {
+        "text": "Um padre"
+      },
+      {
+        "text": "Fé em Hitler"
+      },
+      {
+        "text": "Uma boa dose de anal"
+      },
+      {
+        "text": "Virgindade"
+      },
+      {
+        "text": "Autista"
+      },
+      {
+        "text": "Desisto, cartas de merda"
+      },
+      {
+        "text": "Pequenas vaginas voadoras"
+      },
+      {
+        "text": "Abusar de crianças brasileiros"
+      },
+      {
+        "text": "Câncer terminal"
+      },
+      {
+        "text": "Um negro nazi"
+      },
+      {
+        "text": "Sexo com animais em extinção"
+      },
+      {
+        "text": "Massacre escolar"
+      },
+      {
+        "text": "O meu primeiro assassinato"
+      },
+      {
+        "text": "Sexo com cadáveres,"
+      },
+      {
+        "text": "Escassez de comida"
+      },
+      {
+        "text": "Sexting"
+      },
+      {
+        "text": "Fuzilamento"
+      },
+      {
+        "text": "O apocalipse"
+      },
+      {
+        "text": "Problemas com o pai durante a infância"
+      },
+      {
+        "text": "Feijoada"
+      },
+      {
+        "text": "Queijo quente"
+      },
+      {
+        "text": "Gravidez na adolescência"
+      },
+      {
+        "text": "Roubar doces a uma criança"
+      },
+      {
+        "text": "Masturbação feminina"
+      },
+      {
+        "text": "Os meus demónios interiores"
+      },
+      {
+        "text": "Judeu com cabelo afro"
+      },
+      {
+        "text": "Fungos"
+      },
+      {
+        "text": "Lepra"
+      },
+      {
+        "text": "Seppuku"
+      },
+      {
+        "text": "Autocanibalismo"
+      },
+      {
+        "text": "Uma surpresa desagradável"
+      },
+      {
+        "text": "Ensinar um robô a amar"
+      },
+      {
+        "text": "Um raio da morte"
+      },
+      {
+        "text": "Concursos de beleza para crianças"
+      },
+      {
+        "text": "Repressão"
+      },
+      {
+        "text": "Aquecimento global"
+      },
+      {
+        "text": "Amigos que comem meu lanche todo"
+      },
+      {
+        "text": "Carne humana"
+      },
+      {
+        "text": "Piercings genitais"
+      },
+      {
+        "text": "Um homem maléfico com roupas maléficas"
+      },
+      {
+        "text": "Gandalf"
+      },
+      {
+        "text": "Dançar com uma vassoura"
+      },
+      {
+        "text": "Hipsters"
+      },
+      {
+        "text": "Guerreiros sociais"
+      },
+      {
+        "text": "Ser raptado pelo Peter Pan"
+      },
+      {
+        "text": "Boa gramática"
+      },
+      {
+        "text": "Humilhação sexual"
+      },
+      {
+        "text": "O ouro que Portugal roubou"
+      },
+      {
+        "text": "Um kit de vasectomia caseira"
+      },
+      {
+        "text": "Declarar uma jihad"
+      },
+      {
+        "text": "Assobiar nos Jogos Paraolímpicos"
+      },
+      {
+        "text": "Chicotear um escravo desobediente"
+      },
+      {
+        "text": "Vibrador de próstata"
+      },
+      {
+        "text": "O vibrador de minha mãe"
+      },
+      {
+        "text": "Tomar banho com tostadeira"
+      },
+      {
+        "text": "Supremacistas brancas que se recusam a comer os M&Ms castanhos"
+      },
+      {
+        "text": "Violar um cego para ele não saber quem foi"
+      },
+      {
+        "text": "Comer bebés com microcefalia"
+      },
+      {
+        "text": "Paralisia infantil"
+      },
+      {
+        "text": "Saber que a filha virou feminazi"
+      },
+      {
+        "text": "Porno de anões"
+      },
+      {
+        "text": "Irritar um fã de anime gordo"
+      }
+    ]
+  }
+}

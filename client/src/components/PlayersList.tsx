@@ -4,11 +4,11 @@ import RoomChair from './Atoms/RoomChair'
 import { motion, AnimatePresence } from 'framer-motion'
 interface IProps {
   players: IPlayer[]
-  leader: IPlayer | null
+  leaderId: string
   roomSize: number
 }
 
-export default function PlayersList({ players, leader, roomSize }: IProps) {
+export default function PlayersList({ players, leaderId, roomSize }: IProps) {
   // const sortedPlayers = [...players].sort((a, b) => b.score - a.score)
   const sortedPlayers = [...players].sort((a, b) => {
     if (a.isOffline && !b.isOffline) {
@@ -38,7 +38,7 @@ export default function PlayersList({ players, leader, roomSize }: IProps) {
               transition={{ type: 'spring' }}
               key={player.id}
             >
-              <RoomChair player={player} leader={leader?.id === player.id} />
+              <RoomChair player={player} leader={leaderId === player.id} />
             </motion.div>
           ))}
 

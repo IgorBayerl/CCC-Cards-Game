@@ -33,7 +33,8 @@ export default function Game() {
 
   const { currentQuestionCard } = gameState
 
-  const myStatus = gameState.players.find((p) => p.id === myId)?.status
+  const player = gameState.players.get(myId)
+  const myStatus = player?.status
 
   const handleCardClick = (card: ICard) => {
     if (myStatus !== 'pending') return
@@ -54,7 +55,7 @@ export default function Game() {
   }
 
   // const time = gameState.config.time
-  const time = gameState.config.time || 10
+  const time = gameState.config.roundTime || 10
 
   const handleConfirm = () => {
     if (selectedCards.length === gameState.currentQuestionCard?.spaces) {
@@ -73,7 +74,7 @@ export default function Game() {
 
   const selectedCardsTextArray = selectedCards.map((card) => card.text) || []
 
-  if (gameState.status === 'starting') {
+  if (gameState.roomStatus === 'starting') {
     return (
       <Layout>
         <h1 className="">{startingState}</h1>
