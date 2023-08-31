@@ -37,6 +37,7 @@ export class MyRoom extends Room<MyRoomState> {
   /// colyseus lifecycle methods
   onCreate(options: any) {
     this.setState(new MyRoomState());
+    console.log("STATE CHECK >>> 1 >>>", this.state.roomStatus);
 
     this.roomSize = this.maxClients;
 
@@ -60,6 +61,8 @@ export class MyRoom extends Room<MyRoomState> {
       client.leave(1000, "Invalid join request");
       return;
     }
+    
+    console.log("STATE CHECK >>> 2 >>>", this.state.roomStatus);
 
     console.log(result.data.username, "joined!");
     const {username, pictureUrl} = result.data;
@@ -77,6 +80,7 @@ export class MyRoom extends Room<MyRoomState> {
     if (this.state.players.size === 1) {
       this.state.leader = newPlayer.id;
     }
+    console.log("STATE CHECK >>> 3 >>>", this.state.roomStatus);
 
     // Send a message to the client with the room room:joinedRoom and the roomId
     console.log("AAAAAAAAAAAAAAAAAA Joined room", this.roomId);

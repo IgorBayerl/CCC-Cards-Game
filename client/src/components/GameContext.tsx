@@ -10,7 +10,7 @@ import {
 import { toast } from 'react-toastify'
 import { type Socket } from 'socket.io-client'
 import useSound from 'use-sound'
-import { useSocketContext } from '~/components/SocketContext'
+// import { useSocketContext } from '~/components/SocketContext'
 import { TPlayerStatus } from '~/lib/playerUtils'
 import {
   ICard,
@@ -26,7 +26,7 @@ interface IGameContextValue {
   myHand: IMyHand
   gameState: IGameState
   roomId: string
-  socket: Socket | undefined
+  // socket: Socket | undefined
   gameConfig: IGameConfig
   startingState: string
   isCurrentUserLeader: boolean
@@ -140,7 +140,7 @@ const GameContext = createContext<IGameContextValue>({
   myHand: initialHandState,
   gameState: initialGameState,
   roomId: '',
-  socket: undefined,
+  // socket: undefined,
   gameConfig: defaultGameConfig,
   startingState: '',
   isCurrentUserLeader: false,
@@ -159,7 +159,7 @@ const useGameContext = () => useContext(GameContext)
 const client = new Client('ws://localhost:2567')
 
 const GameProvider: React.FC<IGameProviderProps> = ({ children }) => {
-  const { socket } = useSocketContext()
+  // const { socket } = useSocketContext()
   const [gameState, setGameState] = useState(initialGameState)
   const [startingState, setStartingState] = useState('')
   const [myHand, setMyHand] = useState<IMyHand>(initialHandState)
@@ -236,7 +236,7 @@ const GameProvider: React.FC<IGameProviderProps> = ({ children }) => {
       room.onMessage('room:joinedRoom', (roomId: string) => {
         console.log('a room:joinedRoom', roomId)
         // setRoomId(roomId)
-        localStorage.setItem('oldSocketId', socket?.id || '')
+        localStorage.setItem('oldSocketId', roomId || '')
       })
 
       room.onStateChange(handleChangeState)
@@ -245,15 +245,16 @@ const GameProvider: React.FC<IGameProviderProps> = ({ children }) => {
     }
   }, [room])
 
-  useEffect(() => {
-    if (!socket || !gameState.leader) return
-    setIsCurrentUserLeader(gameState.leader === socket.id)
-    setIsCurrentUserJudge(gameState.judge === socket.id)
-  }, [socket, gameState])
+  // useEffect(() => {
+  //   if (!socket || !gameState.leader) return
+  //   setIsCurrentUserLeader(gameState.leader === socket.id)
+  //   setIsCurrentUserJudge(gameState.judge === socket.id)
+  // }, [socket, gameState])
 
   const handleChangeState = (newState: IGameState) => {
     console.log('game:updateState', newState.config)
 
+    console.log('>>>ROOM STATUS: ', newState.roomStatus)
     const newPath = statusToUrl[newState.roomStatus]
     if (newPath && router.pathname !== newPath) {
       void playSound(newPath)
@@ -348,11 +349,11 @@ const GameProvider: React.FC<IGameProviderProps> = ({ children }) => {
   // Player Actions
   const playerSelectCards = (cards: ICardAnswer[]) => {
     // Ensure that the `socket` is connected before emitting the event.
-    if (!socket) return
+    // if (!socket) return
 
     // Emit the event to the server.
     console.log('game:playerSelection', cards)
-    socket.emit('game:playerSelection', cards)
+    // socket.emit('game:playerSelection', cards)
   }
 
   const gameConfig = gameState.config
@@ -363,7 +364,7 @@ const GameProvider: React.FC<IGameProviderProps> = ({ children }) => {
     myHand,
     gameState,
     roomId,
-    socket,
+    // socket,
     gameConfig,
     startingState,
     isCurrentUserLeader: gameState.leader === myId,

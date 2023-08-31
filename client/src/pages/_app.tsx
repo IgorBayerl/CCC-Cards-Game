@@ -1,6 +1,6 @@
 import { type AppType } from 'next/dist/shared/lib/utils'
 import { ToastContainer } from 'react-toastify'
-import { SocketProvider } from '~/components/SocketContext'
+// import { SocketProvider } from '~/components/SocketContext'
 import { GameProvider } from '~/components/GameContext'
 
 import Head from 'next/head'
@@ -80,13 +80,13 @@ const MyApp: AppType = ({ Component, pageProps }) => {
       </Head>
       <ToastContainer />
       <QueryClientProvider client={queryClient}>
-        <SocketProvider url={url}>
+        {/* <SocketProvider url={url}> */}
           <AudioProvider>
             <GameProvider>
               <Component {...pageProps} />
             </GameProvider>
           </AudioProvider>
-        </SocketProvider>
+        {/* </SocketProvider> */}
         {/* <ReactQueryDevtools /> */}
       </QueryClientProvider>
     </>
