@@ -5,7 +5,7 @@ import {PlayerSchema} from "./Player";
 import {RoundSchema} from "./Round";
 
 
-type RoomStatus =
+export type RoomStatus =
   | "waiting"
   | "starting"
   | "playing"

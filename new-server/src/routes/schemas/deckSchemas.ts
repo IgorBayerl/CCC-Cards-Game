@@ -29,6 +29,7 @@ export const DeckFiltersSchema = z.object({
     }),
   ),
   language: z.array(z.string()),
+  title: z.string().optional(),
 });
 
 export const QuestionSchema = z.object({

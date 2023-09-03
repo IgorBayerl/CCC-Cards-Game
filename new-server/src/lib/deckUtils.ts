@@ -225,24 +225,35 @@ export const getRandomAnswerCardsFromDecks = async (
  * const decksWithCounts = await getDecksWithCardCounts(options);
  */
 export const getDecksWithCardCounts = async (options: TDeckFilters) => {
-  const {darknessLevel, language} = options;
+  const {darknessLevel, language, title} = options;
 
-  // Find decks matching filters for darknessLevel and language
+  // Modify the 'where' clause to include an optional title filter
+  const whereClause: any = {
+    AND: [
+      {
+        darknessLevel: {
+          in: darknessLevel,
+        },
+      },
+      {
+        language: {
+          in: language,
+        },
+      },
+    ],
+  };
+
+  if (title) {
+    whereClause.AND.push({
+      title: {
+        contains: title, // or startsWith, endsWith, etc.
+      },
+    });
+  }
+
+  // Find decks matching filters
   const decks = await db.deck.findMany({
-    where: {
-      AND: [
-        {
-          darknessLevel: {
-            in: darknessLevel, // assuming darknessLevel is an array
-          },
-        },
-        {
-          language: {
-            in: language, // assuming language is an array
-          },
-        },
-      ],
-    },
+    where: whereClause, // Using the modified where clause
     select: {
       id: true,
       title: true,
@@ -252,7 +263,11 @@ export const getDecksWithCardCounts = async (options: TDeckFilters) => {
     },
   });
 
-  // Fetch the count of questions and answers for each deck
+  // Initialize summary counters
+  let totalDecks = 0;
+  let totalQuestions = 0;
+  let totalAnswers = 0;
+
   const decksWithCounts = await Promise.all(
     decks.map(async deck => {
       const questionCount = await db.question.count({
@@ -267,6 +282,11 @@ export const getDecksWithCardCounts = async (options: TDeckFilters) => {
         },
       });
 
+      // Update summary counters
+      totalDecks += 1;
+      totalQuestions += questionCount;
+      totalAnswers += answerCount;
+
       return {
         ...deck,
         questionCount,
@@ -275,7 +295,15 @@ export const getDecksWithCardCounts = async (options: TDeckFilters) => {
     }),
   );
 
-  return decksWithCounts;
+  // Return both the list of decks and the summary
+  return {
+    summary: {
+      decks: totalDecks,
+      questions: totalQuestions,
+      answers: totalAnswers,
+    },
+    decks: decksWithCounts,
+  };
 };
 
 export const getAllUniqueLanguages = async (): Promise<string[]> => {

@@ -8,10 +8,8 @@ import {
 import {ISetConfigData, setConfigData} from "./validation/handlers";
 import {IJoinRequest, onJoinOptions} from "./validation/lifecycle";
 import {ArraySchema} from "@colyseus/schema";
-import {TRoomStatus} from "../models/Room";
-import {ICardQuestion} from "../models/Deck";
-import {createEmptyRound, RoundSchema} from "./schema/Round";
-import {z} from "zod";
+import {createEmptyRound} from "./schema/Round";
+import {RoomStatus} from "./schema/MyRoomState";
 
 export class MyRoom extends Room<MyRoomState> {
   maxClients = 4;
@@ -61,7 +59,7 @@ export class MyRoom extends Room<MyRoomState> {
       client.leave(1000, "Invalid join request");
       return;
     }
-    
+
     console.log("STATE CHECK >>> 2 >>>", this.state.roomStatus);
 
     console.log(result.data.username, "joined!");
@@ -255,7 +253,7 @@ export class MyRoom extends Room<MyRoomState> {
     // }
   }
 
-  private setStatus(status: TRoomStatus) {
+  private setStatus(status: RoomStatus) {
     // reset the timer when the status changes
 
     const autoplayStatuses = ["playing", "judging", "results"];

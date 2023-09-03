@@ -6,18 +6,12 @@
     "moduleResolution": "node",
     "strict": true,
     "allowJs": true,
-    "strictNullChecks": true,
+    "strictNullChecks": false,
     "esModuleInterop": true,
     "experimentalDecorators": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "useDefineForClassFields": true,
-    "lib": ["DOM", "DOM.Iterable", "ESNext"]
+    "useDefineForClassFields": false
   },
-  "include": [
-    "src",
-    "config.ts",
-    "src/routes/schemas",
-    "../schemas/schemas/deckSchemas.ts"
-  ]
+  "include": ["src"]
 }

@@ -12,7 +12,7 @@
     "loadtest": "tsx loadtest/example.ts --room my_room --numClients 2",
     "build": "npm run clean && tsc",
     "clean": "rimraf build",
-    "test": "mocha -r tsx test/**_test.ts --exit --timeout 15000",
+    "test": "vitest",
     "start": "tsx watch src/index.ts",
     "prisma-generate": "prisma generate",
     "prisma-migrate": "prisma migrate dev --name auto",
@@ -44,8 +44,10 @@
     "prettier": "^3.0.2",
     "prisma": "^5.2.0",
     "rimraf": "^5.0.0",
+    "ts-mockito": "^2.6.1",
     "tsx": "^3.12.6",
-    "typescript": "^5.0.4"
+    "typescript": "^5.0.4",
+    "vitest": "^0.34.3"
   },
   "dependencies": {
     "@colyseus/monitor": "^0.15.0",

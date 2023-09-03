@@ -23,8 +23,8 @@ type ZodIssue = {
 /**
  * Extract detailed error messages from union type issues in Zod validation.
  *
- * @param {ZodUnionError[]} unionErrors - The list of Zod union errors.
- * @returns {string[]} - An array of error messages detailing the path and message of each issue.
+ * @param  unionErrors - The list of Zod union errors.
+ * @returns - An array of error messages detailing the path and message of each issue.
  */
 function extractUnionErrors(unionErrors: ZodUnionError[]): string[] {
   let messages: string[] = [];

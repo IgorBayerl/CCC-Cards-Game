@@ -21,11 +21,6 @@ export default config({
   },
 
   initializeExpress: app => {
-    app.use((req, res, next) => {
-      console.log(`Incoming request: ${req.method} ${req.originalUrl}`);
-      next();
-    });
-
     app.get("/hello_world", (req, res) => {
       res.send("Hello Cyber Chaos Cards!");
     });
