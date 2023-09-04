@@ -3,13 +3,13 @@ import {z} from "zod";
 
 const DeckData = z.object({
   id: z.string(),
-  name: z.string(),
-  language: z.string(),
+  title: z.string(),
   description: z.string(),
-  category: z.number(),
+  darknessLevel: z.number(),
   icon: z.string(),
-  questions: z.number(),
-  answers: z.number(),
+  language: z.string(),
+  questionCount: z.number(),
+  answerCount: z.number(),
   selected: z.boolean().optional(),
 });
 

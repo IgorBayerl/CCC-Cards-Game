@@ -1,4 +1,4 @@
-import {ZodType, ZodError} from "zod";
+import {ZodError} from "zod";
 
 type ZodUnionIssue = {
   received: any;
@@ -73,45 +73,4 @@ export default function extractErrorMessage(error: unknown): string {
   }
 
   return "An unknown error occurred";
-}
-
-type ParseResult<T> = {
-  success: boolean;
-  data?: T;
-  errorMessage?: string;
-};
-
-/**
- * Parses and validates data against a Zod schema, returning a result object.
- *
- * @param  schema - The Zod schema against which to validate the data.
- * @param  data - The data to be validated.
- * @returns  An object containing the result of the operation.
- *   - If successful, `success` will be true and `data` will contain the parsed data.
- *   - If unsuccessful, `success` will be false and `errorMessage` will contain an error message.
- *
- * @example
- * const result = parseAndHandleError(mySchema, someData);
- * if (!result.success) {
- *   console.error(result.errorMessage);
- *   return;
- * }
- * doSomething(result.data);
- *
- * @template T The type that the Zod schema should parse the data into.
- */
-export function parseAndHandleError<T>(
-  schema: ZodType<T, any, any>, // Check ZodType's generics according to your needs
-  data: unknown,
-): ParseResult<T> {
-  const result = schema.safeParse(data);
-
-  if (result.success) {
-    return {success: true, data: result.data};
-  } else {
-    // Using type assertion to tell TypeScript what `result` is in this branch
-    const errorResult = result as {success: false; error: any};
-    const errorMessage = extractErrorMessage(errorResult.error);
-    return {success: false, errorMessage};
-  }
 }

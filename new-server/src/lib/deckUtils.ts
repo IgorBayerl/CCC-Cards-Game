@@ -1,3 +1,9 @@
+import {
+  AnswerCardSchema,
+  QuestionCardSchema,
+  TAnswerCard,
+  TQuestionCard,
+} from "../rooms/schema";
 import {TDeckFilters} from "../routes/schemas/deckSchemas";
 import db from "./database";
 import extractErrorMessage from "./extractErrorMessage";
@@ -59,7 +65,7 @@ export const getDeckById = async (deckId: string) => {
 export const getRandomQuestionCardFromDecks = async (
   deckIds: string[],
   blacklistCardIds: string[],
-): Promise<{questionCard: any; remainingCount: number}> => {
+): Promise<{questionCard: TQuestionCard; remainingCount: number}> => {
   try {
     // Retrieve the list of questions that are in the specified decks but not in the blacklist
     const questions = await db.question.findMany({
@@ -83,7 +89,7 @@ export const getRandomQuestionCardFromDecks = async (
         id: true,
         text: true,
         spaces: true,
-        deckId: true,
+        // deckId: true,
         // add more fields if needed
       },
     });
@@ -115,9 +121,15 @@ export const getRandomQuestionCardFromDecks = async (
     const randomIndex = Math.floor(Math.random() * questions.length);
     const randomCard = questions[randomIndex];
 
+    // Create an instance of QuestionCardSchema and populate it with the random card's data
+    const questionCardSchema = new QuestionCardSchema();
+    questionCardSchema.id = randomCard.id;
+    questionCardSchema.text = randomCard.text;
+    questionCardSchema.spaces = randomCard.spaces;
+
     return {
-      questionCard: randomCard,
-      remainingCount: totalQuestions - 1, // Subtract one because we're taking one card
+      questionCard: questionCardSchema, // <-- returning an instance of QuestionCardSchema
+      remainingCount: totalQuestions - 1,
     };
   } catch (error) {
     const errorMessage = extractErrorMessage(error);
@@ -146,7 +158,7 @@ export const getRandomAnswerCardsFromDecks = async (
   deckIds: string[],
   blacklistCardIds: string[],
   count: number,
-): Promise<{answerCards: any[]; remainingCount: number}> => {
+): Promise<{answerCards: TAnswerCard[]; remainingCount: number}> => {
   try {
     // Retrieve the list of answers that are in the specified decks but not in the blacklist
     const answers = await db.answer.findMany({
@@ -200,8 +212,16 @@ export const getRandomAnswerCardsFromDecks = async (
       randomAnswers.push(answers.splice(randomIndex, 1)[0]);
     }
 
+    // Create an instance of AnswerCardSchema for each random answer card
+    const answerCards = randomAnswers.map(answer => {
+      const answerCardSchema = new AnswerCardSchema();
+      answerCardSchema.id = answer.id;
+      answerCardSchema.text = answer.text;
+      return answerCardSchema;
+    });
+
     return {
-      answerCards: randomAnswers,
+      answerCards: answerCards,
       remainingCount: totalAnswers - randomAnswers.length,
     };
   } catch (error) {
@@ -260,6 +280,7 @@ export const getDecksWithCardCounts = async (options: TDeckFilters) => {
       description: true,
       darknessLevel: true,
       icon: true,
+      language: true,
     },
   });
 

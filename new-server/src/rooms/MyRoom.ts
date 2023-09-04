@@ -1,32 +1,33 @@
-import {Room, Client} from "@colyseus/core";
 import {
-  PlayerSchema,
-  DeckSchema,
-  MyRoomState,
-  QuestionCardSchema,
-} from "./schema";
+  MessageType,
+  GameMessagePayloads,
+  AdmCommandPayload,
+  JudgeDecisionPayload,
+  PlayerSelectionPayload,
+} from "../../shared/types";
+import {Room, Client} from "@colyseus/core";
+import {PlayerSchema, DeckSchema, MyRoomState, QuestionCardSchema, AnswerCardSchema} from "./schema";
 import {ISetConfigData, setConfigData} from "./validation/handlers";
 import {IJoinRequest, onJoinOptions} from "./validation/lifecycle";
 import {ArraySchema} from "@colyseus/schema";
 import {createEmptyRound} from "./schema/Round";
 import {RoomStatus} from "./schema/MyRoomState";
+import extractErrorMessage, {parseAndHandleError} from "../lib/extractErrorMessage";
+import {getRandomAnswerCardsFromDecks, getRandomQuestionCardFromDecks} from "../lib/deckUtils";
+
+type HandlerFunction<T> = (client: Client, data: T) => void;
 
 export class MyRoom extends Room<MyRoomState> {
   maxClients = 4;
 
-  private handlers: {[key: string]: (client: Client, data?: any) => void} = {
-    "game:admCommand": this.handleAdmCommand,
-    "game:setConfig": this.handleSetConfig,
-    "game:playerSelection": this.handlePlayerSelection,
-    "game:requestNextCard": this.handleRequestNextCard,
-    "game:seeAllRoundAnswers": this.handleSeeAllRoundAnswers,
-    "game:judgeDecision": this.handleJudgeDecision,
-  };
+  private handlers: {
+    [key in MessageType]?: HandlerFunction<GameMessagePayloads[key]>;
+  } = {};
 
   private admCommandsHandlers: {
     [key: string]: (client: Client, data?: any) => void;
   } = {
-    start: this.handleStartGame,
+    start: this.handleStartGame.bind(this),
     // 'next_round': this.handleNextRound,
     // 'start-new-game': this.handleStartNewGame,
     // 'back-to-lobby': this.handleBackToLobby
@@ -39,18 +40,26 @@ export class MyRoom extends Room<MyRoomState> {
 
     this.roomSize = this.maxClients;
 
-    // Bind the handler functions to this context and set up an onMessage callback for each handler
-    Object.keys(this.handlers).forEach(key => {
-      const boundHandler = this.handlers[key].bind(this);
-      this.handlers[key] = boundHandler;
-      this.onMessage(key, boundHandler);
-    });
+    // Define and bind the handler methods here
+    this.handlers[MessageType.ADM_COMMAND] = this.handleAdmCommand.bind(this);
+    this.handlers[MessageType.SET_CONFIG] = this.handleSetConfig.bind(this);
+    this.handlers[MessageType.PLAYER_SELECTION] = this.handlePlayerSelection.bind(this);
+    this.handlers[MessageType.REQUEST_NEXT_CARD] = this.handleRequestNextCard.bind(this);
+    this.handlers[MessageType.SEE_ALL_ROUND_ANSWERS] = this.handleSeeAllRoundAnswers.bind(this);
+    this.handlers[MessageType.JUDGE_DECISION] = this.handleJudgeDecision.bind(this);
 
-    // BIND ADM COMMAND HANDLERS
-    Object.keys(this.admCommandsHandlers).forEach(key => {
-      const boundHandler = this.admCommandsHandlers[key].bind(this);
-      this.admCommandsHandlers[key] = boundHandler;
-    });
+    // Now, setup the onMessage callback for each handler
+    for (const key in this.handlers) {
+      const handler = this.handlers[key as MessageType];
+      if (handler) {
+        this.onMessage(key as MessageType, (client, data) => handler(client, data));
+      }
+    }
+    // For admCommandsHandlers
+    for (const key in this.admCommandsHandlers) {
+      const handler = this.admCommandsHandlers[key];
+      this.onMessage(key, handler); // if onMessage can handle these commands as well
+    }
   }
 
   onJoin(client: Client, options?: IJoinRequest, auth?: any) {
@@ -155,7 +164,8 @@ export class MyRoom extends Room<MyRoomState> {
     client.send("game:error", message);
   }
 
-  private handleAdmCommand(client: Client, command: string) {
+  private handleAdmCommand(client: Client, data: AdmCommandPayload) {
+    const {command} = data;
     console.log("Adm command", command);
     //validate if the client is the room leader
     const isLeader = this.state.leader === client.sessionId;
@@ -170,7 +180,7 @@ export class MyRoom extends Room<MyRoomState> {
     handler(client);
   }
 
-  private handleStartGame(client: Client) {
+  private async handleStartGame(client: Client) {
     console.log(">> starting game...");
 
     if (this.state.config.availableDecks.length < 1) {
@@ -184,22 +194,18 @@ export class MyRoom extends Room<MyRoomState> {
 
     this.selectJudge();
 
-    this.populateCards();
+    await this.selectQuestionCard();
 
-    // this.shuffleCards()
+    await this.dealAnswerCardsForEveryone();
 
-    // this.selectQuestionCard()
-
-    // this.dealAnswerCardsForEveryone()
     const judge = this.state.judge;
     const question = this.state.currentQuestionCard;
     if (judge && question) {
       this.addRound(question, judge);
     }
     // Set the player statuses to default
-    for (const [id, playerData] of this.state.players) {
-      playerData.status =
-        playerData.id === this.state.judge ? "waiting" : "pending";
+    for (const [_id, playerData] of this.state.players) {
+      playerData.status = playerData.id === this.state.judge ? "waiting" : "pending";
     }
 
     this.setStatus("playing");
@@ -234,23 +240,76 @@ export class MyRoom extends Room<MyRoomState> {
   }
 
   /**
-   * Populates the available cards with the selected decks.
+   * Selects a random question card from the available decks.
    */
-  private populateCards(): void {
-    // BUG: Fix this populateCards
-    console.log(">>> populating the available cards...");
-    this.startingStatusUpdate(">>> populating the available cards...");
-    // this.availableQuestionCards = []
-    // this.availableAnswerCards = []
-    // for (const deck of this.decks) {
-    //   const deckData = getDeckById(deck.id)
-    //   if (!deckData) {
-    //     console.error(`Deck with id ${deck.id} not found.`)
-    //     continue
-    //   }
-    //   this.availableQuestionCards.push(...deckData.cards.questions)
-    //   this.availableAnswerCards.push(...deckData.cards.answers)
-    // }
+  private async selectQuestionCard(): Promise<void> {
+    // will call the deck utils to select a random question card
+
+    const deckIds = this.state.config.availableDecks.map(deck => deck.id);
+    const blacklistCardIds = this.state.usedQuestionCards.map(card => card.id);
+
+    const questionCard = await getRandomQuestionCardFromDecks(deckIds, blacklistCardIds);
+
+    if (!questionCard.questionCard) {
+      console.error(">>> no question card found");
+      this.startingStatusUpdate(">>> no question card found");
+      return;
+    }
+
+    this.state.currentQuestionCard = questionCard.questionCard;
+  }
+
+  private get playersCount(): number {
+    return this.state.players.size;
+  }
+
+  private async dealAnswerCardsForEveryone(): Promise<void> {
+    console.log(">>> deal cards to players: START");
+    const players = Array.from(this.state.players.values());
+
+    // here is how many players are in the room
+    const playersCount = this.playersCount;
+
+    const MINIMUM_CARDS_PER_PLAYER = 5;
+    // how many cards the player should have in their hands
+    const shouldHaveCardsCount = MINIMUM_CARDS_PER_PLAYER + this.state.currentQuestionCard.spaces;
+
+    //then count how many cards are in the players hands so we dont request more than we need
+    const cardsInHandsCount = players.reduce((acc, player) => {
+      return acc + player.cards.length;
+    }, 0);
+
+    // now calculate how many cards we need to request, after the players have selected the cards they need to stay with at least 5 cards in their hands
+    const cardsToRequestCount = playersCount * (shouldHaveCardsCount - cardsInHandsCount);
+
+    const decksIds = this.state.config.availableDecks.map(deck => deck.id);
+    const blacklistCardIds = this.state.usedAnswerCards.map(card => card.id);
+
+    const result = await getRandomAnswerCardsFromDecks(decksIds, blacklistCardIds, cardsToRequestCount);
+
+    if (!result.answerCards) {
+      console.error(">>> no answer cards found");
+      this.startingStatusUpdate(">>> no answer cards found");
+      return;
+    }
+
+    // now we need to deal the cards to the players
+    // we will do this by looping through the players and giving them the cards they need
+    players.forEach(player => {
+      // how many cards the player needs to have in their hands
+      const cardsNeededCount = shouldHaveCardsCount - player.cards.length;
+
+      // now we need to get the cards from the result
+      const cardsToGive = result.answerCards.splice(0, cardsNeededCount);
+
+      // now we need to add the cards to the player
+      player.cards.push(...cardsToGive);
+    });
+
+    // now we need to add the cards to the used cards list
+    this.state.usedAnswerCards.push(...result.answerCards);
+
+    console.log(">>> deal cards to players: END");
   }
 
   private setStatus(status: RoomStatus) {
@@ -278,45 +337,53 @@ export class MyRoom extends Room<MyRoomState> {
   }
 
   private handleSetConfig(client: Client, data: any) {
-    // Only allow the room leader to set the configurations
-    const isLeader = this.state.leader === client.sessionId;
-    if (!isLeader) return;
-
-    console.log("data", data);
-
-    // Validate
-    const result = setConfigData.safeParse(data);
-    if (!result.success) {
-      // @ts-ignore
-      console.log(">>>>", result.error);
-      // const errorMessage = result.error.issues.map((issue) => issue.message).join(', ');
-      const errorMessage = "Invalid config data";
-      this.throwError(client, `Invalid config data: ${errorMessage}`);
+    // Exit early if the client is not the room leader
+    if (this.state.leader !== client.sessionId) {
       return;
     }
 
-    this.roomSize = result.data.roomSize || this.roomSize;
-    console.log("this.roomSize", result.data);
-    this.state.config.scoreToWin =
-      result.data.scoreToWin || this.state.config.scoreToWin;
-    this.state.config.roundTime =
-      result.data.roundTime || this.state.config.roundTime;
+    // Validate the incoming data using the Zod schema
+    const validationResult = parseAndHandleError(setConfigData, data);
 
-    // BUG: Try to improve this
-    // this.state.config.availableDecks = result.data.availableDecks || this.state.config.availableDecks;
+    // Handle validation failure
+    if (!validationResult.success) {
+      this.throwError(client, `Invalid config data: ${validationResult.errorMessage}`);
+      return;
+    }
+
+    // Update the room configurations
+    this.updateRoomConfig(validationResult.data);
+
+    // Update available decks if provided
     if (data.availableDecks) {
-      const decksSchema = new ArraySchema<DeckSchema>();
-      data.availableDecks.forEach((deck: any) => {
-        const deckSchema = new DeckSchema();
-        Object.assign(deckSchema, deck);
-        decksSchema.push(deckSchema);
-      });
-      this.state.config.availableDecks = decksSchema;
+      this.updateAvailableDecks(data.availableDecks);
     }
   }
 
-  private handlePlayerSelection(client: Client, selectedCards: any) {}
+  // Helper method to update room configurations
+  private updateRoomConfig(configData: ISetConfigData) {
+    const {roomSize, scoreToWin, roundTime} = configData;
+
+    this.roomSize = roomSize ?? this.roomSize;
+    this.state.config.scoreToWin = scoreToWin ?? this.state.config.scoreToWin;
+    this.state.config.roundTime = roundTime ?? this.state.config.roundTime;
+  }
+
+  // Helper method to update available decks
+  private updateAvailableDecks(availableDecks: any[]) {
+    const decksSchema = new ArraySchema<DeckSchema>();
+
+    availableDecks.forEach(deck => {
+      const deckSchema = new DeckSchema();
+      Object.assign(deckSchema, deck);
+      decksSchema.push(deckSchema);
+    });
+
+    this.state.config.availableDecks = decksSchema;
+  }
+
+  private handlePlayerSelection(client: Client, selectedCards: PlayerSelectionPayload) {}
   private handleRequestNextCard(client: Client) {}
   private handleSeeAllRoundAnswers(client: Client) {}
-  private handleJudgeDecision(client: Client, winningPlayerId: string) {}
+  private handleJudgeDecision(client: Client, data: JudgeDecisionPayload) {}
 }

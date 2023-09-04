@@ -1,6 +1,7 @@
 import {Schema, type} from "@colyseus/schema";
 
 export class CardSchema extends Schema {
+  @type("string") id: string = "";
   @type("string") text: string = "";
 }
 

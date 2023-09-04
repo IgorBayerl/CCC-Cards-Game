@@ -1,33 +1,33 @@
-import type { AxiosRequestConfig } from 'axios'
-import type { IDeckConfigScreen } from '~/models/Deck'
+import extractErrorMessage from '~/lib/extractErrorMessage'
+import {
+  DeckFilters,
+  FetchDeckResponse,
+  FetchLanguages,
+} from '~/models/ApiRequests'
 import api from '~/services/api'
 
-interface IDecksQuery {
-  language?: string
-  category?: number
+export async function fetchDecks(
+  filters: DeckFilters
+): Promise<FetchDeckResponse> {
+  try {
+    const response = await api.post('/decks', filters)
+    return response.data
+  } catch (error) {
+    const errorMessage = extractErrorMessage(error)
+    throw new Error(
+      `An error occurred while fetching the deck: ${errorMessage}`
+    )
+  }
 }
 
-type Params = {
-  language?: string
-  category?: number
-}
-
-export const getDecks = async (
-  query: IDecksQuery
-): Promise<Array<IDeckConfigScreen>> => {
-  const { language, category } = query
-  const params: Params = {}
-
-  if (language !== undefined) {
-    params['language'] = language
+export async function fetchLanguages(): Promise<FetchLanguages> {
+  try {
+    const response = await api.get('/decks/languages')
+    return response.data.data
+  } catch (error) {
+    const errorMessage = extractErrorMessage(error)
+    throw new Error(
+      `An error occurred while fetching languages: ${errorMessage}`
+    )
   }
-
-  if (category !== undefined) {
-    params['category'] = category
-  }
-
-  const response = await api.get<Array<IDeckConfigScreen>>('/decks', {
-    params,
-  })
-  return response.data
 }

@@ -14,14 +14,13 @@ import useTranslation from 'next-translate/useTranslation'
 
 export default function Game() {
   const {
-    myHand,
     isCurrentUserJudge,
     gameState,
     startingState,
     myId,
     playerSelectCards,
   } = useGameContext()
-  const myCards = myHand.cards
+  const myCards = gameState.players.get(myId)?.cards || []
 
   const { t } = useTranslation('game')
 

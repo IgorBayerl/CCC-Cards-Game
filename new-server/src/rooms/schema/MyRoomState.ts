@@ -29,10 +29,8 @@ export class MyRoomState extends Schema {
   @type(QuestionCardSchema) currentQuestionCard = new QuestionCardSchema();
   @type("boolean") isQuestionCardSelected = false;
 
-  @type([QuestionCardSchema]) usedQuestionCards =
-    new ArraySchema<QuestionCardSchema>();
-  @type([AnswerCardSchema]) usedAnswerCards =
-    new ArraySchema<AnswerCardSchema>();
+  @type([QuestionCardSchema]) usedQuestionCards = new ArraySchema<QuestionCardSchema>();
+  @type([AnswerCardSchema]) usedAnswerCards = new ArraySchema<AnswerCardSchema>();
 
   @type("string") leader = "";
 }

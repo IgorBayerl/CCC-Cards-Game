@@ -11,7 +11,7 @@ export class RoundSchema extends Schema {
   @type({map: AnswerCardArray}) answerCards = new MapSchema<AnswerCardArray>();
   @type("string") judge = "";
   @type("string") winner = "";
-  @type("number") currentJudgedPlayerIndex: number = 0;
+  @type("number") judgeId: number = 0;
 }
 
 export type TRound = typeof RoundSchema.prototype;

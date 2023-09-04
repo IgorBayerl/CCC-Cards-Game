@@ -1,8 +1,13 @@
 {
   "cSpell.words": [
     "colyseus",
-    "loadtest"
+    "loadtest",
+    "predev",
+    "prestart"
   ],
-  "todo-tree.tree.showBadges": true,
-  "todo-tree.tree.showCountsInTree": true
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnPaste": false,
+  "editor.formatOnType": false,
+  "editor.formatOnSave": true,
+  "files.autoSave": "onFocusChange"
 }
