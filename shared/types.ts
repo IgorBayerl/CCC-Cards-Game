@@ -1,7 +1,12 @@
 // shared/types.ts
 
 export enum MessageType {
-  ADM_COMMAND = "game:admCommand",
+  ADMIN_START = "admin:start",
+  ADMIN_NEXT_ROUND = "admin:next-round",
+  ADMIN_END = "admin:end",
+  ADMIN_START_NEW_GAME = "admin:start-new-game",
+  ADMIN_BACK_TO_LOBBY = "admin:back-to-lobby",
+  ADMIN_KICK_PLAYER = "admin:kick-player",
   SET_CONFIG = "game:setConfig",
   PLAYER_SELECTION = "game:playerSelection",
   REQUEST_NEXT_CARD = "game:requestNextCard",
@@ -9,57 +14,51 @@ export enum MessageType {
   JUDGE_DECISION = "game:judgeDecision",
 }
 
-export type AdmCommand =
-  | 'start'
-  | 'next-round'
-  | 'end'
-  | 'start-new-game'
-  | 'back-to-lobby'
 
-// BUG define those types correctly
-export type AdmCommandPayload = { 
-  command: AdmCommand,
-  value: any 
+export type SetConfigPayload = RoomConfig;
+
+export type PlayerSelectionPayload = {
+  selection: string[];
 };
 
-export type SetConfigPayload = RoomConfig
-
-export type PlayerSelectionPayload = { 
-  selection: string[],
+export type RequestNextCardPayload = {
+  playerId: string;
 };
 
-export type RequestNextCardPayload = { 
-  playerId: string 
+export type SeeAllRoundAnswersPayload = {
+  playerId: string;
 };
 
-export type SeeAllRoundAnswersPayload = { 
-  playerId: string 
+export type JudgeDecisionPayload = {
+  playerId: string;
+  decision: boolean;
 };
 
-export type JudgeDecisionPayload = { 
-  playerId: string, 
-  decision: boolean 
+export type AdminKickPlayerPayload = {
+  playerId: string;
 };
 
 export type GameMessagePayloads = {
-  [MessageType.ADM_COMMAND]: AdmCommandPayload;
+  [MessageType.ADMIN_START]: null;
+  [MessageType.ADMIN_NEXT_ROUND]: null;
+  [MessageType.ADMIN_END]: null;
+  [MessageType.ADMIN_START_NEW_GAME]: null;
+  [MessageType.ADMIN_BACK_TO_LOBBY]: null;
+  [MessageType.ADMIN_KICK_PLAYER]: AdminKickPlayerPayload;
   [MessageType.SET_CONFIG]: SetConfigPayload;
   [MessageType.PLAYER_SELECTION]: PlayerSelectionPayload;
   [MessageType.REQUEST_NEXT_CARD]: RequestNextCardPayload;
   [MessageType.SEE_ALL_ROUND_ANSWERS]: SeeAllRoundAnswersPayload;
   [MessageType.JUDGE_DECISION]: JudgeDecisionPayload;
-}
-
+};
 
 
 /// State types
-// Room.ts
 
 export type RoomStatus = "waiting" | "starting" | "playing" | "judging" | "results" | "finished";
 
 export interface MyRoomState {
   config: RoomConfig;
-  // players: Record<string, Player>;
   players: Map<string, Player>;
   rounds: Round[];
   roomStatus: RoomStatus;
@@ -79,7 +78,6 @@ export interface RoomConfig {
   roomSize: number;
 }
 
-
 // Card.ts
 
 export interface Card {
@@ -92,7 +90,6 @@ export interface AnswerCard extends Card {}
 export interface QuestionCard extends Card {
   spaces: number;
 }
-
 
 // Deck.ts
 
@@ -108,7 +105,6 @@ export interface Deck {
   selected: boolean;
 }
 
-
 // Player.ts
 
 export type PlayerStatus = "judge" | "pending" | "done" | "none" | "winner" | "waiting";
@@ -122,7 +118,6 @@ export interface Player {
   hasSubmittedCards: boolean;
   cards: AnswerCard[];
 }
-
 
 // Round.ts
 

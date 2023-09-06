@@ -1,0 +1,13 @@
+{
+  "name": "scripts",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "sync-shared": "node scripts/syncShared.js"
+  },
+  "dependencies": {
+    "chokidar": "^3.5.3",
+    "fs-extra": "^11.1.1"
+  }
+}

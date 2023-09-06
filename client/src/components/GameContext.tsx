@@ -17,7 +17,6 @@ import { useAudio } from './AudioContext'
 
 import {
   type SetConfigPayload,
-  type AdmCommandPayload,
   type MyRoomState,
   type Player,
   type QuestionCard,
@@ -41,7 +40,7 @@ interface IGameContextValue {
   createRoom: (username: string, pictureUrl: string) => void
   leaveRoom: () => void
   setConfig: (config: RoomConfig) => void
-  admCommand: (command: AdmCommandPayload) => void
+  admCommand: (command: AdmCommandPayloads[AdmCommandType]) => void
   playerSelectCards: (cards: AnswerCard[]) => void
 }
 
@@ -109,7 +108,7 @@ const GameProvider: React.FC<IGameProviderProps> = ({ children }) => {
   const [startingState, setStartingState] = useState('')
   const { isMuted } = useAudio()
 
-  const [room, setRoom] = useState<Room | null>(null)
+  const [room, setRoom] = useState<Room<MyRoomState> | null>(null)
 
   const myId = room?.sessionId || ''
   const roomId = room?.id || ''
@@ -235,10 +234,11 @@ const GameProvider: React.FC<IGameProviderProps> = ({ children }) => {
     sendToRoom(MessageType.SET_CONFIG, config)
   }
 
-  const admCommand = (command: AdmCommandPayload) => {
+  const admCommand = (command: AdmCommandPayloads[AdmCommandType]) => {
     // Send an adm command message to the server -> example command: "start" || "kick" || "start-new-game"
     console.log('sending adm command:', command)
-    sendToRoom(MessageType.ADM_COMMAND, command)
+
+    sendToRoom(MessageType.ADMIN_START, null)
   }
 
   // Player Actions
@@ -268,6 +268,8 @@ const GameProvider: React.FC<IGameProviderProps> = ({ children }) => {
       room.onMessage('game:notify', handleNotify)
 
       room.onStateChange(handleChangeState)
+
+      room.onLeave(handleDisconnect)
 
       return () => room && room.removeAllListeners()
     }

@@ -1,10 +1,11 @@
 import {
   MessageType,
   GameMessagePayloads,
-  AdmCommandPayload,
   JudgeDecisionPayload,
   PlayerSelectionPayload,
+  AdminKickPlayerPayload,
 } from "../../shared/types";
+
 import {Room, Client} from "@colyseus/core";
 import {PlayerSchema, DeckSchema, MyRoomState, QuestionCardSchema, AnswerCardSchema} from "./schema";
 import {ISetConfigData, setConfigData} from "./validation/handlers";
@@ -14,51 +15,50 @@ import {createEmptyRound} from "./schema/Round";
 import {RoomStatus} from "./schema/MyRoomState";
 import extractErrorMessage, {parseAndHandleError} from "../lib/extractErrorMessage";
 import {getRandomAnswerCardsFromDecks, getRandomQuestionCardFromDecks} from "../lib/deckUtils";
+import {AdminOnly} from "../lib/utils";
 
 type HandlerFunction<T> = (client: Client, data: T) => void;
+
+type MessageHandlers = {
+  [key in MessageType]: HandlerFunction<GameMessagePayloads[key]>;
+};
 
 export class MyRoom extends Room<MyRoomState> {
   maxClients = 4;
 
-  private handlers: {
-    [key in MessageType]?: HandlerFunction<GameMessagePayloads[key]>;
-  } = {};
-
-  private admCommandsHandlers: {
-    [key: string]: (client: Client, data?: any) => void;
-  } = {
-    start: this.handleStartGame.bind(this),
-    // 'next_round': this.handleNextRound,
-    // 'start-new-game': this.handleStartNewGame,
-    // 'back-to-lobby': this.handleBackToLobby
+  private handlers: MessageHandlers = {
+    [MessageType.ADMIN_START]: this.handleStartGame.bind(this),
+    [MessageType.ADMIN_NEXT_ROUND]: this.handleNextRound.bind(this),
+    [MessageType.ADMIN_END]: this.handleEndGame.bind(this),
+    [MessageType.ADMIN_START_NEW_GAME]: this.handleStartNewGame.bind(this),
+    [MessageType.ADMIN_BACK_TO_LOBBY]: this.handleBackToLobby.bind(this),
+    [MessageType.ADMIN_KICK_PLAYER]: this.handleAdmKickPlayer.bind(this),
+    [MessageType.SET_CONFIG]: this.handleSetConfig.bind(this),
+    [MessageType.PLAYER_SELECTION]: this.handlePlayerSelection.bind(this),
+    [MessageType.REQUEST_NEXT_CARD]: this.handleRequestNextCard.bind(this),
+    [MessageType.SEE_ALL_ROUND_ANSWERS]: this.handleSeeAllRoundAnswers.bind(this),
+    [MessageType.JUDGE_DECISION]: this.handleJudgeDecision.bind(this),
   };
 
-  /// colyseus lifecycle methods
+  private bindHandlerToMessage<T extends MessageType>(key: T) {
+    const specificHandler = this.handlers[key];
+    this.onMessage(key, specificHandler);
+  }
+
+  public isAdmin(client: Client) {
+    console.log("STATE CHECK >>> 4 >>>");
+    return client.sessionId === this.state.leader;
+  }
+
   onCreate(options: any) {
     this.setState(new MyRoomState());
     console.log("STATE CHECK >>> 1 >>>", this.state.roomStatus);
 
     this.roomSize = this.maxClients;
 
-    // Define and bind the handler methods here
-    this.handlers[MessageType.ADM_COMMAND] = this.handleAdmCommand.bind(this);
-    this.handlers[MessageType.SET_CONFIG] = this.handleSetConfig.bind(this);
-    this.handlers[MessageType.PLAYER_SELECTION] = this.handlePlayerSelection.bind(this);
-    this.handlers[MessageType.REQUEST_NEXT_CARD] = this.handleRequestNextCard.bind(this);
-    this.handlers[MessageType.SEE_ALL_ROUND_ANSWERS] = this.handleSeeAllRoundAnswers.bind(this);
-    this.handlers[MessageType.JUDGE_DECISION] = this.handleJudgeDecision.bind(this);
-
-    // Now, setup the onMessage callback for each handler
-    for (const key in this.handlers) {
-      const handler = this.handlers[key as MessageType];
-      if (handler) {
-        this.onMessage(key as MessageType, (client, data) => handler(client, data));
-      }
-    }
-    // For admCommandsHandlers
-    for (const key in this.admCommandsHandlers) {
-      const handler = this.admCommandsHandlers[key];
-      this.onMessage(key, handler); // if onMessage can handle these commands as well
+    // Bind handlers to message types
+    for (const key in MessageType) {
+      this.bindHandlerToMessage(MessageType[key as keyof typeof MessageType]);
     }
   }
 
@@ -164,22 +164,6 @@ export class MyRoom extends Room<MyRoomState> {
     client.send("game:error", message);
   }
 
-  private handleAdmCommand(client: Client, data: AdmCommandPayload) {
-    const {command} = data;
-    console.log("Adm command", command);
-    //validate if the client is the room leader
-    const isLeader = this.state.leader === client.sessionId;
-    if (!isLeader) return;
-
-    const handler = this.admCommandsHandlers[command];
-    if (!handler) {
-      this.throwError(client, `Invalid command ${command}`);
-      return;
-    }
-
-    handler(client);
-  }
-
   private async handleStartGame(client: Client) {
     console.log(">> starting game...");
 
@@ -210,6 +194,30 @@ export class MyRoom extends Room<MyRoomState> {
 
     this.setStatus("playing");
   }
+
+  @AdminOnly
+  private handleAdmKickPlayer(client: Client, data: AdminKickPlayerPayload) {
+    //TODO: make a button on the client to kick a player
+    console.log(">> kicking player...");
+    const {playerId} = data;
+
+    const player = this.state.players.get(playerId);
+    if (!player) {
+      this.throwError(client, "Player not found");
+      return;
+    }
+
+    this.state.players.delete(playerId);
+    const targetClient = this.clients.find(c => c.sessionId === playerId);
+    if (targetClient) {
+      targetClient.leave(1000, "You were kicked by the admin");
+    }
+  }
+
+  private async handleNextRound(client: Client, _data: null) {}
+  private async handleEndGame(client: Client, _data: null) {}
+  private async handleStartNewGame(client: Client, _data: null) {}
+  private async handleBackToLobby(client: Client, _data: null) {}
 
   private addRound(questionCard?: QuestionCardSchema, judge?: string): void {
     const newRound = createEmptyRound();
@@ -333,15 +341,21 @@ export class MyRoom extends Room<MyRoomState> {
   }
 
   private startingStatusUpdate(message: string): void {
+    console.log(">>> startingStatusUpdate");
     this.broadcast("message:status", message);
   }
 
+  @AdminOnly
   private handleSetConfig(client: Client, data: any) {
+    console.log(">>> handleSetConfig");
+    console.log("client.sessionId", client.sessionId);
+    console.log("this.state.leader", this.state.leader);
     // Exit early if the client is not the room leader
     if (this.state.leader !== client.sessionId) {
       return;
     }
 
+    console.log(">>> handleSetConfig 2");
     // Validate the incoming data using the Zod schema
     const validationResult = parseAndHandleError(setConfigData, data);
 

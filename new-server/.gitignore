@@ -11,3 +11,5 @@ build
 !.yarn/versions
 
 shared
+
+.pnp.*

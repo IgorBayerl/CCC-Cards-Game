@@ -1,5 +1,5 @@
 {
-  "name": "client",
+  "name": "ccc-client-web",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -64,5 +64,6 @@
   },
   "ct3aMetadata": {
     "initVersion": "7.12.1"
-  }
+  },
+  "packageManager": "yarn@3.6.3"
 }

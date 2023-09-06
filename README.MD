@@ -18,7 +18,7 @@ Due to the nature of our project structure and the dependencies involved, the `s
 
 To bypass these complexities, we've employed a simple solution: prior to starting our development environment or building our project, we copy the `shared` folder's contents to both the `client` and `new-server` directories. This ensures that both parts of our application have the shared utilities they need, and it also ensures that our build processes work smoothly.
 
-This process is automated using the `prepare` scripts present in both the `client` and `new-server` directories.
+This process is automated using the `prepare` scripts present in both the `client` and `new-server` directories. Additionally, the `prepare.sh` script at the root performs the same task but doesn't watch for changes, making it suitable for one-off preparations.
 
 ## Setting up the Project
 
@@ -39,12 +39,11 @@ This process is automated using the `prepare` scripts present in both the `clien
 
 3. **Run the Prepare Script**
 
-
     ```bash
     ./prepare.sh
     ```
 
-   This script will ensure the `shared` folder's content is available for both the `client` and `new-server` parts of the application and will also install the dependencies for each project.
+   This script will ensure the `shared` folder's content is available for both the `client` and `new-server` parts of the application.
 
 4. **Start the Development Servers**
 
@@ -59,3 +58,19 @@ This process is automated using the `prepare` scripts present in both the `clien
    ```bash
    yarn dev
    ```
+
+## Using Visual Studio Code for Development
+
+For developers using Visual Studio Code, there are predefined tasks that streamline the project setup and running process:
+
+1. **Prepare Script**: Instead of manually running the `prepare.sh` script, you can open the Command Palette (`Ctrl + Shift + P`), type "Run Task", and select "Tasks: Run Task". Then choose "sync-shared-folder" from the list to automate the sharing process.
+
+2. **Client**: To start the client, open the Command Palette, type "Run Task", and select "Tasks: Run Task". Choose "start-client".
+
+3. **Server**: To start the server, follow the same procedure but select "start-server".
+
+4. **Start All Synced**: To initiate the client, server, and synchronize the shared folder in one go, choose "start-all-synked".
+
+---
+
+Happy coding! 

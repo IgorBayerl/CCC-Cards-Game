@@ -5,7 +5,6 @@ import router from 'next/router'
 import { CopyToClipboard } from '~/components/Atoms/CopyToClipboard'
 import { useQuery } from 'react-query'
 import { fetchDecks, fetchLanguages } from '~/api/deck'
-import { type IDeckConfigScreen } from '~/models/Deck'
 import ContainerHeader from '~/components/Layout/ContainerHeader'
 import { toast } from 'react-toastify'
 import useSound from 'use-sound'
@@ -22,6 +21,7 @@ import LoadingFullScreen from '~/components/Atoms/LoadingFullScreen'
 import BannerVertical from '~/components/Ads/BannerVertical'
 import { DeckFilters, FetchDeckResponse } from '~/models/ApiRequests'
 import { toggleInArray } from '~/lib/utils'
+import { AdmCommandPayloads, AdmCommandType, Deck } from '../../shared/types'
 
 export default function LobbyPage() {
   const {
@@ -78,7 +78,13 @@ export default function LobbyPage() {
       return
     }
 
-    admCommand({ command: 'start' })
+    const command: AdmCommandPayloads[AdmCommandType.START] = {
+      command: AdmCommandType.START,
+      value: null
+    };
+    // sendToRoom(MessageType.ADM_COMMAND, command);
+
+    admCommand(command)
   }
 
   if (!roomId) {
@@ -387,11 +393,12 @@ function LobbyDecksTab() {
 
     if (!isMuted) checked ? playSwitchOn() : playSwitchOff()
 
-    let newSelectedDecks: IDeckConfigScreen[] = []
+    let newSelectedDecks: Deck[] = []//TODO fix this types
     if (checked) {
       const deckToAdd = decksData.find((deck) => deck.id === id)
       if (!deckToAdd) return console.error(`Deck not found with id ${id}`)
-      newSelectedDecks = [...gameConfig.availableDecks, deckToAdd]
+      // @ts-ignore
+      newSelectedDecks = [...gameConfig.availableDecks, deckToAdd] //TODO fix this types
     } else {
       newSelectedDecks = gameConfig.availableDecks.filter(
         (deck) => deck.id !== id
@@ -417,7 +424,7 @@ function LobbyDecksTab() {
   const decksData = decksResponse.data.data.decks
   const languagesData = languagesResponse.data
 
-  const decksList: IDeckConfigScreen[] = isCurrentUserLeader
+  const decksList: Deck[] = isCurrentUserLeader
     ? decksData.map((deck) => ({
         ...deck,
         selected: gameConfig.availableDecks.some(
@@ -562,7 +569,7 @@ function LobbyDecksTab() {
           </label>
           <h1 className="card-title py-4">{t('i-filter-by-language')}</h1>
           <ul className="flex flex-col gap-3">
-            {languagesData.map((language) => (
+            {/* {languagesData.map((language) => (
               <label
                 htmlFor={language}
                 className={`btn ${
@@ -582,7 +589,7 @@ function LobbyDecksTab() {
                 />
                 <label htmlFor={language}>{language}</label>
               </label>
-            ))}
+            ))} */}
           </ul>
         </label>
       </label>
