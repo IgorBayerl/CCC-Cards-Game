@@ -1,16 +1,11 @@
 // src/rooms/GamePlayer.ts
 import {Schema, type, ArraySchema} from "@colyseus/schema";
 import {type Client} from "colyseus";
+import {AnswerCard} from "../../../shared/types";
 import {AnswerCardSchema} from "./Card";
 import {DeckSchema} from "./Deck";
 
-export type TPlayerStatus =
-  | "judge"
-  | "pending"
-  | "done"
-  | "none"
-  | "winner"
-  | "waiting";
+export type TPlayerStatus = "judge" | "pending" | "done" | "none" | "winner" | "waiting";
 
 export class PlayerSchema extends Schema {
   @type("string") id: string = "";
@@ -29,6 +24,34 @@ export class PlayerSchema extends Schema {
 
   public setCards(cards: ArraySchema<AnswerCardSchema>) {
     this.cards = cards;
+  }
+
+  public addCardsToPlayerHand(cardsToAdd: AnswerCard[]) {
+    const newCards: ArraySchema<AnswerCardSchema> = this.cards.concat(cardsToAdd as AnswerCardSchema[]);
+    this.setCards(newCards);
+  }
+
+  public removeCardsFromPlayerHand(cardsToRemove: ArraySchema<AnswerCardSchema>) {
+    const cardsToRemoveIds = cardsToRemove.map(card => card.id);
+    const newCards: ArraySchema<AnswerCardSchema> = this.cards.filter(card => !cardsToRemoveIds.includes(card.id));
+    this.setCards(newCards);
+  }
+
+  public getRandomAnswers(count: number): ArraySchema<AnswerCardSchema> {
+    const randomAnswers: ArraySchema<AnswerCardSchema> = new ArraySchema<AnswerCardSchema>();
+    const availableIndices: number[] = [...Array(this.cards.length).keys()]; // Create an array of available indices
+
+    for (let i = 0; i < count; i++) {
+      if (availableIndices.length === 0) {
+        // If no more available indices, break the loop
+        break;
+      }
+
+      const randomIndex = Math.floor(Math.random() * availableIndices.length);
+      const selectedIndex = availableIndices.splice(randomIndex, 1)[0]; // Remove the selected index from availableIndices
+      randomAnswers.push(this.cards[selectedIndex]);
+    }
+    return randomAnswers;
   }
 
   // /**

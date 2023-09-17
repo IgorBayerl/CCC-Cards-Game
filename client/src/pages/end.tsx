@@ -1,41 +1,56 @@
 import { useGameContext } from '~/components/GameContext'
 import InGameLayout from '~/components/Layout/InGameLayout'
 import { GameCardResult } from '~/components/Atoms/GameCard'
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import Image from 'next/image'
 import ConfettiExplosion from 'react-confetti-explosion'
 import useTranslation from 'next-translate/useTranslation'
+import { MessageType, type Player } from '~/types'
 
 export default function End() {
-  const { gameState, admCommand, isCurrentUserLeader } = useGameContext()
+  const { gameState, sendToRoom, isCurrentUserLeader } = useGameContext()
 
   const { players } = gameState
 
   const { t } = useTranslation('game')
 
-  const winner = players.reduce(
-    (prev, current) => (prev.score > current.score ? prev : current),
-    {
-      score: -Infinity,
-      username: 'No players',
-      id: '',
-      pictureUrl: '',
-    }
-  )
+  const emptyPlayer: Player = {
+    score: -Infinity,
+    username: 'No players',
+    id: '',
+    pictureUrl: '',
+    status: 'pending',
+    hasSubmittedCards: false,
+    cards: [],
+  }
 
-  const winnerHistory = gameState.rounds?.flatMap((round) => {
-    const winnerId = round.winner?.id
-    if (!winnerId) return []
-    if (winnerId === winner.id) {
-      return [
-        {
-          question: round.questionCard.text,
-          answer: round.answerCards[winnerId],
-        },
-      ]
+  //players is a map, so we need to convert it to an array
+  const playersArray = Array.from(players.values())
+
+  const winner = playersArray.reduce((prev, curr) => {
+    if (curr.score > prev.score) {
+      return curr
     }
-    return []
-  })
+    return prev
+  }, emptyPlayer)
+
+  const winnerHistory = useCallback(() => {
+    const result = []
+
+    for (const round of gameState.rounds) {
+      for (const [playerId, card] of round.answerCards) {
+        if (playerId === winner.id) {
+          const obj = {
+            question: round.questionCard.text,
+            answer: card.cards,
+          }
+          result.push(obj)
+        }
+      }
+    }
+
+    return result
+  }, [gameState.rounds, winner.id])
 
   const [keyTest, setKeyTest] = useState(0)
 
@@ -44,11 +59,11 @@ export default function End() {
   }
 
   function handleStartNewGame() {
-    admCommand('start-new-game')
+    sendToRoom(MessageType.ADMIN_START_NEW_GAME, null)
   }
 
   function handleBackToLobby() {
-    admCommand('back-to-lobby')
+    sendToRoom(MessageType.ADMIN_BACK_TO_LOBBY, null)
   }
 
   return (
@@ -72,28 +87,24 @@ export default function End() {
           </div>
         </div>
         <div className="mx-5 flex flex-1 flex-col overflow-y-auto scrollbar-none">
-          {winnerHistory &&
-            winnerHistory.map((item, index) => (
-              <div key={index} className="chat chat-end ">
-                <div className="chat-image avatar">
-                  <div className="w-10 rounded-full">
-                    <Image
-                      src={winner?.pictureUrl || ''}
-                      alt={winner?.username || ''}
-                      width={100}
-                      height={100}
-                      className="rounded-full"
-                    />
-                  </div>
-                </div>
-                <div className="chat-bubble bg-neutral text-gray-200">
-                  <GameCardResult
-                    question={item?.question || ''}
-                    answers={item?.answer?.map((answer) => answer.text) || []}
+          {winnerHistory().map((item, index) => (
+            <div key={index} className="chat chat-end ">
+              <div className="avatar chat-image">
+                <div className="w-10 rounded-full">
+                  <Image
+                    src={winner?.pictureUrl || ''}
+                    alt={winner?.username || ''}
+                    width={100}
+                    height={100}
+                    className="rounded-full"
                   />
                 </div>
               </div>
-            ))}
+              <div className="chat-bubble bg-neutral text-gray-200">
+                <GameCardResult question={item.question} answers={item.answer.map((answer) => answer.text)} />
+              </div>
+            </div>
+          ))}
         </div>
       </div>
       {isCurrentUserLeader && (

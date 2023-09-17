@@ -23,3 +23,26 @@ export const setConfigData = z
   .partial();
 
 export type ISetConfigData = z.infer<typeof setConfigData>;
+
+
+// Card.ts
+const cardSchema = z.object({
+  id: z.string(),
+  text: z.string(),
+});
+
+const answerCardSchema = cardSchema;
+
+export const questionCardSchema = cardSchema.extend({
+  spaces: z.number(),
+});
+
+// PlayerSelectionPayload schema
+export const playerSelectionPayloadSchema = z.object({
+  selection: z.array(answerCardSchema),
+});
+
+export const judgeDecisionPayloadSchema = z.object({
+  winner: z.string(),
+});
+

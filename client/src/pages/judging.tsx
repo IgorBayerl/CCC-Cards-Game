@@ -2,7 +2,6 @@ import { useGameContext } from '~/components/GameContext'
 
 import InGameLayout from '~/components/Layout/InGameLayout'
 import GameCard, { GameCardResult } from '~/components/Atoms/GameCard'
-import { ICardAnswer } from '~/models/Deck'
 import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 import TimerTitle from '~/components/Layout/TimerScreen'
@@ -10,11 +9,7 @@ import LoadingWithText from '~/components/Atoms/LoadingWithText'
 import { useAudio } from '~/components/AudioContext'
 import useSound from 'use-sound'
 import useTranslation from 'next-translate/useTranslation'
-
-interface IUpdateResultCards {
-  hasNext: boolean
-  cards: { [playerId: string]: ICardAnswer[] }
-}
+import { MessageType, type AnswerCard } from '~/types'
 
 export default function Judging() {
   const { isMuted } = useAudio()
@@ -22,29 +17,32 @@ export default function Judging() {
 
   const [playSwitchOn] = useSound('/sounds/switch-on.mp3')
 
-  const { socket, gameState, isCurrentUserJudge } = useGameContext()
+  const { sendToRoom, gameState, isCurrentUserJudge, gameConfig } = useGameContext()
 
-  const { currentQuestionCard } = gameState
+  const currentQuestionCard = gameState.currentQuestionCard
+  const rounds = gameState.rounds
+  const currentRound = rounds[rounds.length - 1]
+  const { allCardsRevealed, answerCards } = currentRound || {}
+  const hasNext = allCardsRevealed === false
+  const currentRevealedCardId = currentRound?.currentRevealedId || ''
 
-  const [timerId, setTimerId] = useState<ReturnType<typeof setTimeout> | null>(
-    null
-  )
-
-  const [resultCards, setResultCards] = useState<IUpdateResultCards>({
-    hasNext: true,
-    cards: {},
-  })
   const [selectedGroup, setSelectedGroup] = useState<{
     playerId: string
-    cards: ICardAnswer[]
+    cards: AnswerCard[]
   } | null>(null)
-  const [seeAllResults, setSeeAllResults] = useState(false)
+  const seeAllResults = !hasNext
 
   const [resetKey, setResetKey] = useState(0)
 
-  const hasNext = resultCards.hasNext === true
-  const cards = resultCards.cards
-  const lastCards = Object.values(cards).pop()
+  
+  useEffect(() => {
+    if (allCardsRevealed) {
+      setResetKey((prev) => prev + 1)
+    }
+  }, [allCardsRevealed, currentRevealedCardId])
+
+
+  const time = gameConfig.roundTime || 10
 
   const seeGoToAllResultsBtn = !hasNext && !seeAllResults
   const seeNextBtn = hasNext && !seeAllResults
@@ -52,35 +50,19 @@ export default function Judging() {
   const seeConfirmBtn = seeAllResults
   const enableConfirmBtn = selectedGroup !== null
 
-  useEffect(() => {
-    socket?.on('game:updateResultCards', (resultCards: IUpdateResultCards) => {
-      console.log('game:updateResultCards', resultCards)
-      setResetKey((prevKey) => prevKey + 1)
-      setResultCards(resultCards)
-    })
-
-    socket?.on('game:showAllCards', (resultCards: IUpdateResultCards) => {
-      console.log('game:showAllCards', resultCards)
-      setResetKey((prevKey) => prevKey + 1)
-      setSeeAllResults(true)
-      setResultCards(resultCards)
-    })
-    return () => {
-      socket?.off('game:updateResultCards')
-      socket?.off('game:showAllCards')
-    }
-  }, [socket])
-
-  const handleGroupClick = (playerId: string, group: ICardAnswer[]) => {
+  const handleGroupClick = (playerId: string, cards: AnswerCard[]) => {
     if (!isCurrentUserJudge) return
 
     if (!isMuted) playSwitchOn()
-    setSelectedGroup({ playerId, cards: group })
+    setSelectedGroup({ playerId, cards })
   }
 
   const sendDecision = () => {
     if (selectedGroup) {
-      socket?.emit('game:judgeDecision', selectedGroup.playerId)
+      const payload = {
+        winner: selectedGroup.playerId,
+      }
+      sendToRoom(MessageType.JUDGE_DECISION, payload)
       setSelectedGroup(null)
     } else {
       toast.error('You must select a group of cards')
@@ -88,12 +70,7 @@ export default function Judging() {
   }
   const handleConfirm = () => {
     if (selectedGroup) {
-      console.log(
-        'Confirming selection of group:',
-        selectedGroup.cards,
-        'from player:',
-        selectedGroup.playerId
-      )
+      console.log('Confirming selection of group:', selectedGroup.cards, 'from player:', selectedGroup.playerId)
       sendDecision()
       setSelectedGroup(null) // Clear the selection
     } else {
@@ -103,30 +80,21 @@ export default function Judging() {
 
   const handleNextCard = () => {
     console.log('>> next card')
-    socket?.emit('game:requestNextCard')
+    sendToRoom(MessageType.REQUEST_NEXT_CARD, null)
   }
 
-  const handleSeeResults = () => {
-    setSeeAllResults(true)
-    socket?.emit('game:seeAllRoundAnswers')
-    console.log('>> see results')
-  }
 
-  useEffect(() => {
-    return () => {
-      if (timerId !== null) {
-        clearTimeout(timerId)
-      }
-    }
-  }, [timerId])
-
-  const time = gameState.config.time || 10 // 10 seconds
-
-  const getAnswerCardText = () => {
+  function getRevealedCardTexts() {
     if (seeAllResults) {
-      return selectedGroup?.cards.map((card) => card.text) || []
+      if (!selectedGroup) return []
+      return selectedGroup.cards.map((card) => card.text)
     }
-    return lastCards?.map((card) => card.text) || []
+
+    if (!currentRound) return []
+
+    const revealedCardCollection = currentRound?.answerCards?.get(currentRevealedCardId) || { cards: [] }
+
+    return revealedCardCollection.cards.map((card) => card.text)
   }
 
   return (
@@ -137,15 +105,12 @@ export default function Judging() {
           <div className="flex flex-1 flex-col justify-between">
             <div className="flex flex-1 items-center justify-center">
               {currentQuestionCard && (
-                <GameCardResult
-                  question={currentQuestionCard.text}
-                  answers={getAnswerCardText()}
-                />
+                <GameCardResult question={currentQuestionCard.text || ''} answers={getRevealedCardTexts()} />
               )}
             </div>
             <div className="">
               {seeIndividualResults &&
-                lastCards?.map((card, index) => (
+                currentRound?.answerCards?.get(currentRevealedCardId)?.cards.map((card, index) => (
                   <div key={index} className="">
                     <GameCard cardInfo={card} selected={false} />
                   </div>
@@ -153,27 +118,25 @@ export default function Judging() {
             </div>
 
             <div className="grid grid-cols-1 gap-2 overflow-y-auto lg:grid-cols-2">
-              {
-                // all results
-                seeAllResults &&
-                  Object.entries(cards).map(([playerId, cardList]) => (
-                    <div
-                      key={playerId}
-                      className={`flex flex-col gap-1  ${
-                        selectedGroup && selectedGroup.playerId === playerId
-                          ? 'border-2 border-primary'
-                          : 'border-2 border-transparent'
-                      }`}
-                      onClick={() => handleGroupClick(playerId, cardList)}
-                    >
-                      {cardList.map((card, index) => (
-                        <div key={index} className="">
-                          <GameCard cardInfo={card} selected={false} />
-                        </div>
-                      ))}
-                    </div>
-                  ))
-              }
+              {seeAllResults &&
+                answerCards &&
+                [...answerCards.entries()].map(([playerId, cardCollection]) => (
+                  <div
+                    key={playerId}
+                    className={`flex flex-col gap-1  ${
+                      selectedGroup && selectedGroup.playerId === playerId
+                        ? 'border-2 border-primary'
+                        : 'border-2 border-transparent'
+                    }`}
+                    onClick={() => handleGroupClick(playerId, cardCollection.cards)}
+                  >
+                    {cardCollection.cards.map((card, index) => (
+                      <div key={index} className="">
+                        <GameCard cardInfo={card} selected={false} />
+                      </div>
+                    ))}
+                  </div>
+                ))}
             </div>
           </div>
         </div>
@@ -181,7 +144,6 @@ export default function Judging() {
       <JudgeActions
         isCurrentUserJudge={isCurrentUserJudge}
         seeGoToAllResultsBtn={seeGoToAllResultsBtn}
-        handleSeeResults={handleSeeResults}
         seeNextBtn={seeNextBtn}
         handleNextCard={handleNextCard}
         seeConfirmBtn={seeConfirmBtn}
@@ -200,7 +162,6 @@ export default function Judging() {
 interface IJudgeActionsProps {
   isCurrentUserJudge: boolean
   seeGoToAllResultsBtn: boolean
-  handleSeeResults: () => void
   seeNextBtn: boolean
   handleNextCard: () => void
   seeConfirmBtn: boolean
@@ -211,7 +172,6 @@ interface IJudgeActionsProps {
 export const JudgeActions: React.FC<IJudgeActionsProps> = ({
   isCurrentUserJudge,
   seeGoToAllResultsBtn,
-  handleSeeResults,
   seeNextBtn,
   handleNextCard,
   seeConfirmBtn,
@@ -225,7 +185,7 @@ export const JudgeActions: React.FC<IJudgeActionsProps> = ({
   return (
     <div className="flex items-center justify-center px-4 py-2">
       {seeGoToAllResultsBtn && (
-        <button className="btn flex-1" onClick={handleSeeResults}>
+        <button className="btn flex-1" onClick={handleNextCard}>
           {t('i-see-all-results')}
         </button>
       )}

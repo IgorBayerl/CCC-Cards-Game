@@ -10,15 +10,16 @@ export enum MessageType {
   SET_CONFIG = "game:setConfig",
   PLAYER_SELECTION = "game:playerSelection",
   REQUEST_NEXT_CARD = "game:requestNextCard",
-  SEE_ALL_ROUND_ANSWERS = "game:seeAllRoundAnswers",
   JUDGE_DECISION = "game:judgeDecision",
+  DEV_SAVE_SNAPSHOT = "dev:saveSnapshot",
+  DEV_LOAD_SNAPSHOT = "dev:loadSnapshot",
 }
 
 
 export type SetConfigPayload = RoomConfig;
 
 export type PlayerSelectionPayload = {
-  selection: string[];
+  selection: AnswerCard[];
 };
 
 export type RequestNextCardPayload = {
@@ -30,13 +31,13 @@ export type SeeAllRoundAnswersPayload = {
 };
 
 export type JudgeDecisionPayload = {
-  playerId: string;
-  decision: boolean;
-};
+  winner: string;
+}
 
 export type AdminKickPlayerPayload = {
   playerId: string;
 };
+
 
 export type GameMessagePayloads = {
   [MessageType.ADMIN_START]: null;
@@ -48,8 +49,9 @@ export type GameMessagePayloads = {
   [MessageType.SET_CONFIG]: SetConfigPayload;
   [MessageType.PLAYER_SELECTION]: PlayerSelectionPayload;
   [MessageType.REQUEST_NEXT_CARD]: RequestNextCardPayload;
-  [MessageType.SEE_ALL_ROUND_ANSWERS]: SeeAllRoundAnswersPayload;
   [MessageType.JUDGE_DECISION]: JudgeDecisionPayload;
+  [MessageType.DEV_SAVE_SNAPSHOT]: null;
+  [MessageType.DEV_LOAD_SNAPSHOT]: null;
 };
 
 
@@ -121,10 +123,36 @@ export interface Player {
 
 // Round.ts
 
+export interface AnswerCardCollection {
+  cards: AnswerCard[];
+}
+
 export interface Round {
   questionCard: QuestionCard;
-  answerCards: Map<string, AnswerCard[]>;
+  answerCards: Map<string, AnswerCardCollection>;
   judge: string;
   winner: string;
-  judgeId: number;
+  revealedCards: string[];
+  currentRevealedId: string;
+  allCardsRevealed: boolean;
+}
+
+
+
+// Rest request types of lobby
+export type DeckData = {
+  summary: DeckSummary
+  decks: Deck[]
+}
+
+export type DeckFilters = {
+  darknessLevel: number[]
+  language: string[]
+  title: string
+}
+
+export type DeckSummary = {
+  decks: number
+  questions: number
+  answers: number
 }

@@ -1,6 +1,6 @@
 import { useGameContext } from '~/components/GameContext'
 import PlayersList from '~/components/PlayersList'
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import router from 'next/router'
 import { CopyToClipboard } from '~/components/Atoms/CopyToClipboard'
 import { useQuery } from 'react-query'
@@ -18,22 +18,12 @@ import LoadingWithText from '~/components/Atoms/LoadingWithText'
 import useTranslation from 'next-translate/useTranslation'
 import MobilePlayersList from '~/components/MobilePlayersList'
 import LoadingFullScreen from '~/components/Atoms/LoadingFullScreen'
-import BannerVertical from '~/components/Ads/BannerVertical'
-import { DeckFilters, FetchDeckResponse } from '~/models/ApiRequests'
+
 import { toggleInArray } from '~/lib/utils'
-import { AdmCommandPayloads, AdmCommandType, Deck } from '../../shared/types'
+import { MessageType, type Deck, type DeckFilters } from '~/types'
 
 export default function LobbyPage() {
-  const {
-    roomId,
-    gameState,
-    isCurrentUserLeader,
-    myId,
-    gameConfig,
-    leaveRoom,
-    setConfig,
-    admCommand,
-  } = useGameContext()
+  const { roomId, gameState, isCurrentUserLeader, gameConfig, leaveRoom, setConfig, sendToRoom } = useGameContext()
 
   const { t } = useTranslation('lobby')
 
@@ -55,14 +45,14 @@ export default function LobbyPage() {
 
   const [activeTab, setActiveTab] = useState(tabs[0])
 
-  const handleLeaveRoom = () => {
+  const handleLeaveRoom = useCallback(() => {
     void router.push('/')
     leaveRoom()
-  }
+  }, [leaveRoom])
 
   useEffect(() => {
     if (!roomId) handleLeaveRoom()
-  }, [roomId])
+  }, [handleLeaveRoom, roomId])
 
   const handleChangeRoomSize = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const value = e.target.value
@@ -78,13 +68,7 @@ export default function LobbyPage() {
       return
     }
 
-    const command: AdmCommandPayloads[AdmCommandType.START] = {
-      command: AdmCommandType.START,
-      value: null
-    };
-    // sendToRoom(MessageType.ADM_COMMAND, command);
-
-    admCommand(command)
+    sendToRoom(MessageType.ADMIN_START, null)
   }
 
   if (!roomId) {
@@ -124,25 +108,17 @@ export default function LobbyPage() {
           </div>
           <div className="md:hidden" id="mobile-player-list">
             <div className="flex w-screen gap-3 overflow-x-scroll px-2 py-3 ">
-              <MobilePlayersList
-                players={playersList}
-                leaderId={gameState.leader}
-                roomSize={parseInt(roomSize)}
-              />
+              <MobilePlayersList players={playersList} leaderId={gameState.leader} roomSize={parseInt(roomSize)} />
             </div>
             <div className="px-2">
               <select
-                className="select-bordered select w-full"
+                className="select select-bordered w-full"
                 disabled={!isCurrentUserLeader}
                 value={roomSize}
                 onChange={handleChangeRoomSize}
               >
                 {Array.from({ length: 17 }, (_, i) => i + 4).map((i) => (
-                  <option
-                    className="text-lg"
-                    key={i}
-                    value={i.toString()}
-                  >{`${i} ${t('i-players')}`}</option>
+                  <option className="text-lg" key={i} value={i.toString()}>{`${i} ${t('i-players')}`}</option>
                 ))}
               </select>
             </div>
@@ -150,37 +126,26 @@ export default function LobbyPage() {
           <div className="flex h-full overflow-clip">
             <div className="hidden flex-col gap-2 p-1 md:flex">
               <select
-                className="select-bordered select w-full"
+                className="select select-bordered w-full"
                 disabled={!isCurrentUserLeader}
                 value={roomSize}
                 onChange={handleChangeRoomSize}
               >
                 {Array.from({ length: 17 }, (_, i) => i + 4).map((i) => (
-                  <option
-                    className="text-lg"
-                    key={i}
-                    value={i.toString()}
-                  >{`${i} ${t('i-players')}`}</option>
+                  <option className="text-lg" key={i} value={i.toString()}>{`${i} ${t('i-players')}`}</option>
                 ))}
               </select>
 
-              <PlayersList
-                players={playersList}
-                leaderId={gameState.leader}
-                roomSize={parseInt(roomSize)}
-              />
+              <PlayersList players={playersList} leaderId={gameState.leader} roomSize={parseInt(roomSize)} />
             </div>
             <div className="flex w-full flex-col justify-between ">
               <div className="tabs md:px-3">
                 {tabs.map((tab) => (
                   <a
                     key={tab}
-                    className={classNames(
-                      'tab-bordered tab tab-lg flex-1 whitespace-nowrap  text-white',
-                      {
-                        'tab-active': activeTab === tab,
-                      }
-                    )}
+                    className={classNames('tab-bordered tab tab-lg flex-1 whitespace-nowrap  text-white', {
+                      'tab-active': activeTab === tab,
+                    })}
                     onClick={() => setActiveTab(tab)}
                   >
                     {t(tabsNames[tab])}
@@ -188,20 +153,15 @@ export default function LobbyPage() {
                 ))}
               </div>
 
-              <div className="bg-destaque-mobile flex-1 overflow-y-clip ">
-                {renderTabContent()}
-              </div>
+              <div className="bg-destaque-mobile flex-1 overflow-y-clip ">{renderTabContent()}</div>
               {isCurrentUserLeader && (
                 <div className="flex justify-center gap-5 px-4 py-2">
                   <div className="hidden flex-1 md:flex">
-                    <CopyToClipboard
-                      text={t('i-invite')}
-                      content={roomInviteLink}
-                    />
+                    <CopyToClipboard text={t('i-invite')} content={roomInviteLink} />
                   </div>
                   <div className="flex flex-1 md:hidden">
                     <button
-                      className="btn-outline btn-accent btn flex w-full flex-1 items-center justify-between gap-3 md:hidden"
+                      className="btn-outline btn btn-accent flex w-full flex-1 items-center justify-between gap-3 md:hidden"
                       onClick={handleShareClicked}
                     >
                       <Link size={25} weight="bold" />
@@ -220,11 +180,7 @@ export default function LobbyPage() {
                   </button>
                 </div>
               )}
-              {!isCurrentUserLeader && (
-                <LoadingWithText
-                  text={t('i-waiting-the-host-start-the-game')}
-                />
-              )}
+              {!isCurrentUserLeader && <LoadingWithText text={t('i-waiting-the-host-start-the-game')} />}
             </div>
           </div>
         </div>
@@ -258,7 +214,7 @@ function LobbySettingsTab() {
           {t('i-score-to-win')}
         </label>
         <select
-          className="select-bordered select"
+          className="select select-bordered"
           id="score-to-win"
           onChange={(e) => handleChangeScoreToWin(e.target.value)}
           disabled={!isCurrentUserLeader}
@@ -278,18 +234,14 @@ function LobbySettingsTab() {
           {t('i-time')}
         </label>
         <select
-          className="select-bordered select"
+          className="select select-bordered"
           id="score-to-win"
           onChange={(e) => handleChangeTimeToPlay(e.target.value)}
           disabled={!isCurrentUserLeader}
           value={timeToPlay}
         >
           {Array.from({ length: 6 }, (_, i) => (i + 1) * 10).map((i) => (
-            <option
-              className="text-lg"
-              key={`${i}_seconds`}
-              value={i.toString()}
-            >{`${i} ${t('i-seconds')}`}</option>
+            <option className="text-lg" key={`${i}_seconds`} value={i.toString()}>{`${i} ${t('i-seconds')}`}</option>
           ))}
         </select>
       </div>
@@ -299,7 +251,7 @@ function LobbySettingsTab() {
 
 // Reusable Components
 // TODO: remove this any
-const FilterLabel = ({ length, label }: any) => (
+const FilterLabel = ({ length, label }: { length: number; label: string }) => (
   <span className="flex gap-2">
     <span>{length > 0 ? `${length} Selected` : label}</span>
   </span>
@@ -321,35 +273,31 @@ function LobbyDecksTab() {
   const [playSwitchOff] = useSound('/sounds/switch-off.mp3')
 
   // States
-  const [selectedDarknessLevels, setSelectedDarknessLevels] = useState([
-    1, 2, 3,
-  ])
+  const [selectedDarknessLevels, setSelectedDarknessLevels] = useState([1, 2, 3])
   const [selectedLanguages, setSelectedLanguages] = useState(['pt'])
   const [isModalCategoryOpen, setIsModalCategoryOpen] = useState(false)
   const [isModalLanguageOpen, setIsModalLanguageOpen] = useState(false)
 
-  const initialFilters: DeckFilters = {
-    darknessLevel: [1, 2, 3],
-    language: ['pt'],
-    title: '',
-  }
+  // const initialFilters: DeckFilters = {
+  //   darknessLevel: [1, 2, 3],
+  //   language: ['pt'],
+  //   title: '',
+  // }
+
+  const fetchDecksWithFilters = () =>
+    fetchDecks({
+      language: selectedLanguages,
+      darknessLevel: selectedDarknessLevels,
+      title: '',
+    })
 
   const decksResponse = useQuery(
     ['get-decks', selectedLanguages, selectedDarknessLevels],
-    () =>
-      fetchDecks({
-        language: selectedLanguages,
-        darknessLevel: selectedDarknessLevels,
-        title: initialFilters.title,
-      }),
+    () => fetchDecksWithFilters(),
     queryConfig
   )
 
-  const languagesResponse = useQuery(
-    'get-languages',
-    fetchLanguages,
-    queryConfig
-  )
+  const languagesResponse = useQuery('get-languages', fetchLanguages, queryConfig)
 
   const categoriesMock = [
     {
@@ -380,29 +328,25 @@ function LobbyDecksTab() {
   }
 
   const toggleLanguageSelection = (language: string) => {
-    setSelectedLanguages((prevLanguages) =>
-      toggleInArray(prevLanguages, language)
-    )
+    setSelectedLanguages((prevLanguages) => toggleInArray(prevLanguages, language))
   }
 
-  const handleDeckChange = (
-    event: React.ChangeEvent<HTMLInputElement>,
-    id: string
-  ) => {
+  const handleDeckChange = (event: React.ChangeEvent<HTMLInputElement>, id: string) => {
     const { checked } = event.target
 
     if (!isMuted) checked ? playSwitchOn() : playSwitchOff()
 
-    let newSelectedDecks: Deck[] = []//TODO fix this types
+    let newSelectedDecks: Deck[] = [] //TODO fix this types
     if (checked) {
+      // deck to add is the deck with the id passed as argument
       const deckToAdd = decksData.find((deck) => deck.id === id)
+
+      // if the deck is not found, log an error and return
       if (!deckToAdd) return console.error(`Deck not found with id ${id}`)
-      // @ts-ignore
+
       newSelectedDecks = [...gameConfig.availableDecks, deckToAdd] //TODO fix this types
     } else {
-      newSelectedDecks = gameConfig.availableDecks.filter(
-        (deck) => deck.id !== id
-      )
+      newSelectedDecks = gameConfig.availableDecks.filter((deck) => deck.id !== id)
     }
 
     setConfig({ ...gameConfig, availableDecks: newSelectedDecks })
@@ -412,12 +356,7 @@ function LobbyDecksTab() {
     return <LoadingFullScreen />
   }
 
-  if (
-    decksResponse.isError ||
-    !decksResponse.data ||
-    languagesResponse.isError ||
-    !languagesResponse.data
-  ) {
+  if (decksResponse.isError || !decksResponse.data || languagesResponse.isError || !languagesResponse.data) {
     return <div>Something went wrong!</div>
   }
 
@@ -427,9 +366,7 @@ function LobbyDecksTab() {
   const decksList: Deck[] = isCurrentUserLeader
     ? decksData.map((deck) => ({
         ...deck,
-        selected: gameConfig.availableDecks.some(
-          (selectedDeck) => selectedDeck.id === deck.id
-        ),
+        selected: gameConfig.availableDecks.some((selectedDeck) => selectedDeck.id === deck.id),
       }))
     : gameConfig.availableDecks.map((deck) => ({
         ...deck,
@@ -440,21 +377,12 @@ function LobbyDecksTab() {
     <div className="flex h-full flex-col px-2 pt-2 md:px-0">
       {isCurrentUserLeader && (
         <div className="flex gap-3 rounded-md bg-white bg-opacity-20 p-2 md:mx-3">
-          <label
-            htmlFor="modal-language"
-            className="btn-outline btn-accent btn justify-between gap-2"
-          >
+          <label htmlFor="modal-language" className="btn-outline btn btn-accent justify-between gap-2">
             <Globe size={25} weight="bold" />
             <FilterLabel length={selectedLanguages.length} label="All" />
           </label>
-          <label
-            htmlFor="modal-category"
-            className="btn-outline btn-accent btn flex-1"
-          >
-            <FilterLabel
-              length={selectedDarknessLevels.length}
-              label="All Categories"
-            />
+          <label htmlFor="modal-category" className="btn-outline btn btn-accent flex-1">
+            <FilterLabel length={selectedDarknessLevels.length} label="All Categories" />
           </label>
         </div>
       )}
@@ -477,9 +405,8 @@ function LobbyDecksTab() {
                 className={classNames(
                   'flex h-auto flex-nowrap items-center justify-between gap-2 border-2 py-2 pl-2 text-left normal-case',
                   {
-                    'btn-ghost btn': isCurrentUserLeader,
-                    'btn-disabled btn-ghost btn-active btn text-accent':
-                      !isCurrentUserLeader,
+                    'btn btn-ghost': isCurrentUserLeader,
+                    'btn btn-disabled btn-active btn-ghost text-accent': !isCurrentUserLeader,
                     'border-white hover:border-white': deck.selected,
                     'border-transparent': !deck.selected,
                   }
@@ -515,15 +442,10 @@ function LobbyDecksTab() {
       />
       <label htmlFor="modal-category" className="modal">
         <label className="modal-box relative py-10" htmlFor="">
-          <label
-            htmlFor="modal-category"
-            className="btn-sm btn-circle btn absolute right-2 top-2"
-          >
+          <label htmlFor="modal-category" className="btn btn-circle btn-sm absolute right-2 top-2">
             ✕
           </label>
-          <h1 className="card-title py-4">
-            {t('i-how-bad-will-the-cards-be')}
-          </h1>
+          <h1 className="card-title py-4">{t('i-how-bad-will-the-cards-be')}</h1>
           <ul className="flex flex-col gap-3">
             {categoriesMock.map((darknessLevel) => (
               <label
@@ -543,9 +465,7 @@ function LobbyDecksTab() {
                   checked={selectedDarknessLevels.includes(darknessLevel.id)}
                   onChange={() => toggleDarknessLevel(darknessLevel.id)}
                 />
-                <label htmlFor={String(darknessLevel.id)}>
-                  {darknessLevel.name}
-                </label>
+                <label htmlFor={String(darknessLevel.id)}>{darknessLevel.name}</label>
               </label>
             ))}
           </ul>
@@ -561,15 +481,12 @@ function LobbyDecksTab() {
       />
       <label htmlFor="modal-language" className="modal">
         <label className="modal-box relative py-10" htmlFor="">
-          <label
-            htmlFor="modal-language"
-            className="btn-sm btn-circle btn absolute right-2 top-2"
-          >
+          <label htmlFor="modal-language" className="btn btn-circle btn-sm absolute right-2 top-2">
             ✕
           </label>
           <h1 className="card-title py-4">{t('i-filter-by-language')}</h1>
           <ul className="flex flex-col gap-3">
-            {/* {languagesData.map((language) => (
+            {languagesData.map((language) => (
               <label
                 htmlFor={language}
                 className={`btn ${
@@ -589,7 +506,7 @@ function LobbyDecksTab() {
                 />
                 <label htmlFor={language}>{language}</label>
               </label>
-            ))} */}
+            ))}
           </ul>
         </label>
       </label>

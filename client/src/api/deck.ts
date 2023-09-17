@@ -1,33 +1,24 @@
 import extractErrorMessage from '~/lib/extractErrorMessage'
-import {
-  DeckFilters,
-  FetchDeckResponse,
-  FetchLanguages,
-} from '~/models/ApiRequests'
+import { type FetchDeckResponse, type FetchLanguages } from '~/models/ApiRequests'
+import { type DeckFilters } from '~/types'
 import api from '~/services/api'
 
-export async function fetchDecks(
-  filters: DeckFilters
-): Promise<FetchDeckResponse> {
+export async function fetchDecks(filters: DeckFilters) {
   try {
-    const response = await api.post('/decks', filters)
+    const response = await api.post<FetchDeckResponse>('/decks', filters)
     return response.data
   } catch (error) {
     const errorMessage = extractErrorMessage(error)
-    throw new Error(
-      `An error occurred while fetching the deck: ${errorMessage}`
-    )
+    throw new Error(`An error occurred while fetching the deck: ${errorMessage}`)
   }
 }
 
-export async function fetchLanguages(): Promise<FetchLanguages> {
+export async function fetchLanguages() {
   try {
-    const response = await api.get('/decks/languages')
+    const response = await api.get<FetchLanguages>('/decks/languages')
     return response.data.data
   } catch (error) {
     const errorMessage = extractErrorMessage(error)
-    throw new Error(
-      `An error occurred while fetching languages: ${errorMessage}`
-    )
+    throw new Error(`An error occurred while fetching languages: ${errorMessage}`)
   }
 }

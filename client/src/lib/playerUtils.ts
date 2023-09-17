@@ -1,30 +1,21 @@
-import { type IGameState, type IPlayer } from '~/components/GameContext'
+import { type MyRoomState, type Player } from '~/types'
 
-export function isPlayerLeader(
-  player: IPlayer,
-  gameState: IGameState
-): boolean {
+export function isPlayerLeader(player: Player, gameState: MyRoomState): boolean {
   return player.id === gameState.leader
 }
 
-export function isPlayerJudge(player: IPlayer, gameState: IGameState): boolean {
+export function isPlayerJudge(player: Player, gameState: MyRoomState): boolean {
   return player.id === gameState.judge
 }
 
-export type TPlayerStatus =
-  | 'judge'
-  | 'pending'
-  | 'done'
-  | 'none'
-  | 'winner'
-  | 'waiting'
+export type TPlayerStatus = 'judge' | 'pending' | 'done' | 'none' | 'winner' | 'waiting'
 
-export function getPlayerStatus(player: IPlayer, gameState: IGameState) {
+export function getPlayerStatus(player: Player, gameState: MyRoomState) {
   const status = gameState.players.get(player.id)?.status
   return status || 'none'
 }
 
-export function shouldShowPlayerStatus(gameState: IGameState): boolean {
+export function shouldShowPlayerStatus(gameState: MyRoomState): boolean {
   const statusRelation = {
     waiting: false,
     starting: false,

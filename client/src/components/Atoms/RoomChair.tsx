@@ -1,10 +1,10 @@
 import { TbMoodEmpty } from 'react-icons/tb'
-import { IPlayer } from '../GameContext'
 import PlayerItem, { MobilePlayerItem } from './PlayerItem'
 import useTranslation from 'next-translate/useTranslation'
+import { type Player } from '~/types'
 
 interface IRoomChairProps {
-  player?: IPlayer
+  player?: Player
   leader?: boolean
 }
 

@@ -25,12 +25,14 @@ import {
   type RoomStatus,
   MessageType,
   type GameMessagePayloads,
-} from '../../shared/types'
+} from '~/types'
+import extractErrorMessage from '~/lib/extractErrorMessage'
 
 interface IGameContextValue {
   myId: string
   myStatus: TPlayerStatus
   gameState: MyRoomState
+  room: Room<MyRoomState> | null
   roomId: string
   gameConfig: RoomConfig
   startingState: string
@@ -40,7 +42,7 @@ interface IGameContextValue {
   createRoom: (username: string, pictureUrl: string) => void
   leaveRoom: () => void
   setConfig: (config: RoomConfig) => void
-  admCommand: (command: AdmCommandPayloads[AdmCommandType]) => void
+  sendToRoom: (type: MessageType, payload: GameMessagePayloads[MessageType]) => void
   playerSelectCards: (cards: AnswerCard[]) => void
 }
 
@@ -84,6 +86,7 @@ const GameContext = createContext<IGameContextValue>({
   myId: '',
   myStatus: 'pending',
   gameState: initialGameState,
+  room: null,
   roomId: '',
   gameConfig: defaultGameConfig,
   startingState: '',
@@ -93,7 +96,7 @@ const GameContext = createContext<IGameContextValue>({
   createRoom: () => undefined,
   leaveRoom: () => undefined,
   setConfig: () => undefined,
-  admCommand: (_) => undefined,
+  sendToRoom: () => undefined,
   playerSelectCards: (_) => undefined,
 })
 
@@ -174,45 +177,38 @@ const GameProvider: React.FC<IGameProviderProps> = ({ children }) => {
     void router.push('/')
   }
 
-  function sendToRoom<T extends MessageType>(
-    type: T,
-    payload: GameMessagePayloads[T]
-  ) {
-    if (!room) {
-      console.error('Attempted to send message without an active room')
-      return
-    }
+  const sendToRoom = useCallback(
+    <T extends MessageType>(type: T, payload: GameMessagePayloads[T]) => {
+      if (!room) {
+        console.error('Attempted to send message without an active room')
+        return
+      }
 
-    room.send(type, payload)
-  }
+      room.send(type, payload)
+    },
+    [room]
+  )
 
-  const joinRoom = async (
-    username: string,
-    roomId: string,
-    pictureUrl: string
-  ) => {
+  const joinRoom = async (username: string, roomId: string, pictureUrl: string) => {
     console.log('JOINING ROOM', roomId)
-    const room = await client.joinById(roomId, {
+    const room = await client.joinById<MyRoomState>(roomId, {
       username,
       pictureUrl,
     })
     setRoom(room)
-    // setRoomId(room.id)
   }
 
   const createRoom = async (username: string, pictureUrl: string) => {
     console.log('CREATING ROOM')
     try {
-      const room = await client.create('my_room', {
+      const room = await client.create<MyRoomState>('my_room', {
         username,
         pictureUrl,
       })
       setRoom(room)
     } catch (error) {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
-      toast.error('Error creating room: ' + error.message)
+      const errorMessage = extractErrorMessage(error)
+      toast.error(`Error: ${errorMessage}`)
       console.error(error)
     }
   }
@@ -229,35 +225,22 @@ const GameProvider: React.FC<IGameProviderProps> = ({ children }) => {
       ...prevState,
       config,
     }))
-
-    // room?.send('game:setConfig', config)
     sendToRoom(MessageType.SET_CONFIG, config)
   }
 
-  const admCommand = (command: AdmCommandPayloads[AdmCommandType]) => {
-    // Send an adm command message to the server -> example command: "start" || "kick" || "start-new-game"
-    console.log('sending adm command:', command)
-
-    sendToRoom(MessageType.ADMIN_START, null)
-  }
-
-  // Player Actions
   const playerSelectCards = (cards: AnswerCard[]) => {
-    // Ensure that the `socket` is connected before emitting the event.
-    // if (!socket) return
-
-    // Emit the event to the server.
+    const payload = {
+      selection: cards,
+    }
     console.log('game:playerSelection', cards)
-    // socket.emit('game:playerSelection', cards)
+    sendToRoom(MessageType.PLAYER_SELECTION, payload)
   }
 
   const gameConfig = gameState.config
 
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const player = gameState.players.get(myId)
 
   useEffect(() => {
-    console.log('room Updated')
     if (room) {
       room.onMessage('room:joinedRoom', (roomId: string) => {
         console.log('a room:joinedRoom', roomId)
@@ -277,10 +260,9 @@ const GameProvider: React.FC<IGameProviderProps> = ({ children }) => {
 
   const value = {
     myId: myId,
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
     myStatus: player?.status || 'none',
-    // myStatus: gameState.players[myId]?.status || 'none',
     gameState,
+    room,
     roomId,
     gameConfig,
     startingState,
@@ -290,7 +272,7 @@ const GameProvider: React.FC<IGameProviderProps> = ({ children }) => {
     createRoom,
     leaveRoom,
     setConfig,
-    admCommand,
+    sendToRoom,
     playerSelectCards,
   }
 

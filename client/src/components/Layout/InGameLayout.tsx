@@ -1,15 +1,10 @@
 import router from 'next/router'
-import { useEffect } from 'react'
-import { useQuery } from 'react-query'
-import { CopyToClipboard } from '../Atoms/CopyToClipboard'
+import { useCallback, useEffect } from 'react'
 import { useGameContext } from '../GameContext'
 import PlayersList from '../PlayersList'
-import Image from 'next/image'
-import MuteButton from '../Atoms/MuteButton'
-import ContainerFooter from './ContainerFooter'
 import ContainerHeader from './ContainerHeader'
 import MobilePlayersList from '../MobilePlayersList'
-import BannerVertical from '../Ads/BannerVertical'
+// import BannerVertical from '../Ads/BannerVertical'
 
 interface IInGameLayoutProps {
   children: React.ReactNode
@@ -22,14 +17,14 @@ export default function InGameLayout({ children }: IInGameLayoutProps) {
 
   const roomSize = gameConfig?.roomSize?.toString() || '4'
 
-  const handleLeaveRoom = () => {
+  const handleLeaveRoom = useCallback(() => {
     void router.push('/')
     leaveRoom()
-  }
+  }, [leaveRoom])
 
   useEffect(() => {
     if (!roomId) handleLeaveRoom()
-  }, [roomId])
+  }, [handleLeaveRoom, roomId])
 
   return (
     <div className="min-h-screen-safe flex flex-col justify-between md:justify-center md:p-5">
@@ -41,24 +36,14 @@ export default function InGameLayout({ children }: IInGameLayoutProps) {
           </div>
           <div className="md:hidden" id="mobile-player-list">
             <div className="flex w-screen gap-3 overflow-x-scroll px-2 py-3 ">
-              <MobilePlayersList
-                players={playersList}
-                leaderId={gameState.leader}
-                roomSize={parseInt(roomSize)}
-              />
+              <MobilePlayersList players={playersList} leaderId={gameState.leader} roomSize={parseInt(roomSize)} />
             </div>
           </div>
           <div className="flex h-full overflow-clip">
             <div className="hidden flex-col gap-2 md:flex">
-              <PlayersList
-                players={playersList}
-                leaderId={gameState.leader}
-                roomSize={parseInt(roomSize)}
-              />
+              <PlayersList players={playersList} leaderId={gameState.leader} roomSize={parseInt(roomSize)} />
             </div>
-            <div className="flex w-full flex-col justify-between ">
-              {children}
-            </div>
+            <div className="flex w-full flex-col justify-between ">{children}</div>
           </div>
         </div>
       </div>

@@ -18,6 +18,9 @@ export default config({
      * Define your room handlers:
      */
     gameServer.define("my_room", MyRoom);
+
+    //@ts-ignore
+    global.gameServer = gameServer;
   },
 
   initializeExpress: app => {
@@ -26,6 +29,7 @@ export default config({
     });
 
     app.use("/decks", deckRoutes);
+
 
     /**
      * Use @colyseus/playground

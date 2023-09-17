@@ -1,12 +1,9 @@
-import {
-  AnswerCardSchema,
-  QuestionCardSchema,
-  TAnswerCard,
-  TQuestionCard,
-} from "../rooms/schema";
+import {AnswerCard} from "../../shared/types";
+import {AnswerCardSchema, QuestionCardSchema, TAnswerCard, TQuestionCard} from "../rooms/schema";
 import {TDeckFilters} from "../routes/schemas/deckSchemas";
 import db from "./database";
 import extractErrorMessage from "./extractErrorMessage";
+import {ArraySchema} from "@colyseus/schema";
 
 /**
  * Retrieves a deck by its ID, along with its associated questions and answers.
@@ -42,9 +39,7 @@ export const getDeckById = async (deckId: string) => {
     return deck;
   } catch (error) {
     const errorMessage = extractErrorMessage(error);
-    throw new Error(
-      `An error occurred while fetching the deck: ${errorMessage}`,
-    );
+    throw new Error(`An error occurred while fetching the deck: ${errorMessage}`);
   }
 };
 
@@ -133,9 +128,7 @@ export const getRandomQuestionCardFromDecks = async (
     };
   } catch (error) {
     const errorMessage = extractErrorMessage(error);
-    throw new Error(
-      `An error occurred while fetching the deck: ${errorMessage}`,
-    );
+    throw new Error(`An error occurred while fetching the deck: ${errorMessage}`);
   }
 };
 
@@ -158,7 +151,7 @@ export const getRandomAnswerCardsFromDecks = async (
   deckIds: string[],
   blacklistCardIds: string[],
   count: number,
-): Promise<{answerCards: TAnswerCard[]; remainingCount: number}> => {
+): Promise<{answerCards: AnswerCard[]; remainingCount: number}> => {
   try {
     // Retrieve the list of answers that are in the specified decks but not in the blacklist
     const answers = await db.answer.findMany({
@@ -226,9 +219,7 @@ export const getRandomAnswerCardsFromDecks = async (
     };
   } catch (error) {
     const errorMessage = extractErrorMessage(error);
-    throw new Error(
-      `An error occurred while fetching the answer cards: ${errorMessage}`,
-    );
+    throw new Error(`An error occurred while fetching the answer cards: ${errorMessage}`);
   }
 };
 
@@ -333,7 +324,5 @@ export const getAllUniqueLanguages = async (): Promise<string[]> => {
   });
 
   // Extract language values, filter out nulls, and return them as an array
-  return uniqueLanguages
-    .map(item => item.language)
-    .filter((lang): lang is string => lang !== null);
+  return uniqueLanguages.map(item => item.language).filter((lang): lang is string => lang !== null);
 };

@@ -3,7 +3,6 @@ import Layout from '~/components/Layout/Layout'
 
 import InGameLayout from '~/components/Layout/InGameLayout'
 import GameCard, { GameCardResult } from '~/components/Atoms/GameCard'
-import { ICard } from '~/models/Deck'
 import { useState } from 'react'
 import { toast } from 'react-toastify'
 import useSound from 'use-sound'
@@ -11,15 +10,10 @@ import { useAudio } from '~/components/AudioContext'
 import TimerTitle from '~/components/Layout/TimerScreen'
 import LoadingWithText from '~/components/Atoms/LoadingWithText'
 import useTranslation from 'next-translate/useTranslation'
+import { type Card } from '~/types'
 
 export default function Game() {
-  const {
-    isCurrentUserJudge,
-    gameState,
-    startingState,
-    myId,
-    playerSelectCards,
-  } = useGameContext()
+  const { isCurrentUserJudge, gameState, startingState, myId, playerSelectCards } = useGameContext()
   const myCards = gameState.players.get(myId)?.cards || []
 
   const { t } = useTranslation('game')
@@ -28,14 +22,14 @@ export default function Game() {
   const [playSwitchOff] = useSound('/sounds/switch-off.mp3')
   const { isMuted } = useAudio()
 
-  const [selectedCards, setSelectedCards] = useState<Array<ICard>>([])
+  const [selectedCards, setSelectedCards] = useState<Array<Card>>([])
 
   const { currentQuestionCard } = gameState
 
   const player = gameState.players.get(myId)
   const myStatus = player?.status
 
-  const handleCardClick = (card: ICard) => {
+  const handleCardClick = (card: Card) => {
     if (myStatus !== 'pending') return
 
     // if (!isMuted) checked ? playSwitchOn() : playSwitchOff()
@@ -44,10 +38,7 @@ export default function Game() {
     if (selectedCards.includes(card)) {
       setSelectedCards(selectedCards.filter((c) => c !== card))
       if (!isMuted) playSwitchOff()
-    } else if (
-      gameState.currentQuestionCard &&
-      selectedCards.length < gameState.currentQuestionCard.spaces
-    ) {
+    } else if (gameState.currentQuestionCard && selectedCards.length < gameState.currentQuestionCard.spaces) {
       setSelectedCards([...selectedCards, card])
       if (!isMuted) playSwitchOn()
     }
@@ -67,9 +58,7 @@ export default function Game() {
   }
 
   const canConfirm =
-    selectedCards.length === gameState.currentQuestionCard?.spaces &&
-    !isCurrentUserJudge &&
-    myStatus === 'pending'
+    selectedCards.length === gameState.currentQuestionCard?.spaces && !isCurrentUserJudge && myStatus === 'pending'
 
   const selectedCardsTextArray = selectedCards.map((card) => card.text) || []
 
@@ -83,25 +72,16 @@ export default function Game() {
 
   return (
     <InGameLayout>
-      <TimerTitle
-        key="Choose your cards"
-        subtitle={t('i-choose-the-cards-that-best-fit')}
-        time={time}
-      />
+      <TimerTitle key="Choose your cards" subtitle={t('i-choose-the-cards-that-best-fit')} time={time} />
       <div className="bg-destaque-mobile flex flex-1 flex-col overflow-y-auto py-2 text-accent md:mx-4">
         <div className="flex h-full flex-1 flex-col justify-between ">
           <div className="flex flex-1 items-center justify-center px-3">
             {currentQuestionCard && (
-              <GameCardResult
-                question={currentQuestionCard.text}
-                answers={selectedCardsTextArray}
-              />
+              <GameCardResult question={currentQuestionCard.text || ''} answers={selectedCardsTextArray} />
             )}
           </div>
 
-          {isCurrentUserJudge && (
-            <LoadingWithText text="You are the Judge of the round, wait the others to play." />
-          )}
+          {isCurrentUserJudge && <LoadingWithText text="You are the Judge of the round, wait the others to play." />}
           {!isCurrentUserJudge && (
             <div className="grid grid-cols-1 gap-2 overflow-y-auto lg:grid-cols-2">
               {myCards.map((card, index) => {
@@ -122,11 +102,7 @@ export default function Game() {
       </div>
       {!isCurrentUserJudge && (
         <div className="flex items-center justify-center px-4 py-2">
-          <button
-            className="btn flex-1"
-            onClick={handleConfirm}
-            disabled={!canConfirm}
-          >
+          <button className="btn flex-1" onClick={handleConfirm} disabled={!canConfirm}>
             {t('i-confirm')}
           </button>
         </div>

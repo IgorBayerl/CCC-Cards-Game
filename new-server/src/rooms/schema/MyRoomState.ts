@@ -5,13 +5,7 @@ import {PlayerSchema} from "./Player";
 import {RoundSchema} from "./Round";
 
 
-export type RoomStatus =
-  | "waiting"
-  | "starting"
-  | "playing"
-  | "judging"
-  | "results"
-  | "finished";
+type RoomStatus = "waiting" | "starting" | "playing" | "judging" | "results" | "finished";
 
 export class MyRoomState extends Schema {
   //lobby config states
