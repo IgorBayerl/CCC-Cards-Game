@@ -5,7 +5,7 @@
   "scripts": {
     "copy:shared": "ncp ../shared ./shared",
     "prepare": "npm run copy:shared",
-    "build": "next build",
+    "build": "yarn copy:shared && next build",
     "dev": "next dev",
     "lint": "next lint",
     "start": "next start"
