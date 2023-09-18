@@ -41,6 +41,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 
+shared
 
 
 .pnp.*
