@@ -1,6 +1,6 @@
 import { GiCrown } from 'react-icons/gi'
 import { CgProfile } from 'react-icons/cg'
-import { type Player } from '~/lib/shared/types'
+import { type Player } from '~/types'
 
 interface ICustomAvatarProps {
   src: string

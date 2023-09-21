@@ -4,7 +4,7 @@ const path = require('path');
 
 const sharedDir = path.join(__dirname, '../../shared');
 const serverSharedDir = path.join(__dirname, '../../server', 'shared');
-const clientSharedDir = path.join(__dirname, '../../client/src/lib', 'shared');
+const clientSharedDir = path.join(__dirname, '../../client', 'shared');
 
 // Copy function
 function copyToDestinations(filePath) {

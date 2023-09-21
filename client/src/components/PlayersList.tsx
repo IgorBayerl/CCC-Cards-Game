@@ -1,6 +1,6 @@
 import RoomChair from './Atoms/RoomChair'
 import { motion, AnimatePresence } from 'framer-motion'
-import { type Player } from '~/lib/shared/types'
+import { type Player } from '~/types'
 interface IProps {
   players: Player[]
   leaderId: string

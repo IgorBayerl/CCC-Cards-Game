@@ -1,4 +1,4 @@
-import { MessageType } from '~/lib/shared/types'
+import { MessageType } from '~/types'
 import { useGameContext } from './GameContext'
 
 export default function DevTools() {

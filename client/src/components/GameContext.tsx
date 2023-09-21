@@ -25,7 +25,7 @@ import {
   type RoomStatus,
   MessageType,
   type GameMessagePayloads,
-} from '~/lib/shared/types'
+} from '~/types'
 import extractErrorMessage from '~/lib/extractErrorMessage'
 
 interface IGameContextValue {

@@ -1,6 +1,6 @@
 import extractErrorMessage from '~/lib/extractErrorMessage'
 import { type FetchDeckResponse, type FetchLanguages } from '~/models/ApiRequests'
-import { type DeckFilters } from '~/lib/shared/types'
+import { type DeckFilters } from '~/types'
 import api from '~/services/api'
 
 export async function fetchDecks(filters: DeckFilters) {
