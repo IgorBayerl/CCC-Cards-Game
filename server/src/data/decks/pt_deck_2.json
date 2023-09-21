@@ -1,8 +1,7 @@
 {
-  "id": "2",
-  "name": "Baralho BR - O ouro recuperado",
+  "title": "Baralho BR - O ouro recuperado",
   "description": "O nosso segundo baralho brasileiro",
-  "category": 1,
+  "darknessLevel": 2,
   "icon": "https://cdn.iconscout.com/icon/free/png-256/free-social-275-116309.png",
   "language": "pt",
   "cards": {

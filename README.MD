@@ -8,17 +8,17 @@ A Cards against Humanity clone online game.
 This project is divided into two primary sections:
 
 - `client`: This is the frontend of the application powered by Next.js.
-- `new-server`: This is the backend of the application handling API and data-related operations.
+- `server`: This is the backend of the application handling API and data-related operations.
 
-Additionally, there's a `shared` folder which contains shared types and utilities that both the `client` and `new-server` might need access to.
+Additionally, there's a `shared` folder which contains shared types and utilities that both the `client` and `server` might need access to.
 
 ### Why the `prepare` scripts?
 
-Due to the nature of our project structure and the dependencies involved, the `shared` folder needs to be accessed by both the `client` and `new-server` directories. However, certain build processes and configurations, such as the use of Next.js and its transpilation mechanisms, have made direct sharing complex.
+Due to the nature of our project structure and the dependencies involved, the `shared` folder needs to be accessed by both the `client` and `server` directories. However, certain build processes and configurations, such as the use of Next.js and its transpilation mechanisms, have made direct sharing complex.
 
-To bypass these complexities, we've employed a simple solution: prior to starting our development environment or building our project, we copy the `shared` folder's contents to both the `client` and `new-server` directories. This ensures that both parts of our application have the shared utilities they need, and it also ensures that our build processes work smoothly.
+To bypass these complexities, we've employed a simple solution: prior to starting our development environment or building our project, we copy the `shared` folder's contents to both the `client` and `server` directories. This ensures that both parts of our application have the shared utilities they need, and it also ensures that our build processes work smoothly.
 
-This process is automated using the `prepare` scripts present in both the `client` and `new-server` directories. Additionally, the `prepare.sh` script at the root performs the same task but doesn't watch for changes, making it suitable for one-off preparations.
+This process is automated using the `prepare` scripts present in both the `client` and `server` directories. Additionally, the `prepare.sh` script at the root performs the same task but doesn't watch for changes, making it suitable for one-off preparations.
 
 ## Setting up the Project
 
@@ -30,11 +30,11 @@ This process is automated using the `prepare` scripts present in both the `clien
 
 2. **Install Dependencies**
 
-   Navigate to both the `client` and `new-server` directories in separate terminal windows/tabs and install their respective dependencies.
+   Navigate to both the `client` and `server` directories in separate terminal windows/tabs and install their respective dependencies.
 
    ```bash
    cd client && yarn install
-   cd new-server && yarn install
+   cd server && yarn install
    ```
 
 3. **Run the Prepare Script**
@@ -43,7 +43,7 @@ This process is automated using the `prepare` scripts present in both the `clien
     ./prepare.sh
     ```
 
-   This script will ensure the `shared` folder's content is available for both the `client` and `new-server` parts of the application.
+   This script will ensure the `shared` folder's content is available for both the `client` and `server` parts of the application.
 
 4. **Start the Development Servers**
 
@@ -53,7 +53,7 @@ This process is automated using the `prepare` scripts present in both the `clien
    yarn dev
    ```
 
-   And in the `new-server` directory:
+   And in the `server` directory:
 
    ```bash
    yarn dev

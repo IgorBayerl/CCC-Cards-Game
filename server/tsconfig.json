@@ -1,19 +1,17 @@
 {
   "compilerOptions": {
-    "target": "es6",
-    "module": "commonjs",
-    "lib": ["es6"],
-    "allowJs": true,
     "outDir": "build",
-    "rootDir": "src",
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "node",
     "strict": true,
-    "noImplicitAny": true,
+    "allowJs": true,
+    "strictNullChecks": false,
     "esModuleInterop": true,
-    "resolveJsonModule": true
+    "experimentalDecorators": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "useDefineForClassFields": false
   },
-  "include": ["src/**/*.ts", "src/tests/GameRoom.test.ts"],
-  "exclude": ["node_modules", "test/**/*", "./build"],
-  "paths": {
-    "~/*": ["./*"]
-  }
+  "include": ["src"]
 }

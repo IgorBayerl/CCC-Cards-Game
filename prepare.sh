@@ -6,6 +6,6 @@ cd client
 yarn prepare
 
 # Go to server, install dependencies, and run prepare
-cd ../new-server
+cd ../server
 # yarn install
 yarn prepare

@@ -1,4 +1,4 @@
-new-server
+server
 ├── .env
 ├── Dockerfile
 ├── ecosystem.config.js

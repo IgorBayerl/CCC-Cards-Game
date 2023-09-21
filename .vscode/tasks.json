@@ -14,7 +14,7 @@
     {
       "label": "start-server",
       "type": "shell",
-      "command": "cd new-server && yarn dev",
+      "command": "cd server && yarn dev",
       "presentation": {
         "panel": "dedicated",
         "reveal": "always"

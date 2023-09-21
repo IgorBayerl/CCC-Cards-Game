@@ -3,7 +3,7 @@ const fs = require('fs-extra');
 const path = require('path');
 
 const sharedDir = path.join(__dirname, '../../shared');
-const serverSharedDir = path.join(__dirname, '../../new-server', 'shared');
+const serverSharedDir = path.join(__dirname, '../../server', 'shared');
 const clientSharedDir = path.join(__dirname, '../../client', 'shared');
 
 // Copy function
