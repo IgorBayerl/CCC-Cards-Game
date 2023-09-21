@@ -1,4 +1,4 @@
-import { type DeckData, type DeckFilters } from '~/types'
+import { type DeckData, type DeckFilters } from '~/lib/shared/types'
 import { type ServerResponse } from './Generics'
 
 // export type DeckFilters = {

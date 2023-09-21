@@ -1,6 +1,6 @@
 import React from 'react'
 import { classNames } from '~/lib/utils'
-import { type Card } from '~/types'
+import { type Card } from '~/lib/shared/types'
 
 interface IGameCardProps {
   cardInfo: Card

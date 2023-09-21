@@ -1,4 +1,4 @@
-import { type Player } from '~/types'
+import { type Player } from '~/lib/shared/types'
 import { MobileRoomChair } from './Atoms/RoomChair'
 
 interface IProps {

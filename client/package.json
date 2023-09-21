@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "copy:shared": "ncp ../shared ./shared",
+    "copy:shared": "ncp ../shared ./src/lib/shared",
     "prepare": "npm run copy:shared",
     "build": "next build",
     "dev": "next dev",

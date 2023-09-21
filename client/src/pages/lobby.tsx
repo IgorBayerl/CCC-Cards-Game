@@ -20,7 +20,7 @@ import MobilePlayersList from '~/components/MobilePlayersList'
 import LoadingFullScreen from '~/components/Atoms/LoadingFullScreen'
 
 import { toggleInArray } from '~/lib/utils'
-import { MessageType, type Deck, type DeckFilters } from '~/types'
+import { MessageType, type Deck, type DeckFilters } from '~/lib/shared/types'
 
 export default function LobbyPage() {
   const { roomId, gameState, isCurrentUserLeader, gameConfig, leaveRoom, setConfig, sendToRoom } = useGameContext()

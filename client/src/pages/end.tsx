@@ -5,7 +5,7 @@ import { useCallback, useState } from 'react'
 import Image from 'next/image'
 import ConfettiExplosion from 'react-confetti-explosion'
 import useTranslation from 'next-translate/useTranslation'
-import { MessageType, type Player } from '~/types'
+import { MessageType, type Player } from '~/lib/shared/types'
 
 export default function End() {
   const { gameState, sendToRoom, isCurrentUserLeader } = useGameContext()

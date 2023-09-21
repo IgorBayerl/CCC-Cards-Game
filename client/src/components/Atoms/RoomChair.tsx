@@ -1,7 +1,7 @@
 import { TbMoodEmpty } from 'react-icons/tb'
 import PlayerItem, { MobilePlayerItem } from './PlayerItem'
 import useTranslation from 'next-translate/useTranslation'
-import { type Player } from '~/types'
+import { type Player } from '~/lib/shared/types'
 
 interface IRoomChairProps {
   player?: Player

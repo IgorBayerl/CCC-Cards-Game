@@ -5,7 +5,7 @@ import { getPlayerStatus, shouldShowPlayerStatus, type TPlayerStatus } from '~/l
 import { CgProfile } from 'react-icons/cg'
 import { GiCrown } from 'react-icons/gi'
 import classNames from 'classnames'
-import { type Player } from '~/types'
+import { type Player } from '~/lib/shared/types'
 
 interface IPlayerItemProps {
   player: Player
