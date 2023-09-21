@@ -1,13 +1,13 @@
-FROM node:20-alpine
+# Colyseus.js Server
+FROM node:14 AS colyseus-server
 
 WORKDIR /app
 
-COPY package*.json ./
-
+COPY ./package*.json ./
 RUN npm install
 
 COPY . .
 
-ENV PORT=3000
+EXPOSE 2567
 
-CMD [ "npm", "start" ]
+CMD ["npm", "start"]

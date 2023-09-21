@@ -1,6 +1,6 @@
 import { type AppType } from 'next/dist/shared/lib/utils'
 import { ToastContainer } from 'react-toastify'
-import { SocketProvider } from '~/components/SocketContext'
+// import { SocketProvider } from '~/components/SocketContext'
 import { GameProvider } from '~/components/GameContext'
 
 import Head from 'next/head'
@@ -13,24 +13,25 @@ import '~/styles/globals.css'
 import { AudioProvider } from '~/components/AudioContext'
 import TrackingCode from '~/components/TrackingCode'
 import { useRouter } from 'next/router'
+import DevTools from '~/components/devTools'
 
-import * as gtag from '~/lib/gtag'
+// import * as gtag from '~/lib/gtag'
 
-const url = process.env.NEXT_PUBLIC_GAME_SERVER || 'http://localhost:3365'
+const url = process.env.NEXT_PUBLIC_GAME_SERVER || 'http://localhost:2567'
 
 const queryClient = new QueryClient()
 
 const MyApp: AppType = ({ Component, pageProps }) => {
   const router = useRouter()
-  useEffect(() => {
-    const handleRouteChange = (url: string) => {
-      gtag.pageview(url)
-    }
-    router.events.on('routeChangeComplete', handleRouteChange)
-    return () => {
-      router.events.off('routeChangeComplete', handleRouteChange)
-    }
-  }, [router.events])
+  // useEffect(() => {
+  //   const handleRouteChange = (url: string) => {
+  //     gtag.pageview(url)
+  //   }
+  //   router.events.on('routeChangeComplete', handleRouteChange)
+  //   return () => {
+  //     router.events.off('routeChangeComplete', handleRouteChange)
+  //   }
+  // }, [router.events])
 
   return (
     <>
@@ -49,10 +50,7 @@ const MyApp: AppType = ({ Component, pageProps }) => {
       />
       <Head>
         <title>Cyber Chaos Cards</title>
-        <meta
-          name="viewport"
-          content="minimum-scale=1, initial-scale=1, width=device-width"
-        />
+        <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width" />
         <link rel="icon" type="image/x-icon" href="icon_dark.ico" />
 
         <meta name="title" content="Cyber Chaos Cards" />
@@ -73,20 +71,16 @@ const MyApp: AppType = ({ Component, pageProps }) => {
         <meta httpEquiv="Content-Type" content="text/html; charset=utf-8" />
         <meta name="author" content="Igor Bayerl" />
 
-        <meta
-          name="google-site-verification"
-          content="mtI8bECFOtk3xVJvSMCx-devj_czMM88dfw1pQnNlA4"
-        />
+        <meta name="google-site-verification" content="mtI8bECFOtk3xVJvSMCx-devj_czMM88dfw1pQnNlA4" />
       </Head>
       <ToastContainer />
       <QueryClientProvider client={queryClient}>
-        <SocketProvider url={url}>
-          <AudioProvider>
-            <GameProvider>
-              <Component {...pageProps} />
-            </GameProvider>
-          </AudioProvider>
-        </SocketProvider>
+        <AudioProvider>
+          <GameProvider>
+            {/* <DevTools /> */}
+            <Component {...pageProps} />
+          </GameProvider>
+        </AudioProvider>
         {/* <ReactQueryDevtools /> */}
       </QueryClientProvider>
     </>

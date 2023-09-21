@@ -1,14 +1,13 @@
-import { type IPlayer } from '~/components/GameContext'
-import PlayerItem from './Atoms/PlayerItem'
 import RoomChair from './Atoms/RoomChair'
 import { motion, AnimatePresence } from 'framer-motion'
+import { type Player } from '~/types'
 interface IProps {
-  players: IPlayer[]
-  leader: IPlayer | null
+  players: Player[]
+  leaderId: string
   roomSize: number
 }
 
-export default function PlayersList({ players, leader, roomSize }: IProps) {
+export default function PlayersList({ players, leaderId, roomSize }: IProps) {
   // const sortedPlayers = [...players].sort((a, b) => b.score - a.score)
   const sortedPlayers = [...players].sort((a, b) => {
     if (a.isOffline && !b.isOffline) {
@@ -21,10 +20,7 @@ export default function PlayersList({ players, leader, roomSize }: IProps) {
     }
   })
 
-  const freeSpaces = Array.from(
-    { length: roomSize - players.length },
-    (_, index) => index
-  )
+  const freeSpaces = Array.from({ length: roomSize - players.length }, (_, index) => index)
 
   return (
     <div className="flex h-full w-72 flex-col items-center justify-start gap-3 overflow-y-auto overflow-x-clip scrollbar-none">
@@ -38,7 +34,7 @@ export default function PlayersList({ players, leader, roomSize }: IProps) {
               transition={{ type: 'spring' }}
               key={player.id}
             >
-              <RoomChair player={player} leader={leader?.id === player.id} />
+              <RoomChair player={player} leader={leaderId === player.id} />
             </motion.div>
           ))}
 

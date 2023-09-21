@@ -1,10 +1,10 @@
 import { GiCrown } from 'react-icons/gi'
 import { CgProfile } from 'react-icons/cg'
-import { IPlayer } from '../GameContext'
+import { type Player } from '~/types'
 
 interface ICustomAvatarProps {
   src: string
-  player: IPlayer
+  player: Player
   leader: boolean
   itsMe: boolean
 }

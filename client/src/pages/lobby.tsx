@@ -1,11 +1,10 @@
 import { useGameContext } from '~/components/GameContext'
 import PlayersList from '~/components/PlayersList'
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import router from 'next/router'
 import { CopyToClipboard } from '~/components/Atoms/CopyToClipboard'
 import { useQuery } from 'react-query'
-import { getDecks } from '~/api/deck'
-import { type IDeckConfigScreen } from '~/models/Deck'
+import { fetchDecks, fetchLanguages } from '~/api/deck'
 import ContainerHeader from '~/components/Layout/ContainerHeader'
 import { toast } from 'react-toastify'
 import useSound from 'use-sound'
@@ -19,28 +18,17 @@ import LoadingWithText from '~/components/Atoms/LoadingWithText'
 import useTranslation from 'next-translate/useTranslation'
 import MobilePlayersList from '~/components/MobilePlayersList'
 import LoadingFullScreen from '~/components/Atoms/LoadingFullScreen'
-import BannerVertical from '~/components/Ads/BannerVertical'
 
-const languagesMock = [
-  // { id: 'en', name: 'English' },
-  { id: 'pt', name: 'Portuguese' },
-  // { id: 'es', name: 'Spanish' },
-]
+import { toggleInArray } from '~/lib/utils'
+import { MessageType, type Deck } from '~/types'
 
 export default function LobbyPage() {
-  const {
-    roomId,
-    gameState,
-    isCurrentUserLeader,
-    gameConfig,
-    leaveRoom,
-    setConfig,
-    admCommand,
-  } = useGameContext()
+  const { roomId, gameState, isCurrentUserLeader, gameConfig, leaveRoom, setConfig, sendToRoom } = useGameContext()
 
   const { t } = useTranslation('lobby')
 
-  const playersList = gameState.players
+  const playersList = Array.from(gameState.players.values())
+
   const roomSize = gameConfig?.roomSize?.toString() || '4'
 
   // TODO: change this to a getStaticProps with revalidate of 1 hour
@@ -57,14 +45,14 @@ export default function LobbyPage() {
 
   const [activeTab, setActiveTab] = useState(tabs[0])
 
-  const handleLeaveRoom = () => {
+  const handleLeaveRoom = useCallback(() => {
     void router.push('/')
     leaveRoom()
-  }
+  }, [leaveRoom])
 
   useEffect(() => {
     if (!roomId) handleLeaveRoom()
-  }, [roomId])
+  }, [handleLeaveRoom, roomId])
 
   const handleChangeRoomSize = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const value = e.target.value
@@ -74,13 +62,13 @@ export default function LobbyPage() {
 
   const handleStartGame = () => {
     //verify if there are enough players
-    if (gameState.players.length < 2) {
+    if (playersList.length < 2) {
       const message = t('i-you-need-at-least-2-players-to-start-a-game')
       toast.error(message)
       return
     }
 
-    admCommand('start')
+    sendToRoom(MessageType.ADMIN_START, null)
   }
 
   if (!roomId) {
@@ -120,25 +108,17 @@ export default function LobbyPage() {
           </div>
           <div className="md:hidden" id="mobile-player-list">
             <div className="flex w-screen gap-3 overflow-x-scroll px-2 py-3 ">
-              <MobilePlayersList
-                players={playersList}
-                leader={gameState.leader}
-                roomSize={parseInt(roomSize)}
-              />
+              <MobilePlayersList players={playersList} leaderId={gameState.leader} roomSize={parseInt(roomSize)} />
             </div>
             <div className="px-2">
               <select
-                className="select-bordered select w-full"
+                className="select select-bordered w-full"
                 disabled={!isCurrentUserLeader}
                 value={roomSize}
                 onChange={handleChangeRoomSize}
               >
                 {Array.from({ length: 17 }, (_, i) => i + 4).map((i) => (
-                  <option
-                    className="text-lg"
-                    key={i}
-                    value={i.toString()}
-                  >{`${i} ${t('i-players')}`}</option>
+                  <option className="text-lg" key={i} value={i.toString()}>{`${i} ${t('i-players')}`}</option>
                 ))}
               </select>
             </div>
@@ -146,37 +126,26 @@ export default function LobbyPage() {
           <div className="flex h-full overflow-clip">
             <div className="hidden flex-col gap-2 p-1 md:flex">
               <select
-                className="select-bordered select w-full"
+                className="select select-bordered w-full"
                 disabled={!isCurrentUserLeader}
                 value={roomSize}
                 onChange={handleChangeRoomSize}
               >
                 {Array.from({ length: 17 }, (_, i) => i + 4).map((i) => (
-                  <option
-                    className="text-lg"
-                    key={i}
-                    value={i.toString()}
-                  >{`${i} ${t('i-players')}`}</option>
+                  <option className="text-lg" key={i} value={i.toString()}>{`${i} ${t('i-players')}`}</option>
                 ))}
               </select>
 
-              <PlayersList
-                players={playersList}
-                leader={gameState.leader}
-                roomSize={parseInt(roomSize)}
-              />
+              <PlayersList players={playersList} leaderId={gameState.leader} roomSize={parseInt(roomSize)} />
             </div>
             <div className="flex w-full flex-col justify-between ">
               <div className="tabs md:px-3">
                 {tabs.map((tab) => (
                   <a
                     key={tab}
-                    className={classNames(
-                      'tab-bordered tab tab-lg flex-1 whitespace-nowrap  text-white',
-                      {
-                        'tab-active': activeTab === tab,
-                      }
-                    )}
+                    className={classNames('tab-bordered tab tab-lg flex-1 whitespace-nowrap  text-white', {
+                      'tab-active': activeTab === tab,
+                    })}
                     onClick={() => setActiveTab(tab)}
                   >
                     {t(tabsNames[tab])}
@@ -184,20 +153,15 @@ export default function LobbyPage() {
                 ))}
               </div>
 
-              <div className="bg-destaque-mobile flex-1 overflow-y-clip ">
-                {renderTabContent()}
-              </div>
+              <div className="bg-destaque-mobile flex-1 overflow-y-clip ">{renderTabContent()}</div>
               {isCurrentUserLeader && (
                 <div className="flex justify-center gap-5 px-4 py-2">
                   <div className="hidden flex-1 md:flex">
-                    <CopyToClipboard
-                      text={t('i-invite')}
-                      content={roomInviteLink}
-                    />
+                    <CopyToClipboard text={t('i-invite')} content={roomInviteLink} />
                   </div>
                   <div className="flex flex-1 md:hidden">
                     <button
-                      className="btn-outline btn-accent btn flex w-full flex-1 items-center justify-between gap-3 md:hidden"
+                      className="btn-outline btn btn-accent flex w-full flex-1 items-center justify-between gap-3 md:hidden"
                       onClick={handleShareClicked}
                     >
                       <Link size={25} weight="bold" />
@@ -216,11 +180,7 @@ export default function LobbyPage() {
                   </button>
                 </div>
               )}
-              {!isCurrentUserLeader && (
-                <LoadingWithText
-                  text={t('i-waiting-the-host-start-the-game')}
-                />
-              )}
+              {!isCurrentUserLeader && <LoadingWithText text={t('i-waiting-the-host-start-the-game')} />}
             </div>
           </div>
         </div>
@@ -240,11 +200,11 @@ function LobbySettingsTab() {
 
   const handleChangeTimeToPlay = (value: string) => {
     const newTimeToPlay = parseInt(value)
-    setConfig({ ...gameConfig, time: newTimeToPlay })
+    setConfig({ ...gameConfig, roundTime: newTimeToPlay })
   }
 
   const scoreToWin = gameConfig?.scoreToWin?.toString() || '10'
-  const timeToPlay = gameConfig?.time?.toString() || '60'
+  const timeToPlay = gameConfig?.roundTime?.toString() || '60'
 
   return (
     <div className="flex h-full flex-col overflow-y-auto px-2 pt-2 md:px-3">
@@ -254,7 +214,7 @@ function LobbySettingsTab() {
           {t('i-score-to-win')}
         </label>
         <select
-          className="select-bordered select"
+          className="select select-bordered"
           id="score-to-win"
           onChange={(e) => handleChangeScoreToWin(e.target.value)}
           disabled={!isCurrentUserLeader}
@@ -274,18 +234,14 @@ function LobbySettingsTab() {
           {t('i-time')}
         </label>
         <select
-          className="select-bordered select"
+          className="select select-bordered"
           id="score-to-win"
           onChange={(e) => handleChangeTimeToPlay(e.target.value)}
           disabled={!isCurrentUserLeader}
           value={timeToPlay}
         >
           {Array.from({ length: 6 }, (_, i) => (i + 1) * 10).map((i) => (
-            <option
-              className="text-lg"
-              key={`${i}_seconds`}
-              value={i.toString()}
-            >{`${i} ${t('i-seconds')}`}</option>
+            <option className="text-lg" key={`${i}_seconds`} value={i.toString()}>{`${i} ${t('i-seconds')}`}</option>
           ))}
         </select>
       </div>
@@ -293,133 +249,126 @@ function LobbySettingsTab() {
   )
 }
 
-interface ICategory {
-  id: number
-  name: string
-}
+// Reusable Components
+// TODO: remove this any
+const FilterLabel = ({ length, label }: { length: number; label: string }) => (
+  <span className="flex gap-2">
+    <span>{length > 0 ? `${length} Selected` : label}</span>
+  </span>
+)
 
-interface ILanguage {
-  id: string
-  name: string
+const queryConfig = {
+  refetchOnWindowFocus: false,
+  refetchOnMount: false,
 }
 
 function LobbyDecksTab() {
+  // Localization and Context
   const { t } = useTranslation('lobby')
+  const { gameConfig, setConfig, isCurrentUserLeader } = useGameContext()
+  const { isMuted } = useAudio()
+
+  // Sounds
+  const [playSwitchOn] = useSound('/sounds/switch-on.mp3')
+  const [playSwitchOff] = useSound('/sounds/switch-off.mp3')
+
+  // States
+  const [selectedDarknessLevels, setSelectedDarknessLevels] = useState([1, 2, 3])
+  const [selectedLanguages, setSelectedLanguages] = useState(['pt'])
+  const [isModalCategoryOpen, setIsModalCategoryOpen] = useState(false)
+  const [isModalLanguageOpen, setIsModalLanguageOpen] = useState(false)
+
+  // const initialFilters: DeckFilters = {
+  //   darknessLevel: [1, 2, 3],
+  //   language: ['pt'],
+  //   title: '',
+  // }
+
+  const fetchDecksWithFilters = () =>
+    fetchDecks({
+      language: selectedLanguages,
+      darknessLevel: selectedDarknessLevels,
+      title: '',
+    })
+
+  const decksResponse = useQuery(
+    ['get-decks', selectedLanguages, selectedDarknessLevels],
+    () => fetchDecksWithFilters(),
+    queryConfig
+  )
+
+  const languagesResponse = useQuery('get-languages', fetchLanguages, queryConfig)
 
   const categoriesMock = [
     {
-      id: 0,
+      id: 1,
       name: t('i-family-friendly'),
     },
     {
-      id: 1,
+      id: 2,
       name: t('i-safe-for-stream'),
     },
     {
-      id: 2,
+      id: 3,
       name: t('i-mature-humor'),
     },
     {
-      id: 3,
+      id: 4,
       name: t('i-chaos'),
     },
     {
-      id: 4,
+      id: 5,
       name: t('i-uncensored-raw'),
     },
   ]
 
-  const { gameConfig, setConfig, isCurrentUserLeader } = useGameContext()
-  const { isMuted } = useAudio()
-
-  const [playSwitchOn] = useSound('/sounds/switch-on.mp3')
-  const [playSwitchOff] = useSound('/sounds/switch-off.mp3')
-
-  const defaultLanguage =
-    languagesMock.find((language) => language.id === router.locale) || {
-      id: 'pt',
-      name: 'Português',
-    } ||
-    null //TODO: Remove this default language in the future
-
-  const defaultCategory =
-    categoriesMock.find((category) => category.id === 1) || null
-
-  const [selectedCategory, setSelectedCategory] = useState<ICategory | null>(
-    defaultCategory
-  )
-  const [isModalCategoryOpen, setIsModalCategoryOpen] = useState<boolean>(false)
-
-  const [selectedLanguage, setSelectedLanguage] = useState<ILanguage | null>(
-    defaultLanguage
-  )
-  const [isModalLanguageOpen, setIsModalLanguageOpen] = useState<boolean>(false)
-
-  const decksResponse = useQuery(
-    ['get-decks', selectedLanguage, selectedCategory],
-    () =>
-      getDecks({
-        language: selectedLanguage?.id,
-        category: selectedCategory?.id,
-      })
-  )
-
-  const toggleCategorySelection = (category: ICategory) => {
-    if (selectedCategory && selectedCategory.id === category.id) {
-      setSelectedCategory(null)
-    } else {
-      setSelectedCategory(category)
-    }
-    setIsModalCategoryOpen(false)
+  // Handlers
+  const toggleDarknessLevel = (level: number) => {
+    setSelectedDarknessLevels((prevLevels) => toggleInArray(prevLevels, level))
   }
 
-  const toggleLanguageSelection = (language: ILanguage) => {
-    if (selectedLanguage && selectedLanguage.id === language.id) {
-      setSelectedLanguage(null)
-    } else {
-      setSelectedLanguage(language)
-    }
-    setIsModalLanguageOpen(false)
+  const toggleLanguageSelection = (language: string) => {
+    setSelectedLanguages((prevLanguages) => toggleInArray(prevLanguages, language))
   }
 
-  if (decksResponse.isLoading) {
-    return <LoadingFullScreen />
-  }
-
-  if (decksResponse.isError || !decksResponse.data) {
-    return <div>Something went wrong!</div>
-  }
-
-  const decksData = decksResponse.data
-
-  const handleDeckChange = (
-    event: React.ChangeEvent<HTMLInputElement>,
-    id: string
-  ) => {
+  const handleDeckChange = (event: React.ChangeEvent<HTMLInputElement>, id: string) => {
     const { checked } = event.target
 
     if (!isMuted) checked ? playSwitchOn() : playSwitchOff()
 
-    let newSelectedDecks: IDeckConfigScreen[] = []
+    let newSelectedDecks: Deck[] = [] //TODO fix this types
     if (checked) {
+      // deck to add is the deck with the id passed as argument
       const deckToAdd = decksData.find((deck) => deck.id === id)
+
+      // if the deck is not found, log an error and return
       if (!deckToAdd) return console.error(`Deck not found with id ${id}`)
-      newSelectedDecks = [...gameConfig.decks, deckToAdd]
+
+      newSelectedDecks = [...gameConfig.availableDecks, deckToAdd] //TODO fix this types
     } else {
-      newSelectedDecks = gameConfig.decks.filter((deck) => deck.id !== id)
+      newSelectedDecks = gameConfig.availableDecks.filter((deck) => deck.id !== id)
     }
 
-    setConfig({ ...gameConfig, decks: newSelectedDecks })
+    setConfig({ ...gameConfig, availableDecks: newSelectedDecks })
   }
 
-  const decksList: IDeckConfigScreen[] = isCurrentUserLeader
+  if (decksResponse.isLoading || languagesResponse.isLoading) {
+    return <LoadingFullScreen />
+  }
+
+  if (decksResponse.isError || !decksResponse.data || languagesResponse.isError || !languagesResponse.data) {
+    return <div>Something went wrong!</div>
+  }
+
+  const decksData = decksResponse.data.data.decks
+  const languagesData = languagesResponse.data
+
+  const decksList: Deck[] = isCurrentUserLeader
     ? decksData.map((deck) => ({
         ...deck,
-        selected: gameConfig.decks.some(
-          (selectedDeck) => selectedDeck.id === deck.id
-        ),
+        selected: gameConfig.availableDecks.some((selectedDeck) => selectedDeck.id === deck.id),
       }))
-    : gameConfig.decks.map((deck) => ({
+    : gameConfig.availableDecks.map((deck) => ({
         ...deck,
         selected: true,
       }))
@@ -428,24 +377,12 @@ function LobbyDecksTab() {
     <div className="flex h-full flex-col px-2 pt-2 md:px-0">
       {isCurrentUserLeader && (
         <div className="flex gap-3 rounded-md bg-white bg-opacity-20 p-2 md:mx-3">
-          <label
-            htmlFor="modal-language"
-            className="btn-outline btn-accent btn justify-between gap-2"
-          >
-            <Globe size={25} weight="bold" /> {selectedLanguage?.id || 'All'}
-            <div />
+          <label htmlFor="modal-language" className="btn-outline btn btn-accent justify-between gap-2">
+            <Globe size={25} weight="bold" />
+            <FilterLabel length={selectedLanguages.length} label="All" />
           </label>
-          <label
-            htmlFor="modal-category"
-            className="btn-outline btn-accent btn flex-1"
-          >
-            {selectedCategory ? (
-              <span className="flex gap-2">
-                <span>{selectedCategory.name}</span>
-              </span>
-            ) : (
-              <span className="flex gap-2">All Categories</span>
-            )}
+          <label htmlFor="modal-category" className="btn-outline btn btn-accent flex-1">
+            <FilterLabel length={selectedDarknessLevels.length} label="All Categories" />
           </label>
         </div>
       )}
@@ -468,9 +405,8 @@ function LobbyDecksTab() {
                 className={classNames(
                   'flex h-auto flex-nowrap items-center justify-between gap-2 border-2 py-2 pl-2 text-left normal-case',
                   {
-                    'btn-ghost btn': isCurrentUserLeader,
-                    'btn-disabled btn-ghost btn-active btn text-accent':
-                      !isCurrentUserLeader,
+                    'btn btn-ghost': isCurrentUserLeader,
+                    'btn btn-disabled btn-active btn-ghost text-accent': !isCurrentUserLeader,
                     'border-white hover:border-white': deck.selected,
                     'border-transparent': !deck.selected,
                   }
@@ -480,13 +416,13 @@ function LobbyDecksTab() {
                   <Image
                     // src={deck.icon}
                     src="/icon_dark.png"
-                    alt={deck.name}
+                    alt={deck.title}
                     width={100}
                     height={100}
                     className="aspect-square h-16 w-16 rounded-xl bg-neutral bg-opacity-70 object-contain"
                   />
                   <div className="truncate">
-                    <h1 className="card-title ">{deck.name}</h1>
+                    <h1 className="card-title ">{deck.title}</h1>
                     <p className="text-sm">{deck.description}</p>
                   </div>
                 </div>
@@ -506,37 +442,30 @@ function LobbyDecksTab() {
       />
       <label htmlFor="modal-category" className="modal">
         <label className="modal-box relative py-10" htmlFor="">
-          <label
-            htmlFor="modal-category"
-            className="btn-sm btn-circle btn absolute right-2 top-2"
-          >
+          <label htmlFor="modal-category" className="btn btn-circle btn-sm absolute right-2 top-2">
             ✕
           </label>
-          <h1 className="card-title py-4">
-            {t('i-how-bad-will-the-cards-be')}
-          </h1>
+          <h1 className="card-title py-4">{t('i-how-bad-will-the-cards-be')}</h1>
           <ul className="flex flex-col gap-3">
-            {categoriesMock.map((category) => (
+            {categoriesMock.map((darknessLevel) => (
               <label
-                htmlFor={String(category.id)}
+                htmlFor={String(darknessLevel.id)}
                 className={`btn ${
-                  selectedCategory && selectedCategory.id === category.id
+                  selectedDarknessLevels.includes(darknessLevel.id)
                     ? ''
-                    : 'btn-neutral btn-outline'
+                    : 'btn-neutral btn-outline hover:bg-neutral hover:bg-opacity-20 hover:text-neutral'
                 } flex gap-3`}
-                key={category.id}
+                key={darknessLevel.id}
               >
                 <input
                   type="checkbox"
                   name=""
-                  id={String(category.id)}
+                  id={String(darknessLevel.id)}
                   className="hidden"
-                  checked={
-                    !!(selectedCategory && selectedCategory.id === category.id)
-                  }
-                  onChange={() => toggleCategorySelection(category)}
+                  checked={selectedDarknessLevels.includes(darknessLevel.id)}
+                  onChange={() => toggleDarknessLevel(darknessLevel.id)}
                 />
-                <label htmlFor={String(category.id)}>{category.name}</label>
+                <label htmlFor={String(darknessLevel.id)}>{darknessLevel.name}</label>
               </label>
             ))}
           </ul>
@@ -552,35 +481,30 @@ function LobbyDecksTab() {
       />
       <label htmlFor="modal-language" className="modal">
         <label className="modal-box relative py-10" htmlFor="">
-          <label
-            htmlFor="modal-language"
-            className="btn-sm btn-circle btn absolute right-2 top-2"
-          >
+          <label htmlFor="modal-language" className="btn btn-circle btn-sm absolute right-2 top-2">
             ✕
           </label>
           <h1 className="card-title py-4">{t('i-filter-by-language')}</h1>
           <ul className="flex flex-col gap-3">
-            {languagesMock.map((language) => (
+            {languagesData.map((language) => (
               <label
-                htmlFor={language.id}
+                htmlFor={language}
                 className={`btn ${
-                  selectedLanguage && selectedLanguage.id === language.id
+                  selectedLanguages.includes(language)
                     ? ''
-                    : 'btn-outline'
+                    : 'btn-neutral btn-outline hover:bg-neutral hover:bg-opacity-20 hover:text-neutral'
                 } flex gap-3`}
-                key={language.id}
+                key={language}
               >
                 <input
                   type="checkbox"
                   name=""
-                  id={language.id}
+                  id={language}
                   className="hidden"
-                  checked={
-                    !!(selectedLanguage && selectedLanguage.id === language.id)
-                  }
+                  checked={selectedLanguages.includes(language)}
                   onChange={() => toggleLanguageSelection(language)}
                 />
-                <label htmlFor={language.id}>{language.name}</label>
+                <label htmlFor={language}>{language}</label>
               </label>
             ))}
           </ul>

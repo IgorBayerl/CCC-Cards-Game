@@ -1,3 +1,4 @@
+import { Client, type Room } from 'colyseus.js'
 import router from 'next/router'
 import {
   createContext,
@@ -5,133 +6,71 @@ import {
   useContext,
   useEffect,
   useState,
+  useCallback,
+  useMemo,
 } from 'react'
 import { toast } from 'react-toastify'
-import { type Socket } from 'socket.io-client'
 import useSound from 'use-sound'
-import { useSocketContext } from '~/components/SocketContext'
-import { TPlayerStatus } from '~/lib/playerUtils'
-import {
-  ICard,
-  ICardAnswer,
-  ICardQuestion,
-  IDeckConfigScreen,
-} from '~/models/Deck'
+import { type TPlayerStatus } from '~/lib/playerUtils'
+
 import { useAudio } from './AudioContext'
+
+import {
+  type SetConfigPayload,
+  type MyRoomState,
+  type Player,
+  type QuestionCard,
+  type RoomConfig,
+  type AnswerCard,
+  type RoomStatus,
+  MessageType,
+  type GameMessagePayloads,
+} from '~/types'
+import extractErrorMessage from '~/lib/extractErrorMessage'
 
 interface IGameContextValue {
   myId: string
   myStatus: TPlayerStatus
-  myHand: IMyHand
-  gameState: IGameState
+  gameState: MyRoomState
+  room: Room<MyRoomState> | null
   roomId: string
-  socket: Socket | undefined
-  gameConfig: IGameConfig
-  startingState: string
+  gameConfig: RoomConfig
   isCurrentUserLeader: boolean
   isCurrentUserJudge: boolean
   joinRoom: (username: string, roomId: string, pictureUrl: string) => void
+  createRoom: (username: string, pictureUrl: string) => void
   leaveRoom: () => void
-  setConfig: (config: IGameConfig) => void
-  admCommand: (command: AdmCommand) => void
-  playerSelectCards: (cards: ICardAnswer[]) => void
-}
-
-type AdmCommand =
-  | 'start'
-  | 'next_round'
-  | 'end'
-  | 'start-new-game'
-  | 'back-to-lobby'
-
-interface IGameConfig {
-  decks: IDeckConfigScreen[]
-  scoreToWin: number
-  roomSize: number
-  time: number
+  setConfig: (config: RoomConfig) => void
+  sendToRoom: (type: MessageType, payload: GameMessagePayloads[MessageType]) => void
+  playerSelectCards: (cards: AnswerCard[]) => void
 }
 
 interface IGameProviderProps {
   children: ReactNode
 }
 
-type TRoomStatus =
-  | 'waiting'
-  | 'starting'
-  | 'playing'
-  | 'judging'
-  | 'results'
-  | 'finished'
+type SoundPage = '/lobby' | '/game' | '/judging' | '/results' | '/end'
 
-type PlayFunction = () => void
-export interface IGameState {
-  players: IPlayer[]
-  leader: IPlayer
-  status: TRoomStatus
-  judge: IPlayer | null
-  currentQuestionCard: ICardQuestion | null
-  lastRound: IGameRound | null
-  config: IGameConfig
-  rounds?: IGameRound[]
-}
-
-export interface IGameRound {
-  questionCard: ICardQuestion
-  answerCards: { [playerId: string]: ICardAnswer[] }
-  judge: IPlayer
-  winner: IPlayer | null
-  currentJudgedPlayerIndex: number
-}
-
-export interface IPlayer {
-  id: string
-  username: string
-  pictureUrl: string
-  roundRole: 'player' | 'judge'
-  score: number
-  status: TPlayerStatus
-  isOffline: boolean
-}
-
-interface ISocketError {
-  message: string
-  error: Error
-}
-
-const defaultGameConfig: IGameConfig = {
-  decks: [],
+const defaultGameConfig: RoomConfig = {
+  availableDecks: [],
   scoreToWin: 8,
   roomSize: 4,
-  time: 60,
+  roundTime: 60,
 }
 
-const initialGameState: IGameState = {
-  players: [],
-  leader: {
-    id: '',
-    username: '',
-    pictureUrl: '',
-    roundRole: 'player',
-    score: 0,
-    status: 'pending',
-    isOffline: false,
-  },
-  judge: null,
-  status: 'waiting',
-  currentQuestionCard: null,
-  lastRound: null,
+const initialGameState: MyRoomState = {
   config: defaultGameConfig,
+  players: new Map<string, Player>(),
+  rounds: [],
+  roomStatus: 'waiting',
+  judge: '',
+  currentQuestionCard: {} as QuestionCard,
+  usedQuestionCards: [],
+  usedAnswerCards: [],
+  leader: '',
 }
 
-export interface IMyHand {
-  cards: ICard[]
-}
-
-const initialHandState: IMyHand = {
-  cards: [],
-}
-
-const statusToUrl = {
+const statusToUrl: Record<RoomStatus, SoundPage> = {
   waiting: '/lobby',
   starting: '/game',
   playing: '/game',
@@ -143,33 +82,34 @@ const statusToUrl = {
 const GameContext = createContext<IGameContextValue>({
   myId: '',
   myStatus: 'pending',
-  myHand: initialHandState,
   gameState: initialGameState,
+  room: null,
   roomId: '',
-  socket: undefined,
   gameConfig: defaultGameConfig,
-  startingState: '',
   isCurrentUserLeader: false,
   isCurrentUserJudge: false,
   joinRoom: () => undefined,
+  createRoom: () => undefined,
   leaveRoom: () => undefined,
   setConfig: () => undefined,
-  admCommand: (_) => undefined,
+  sendToRoom: () => undefined,
   playerSelectCards: (_) => undefined,
 })
 
 const useGameContext = () => useContext(GameContext)
 
+// Initialize the Colyseus client
+const client = new Client('ws://localhost:2567')
+
 const GameProvider: React.FC<IGameProviderProps> = ({ children }) => {
-  const { socket } = useSocketContext()
+  // const { socket } = useSocketContext()
   const [gameState, setGameState] = useState(initialGameState)
-  const [startingState, setStartingState] = useState('')
-  const [myHand, setMyHand] = useState<IMyHand>(initialHandState)
-  const [roomId, setRoomId] = useState<string>('')
-  const [isCurrentUserLeader, setIsCurrentUserLeader] = useState(false)
-  const [isCurrentUserJudge, setIsCurrentUserJudge] = useState(false)
-  const [myId, setMyId] = useState<string>('')
   const { isMuted } = useAudio()
+
+  const [room, setRoom] = useState<Room<MyRoomState> | null>(null)
+
+  const myId = room?.sessionId || ''
+  const roomId = room?.id || ''
 
   const audioConfig = {
     volume: 0.5,
@@ -180,155 +120,153 @@ const GameProvider: React.FC<IGameProviderProps> = ({ children }) => {
   const [playNewRound] = useSound('/sounds/tudududum_up.mp3', audioConfig)
   const [playEnterLobby] = useSound('/sounds/tudududum_up_3.mp3', audioConfig)
 
-  const soundsPerPage: Record<string, PlayFunction | undefined> = {
-    '/lobby': playEnterLobby, //OK
-    '/game': playNewRound, //OK
-    '/judging': playTumDum, //OK
-    '/results': playTumDum, //OK
-    '/end': playPartyHorn,
-  }
+  const soundsPerPage = useMemo(
+    () => ({
+      '/lobby': playEnterLobby,
+      '/game': playNewRound,
+      '/judging': playTumDum,
+      '/results': playTumDum,
+      '/end': playPartyHorn,
+    }),
+    [playEnterLobby, playNewRound, playTumDum, playPartyHorn]
+  )
 
-  const playSound = (url: string) => {
-    // console.log('playSound', url)
-    // console.log('isMuted', isMuted)
-    // if (isMuted) return
-    setTimeout(() => {
-      soundsPerPage[url]?.()
-    }, 1000)
-  }
+  //playSound to useCallback
+  const playSound = useCallback(
+    (url: SoundPage) => {
+      if (isMuted) return
+      setTimeout(() => {
+        soundsPerPage[url]?.()
+      }, 500)
+    },
+    [isMuted, soundsPerPage]
+  )
 
-  useEffect(() => {
-    socket?.on('game:updateState', handleChangeState)
+  const handleChangeState = useCallback(
+    (newState: MyRoomState) => {
+      // console.log('game:updateState', newState)
 
-    socket?.on('room:joinedRoom', (roomId: string) => {
-      setRoomId(roomId)
-      localStorage.setItem('oldSocketId', socket?.id || '')
-    })
+      const newPath = statusToUrl[newState.roomStatus]
+      if (newPath && router.pathname !== newPath) {
+        void playSound(newPath)
+        void router.push(newPath)
+      }
 
-    socket?.on('game:updateCards', handleUpdateCards)
-    socket?.on('message:status', setStartingState)
-    socket?.on('message:notify', handleNotify)
-
-    socket?.on('game:error', handleError)
-    socket?.on('room:error', handleError)
-
-    socket?.on('disconnect', handleDisconnect)
-
-    return () => {
-      socket?.off('game:updateState')
-      socket?.off('room:joinedRoom')
-      socket?.off('game:updateCards')
-      socket?.off('message:status')
-      socket?.off('message:notify')
-      socket?.off('game:error')
-      socket?.off('room:error')
-      socket?.off('disconnect')
-    }
-  }, [socket])
-
-  useEffect(() => {
-    if (!socket || !gameState.leader) return
-    setIsCurrentUserLeader(gameState.leader.id === socket.id)
-    setIsCurrentUserJudge(gameState.judge?.id === socket.id)
-    setMyId(socket.id)
-  }, [socket, gameState])
-
-  const handleChangeState = (newState: IGameState) => {
-    console.log('game:updateState', newState)
-
-    const newPath = statusToUrl[newState.status]
-    if (newPath && router.pathname !== newPath) {
-      void playSound(newPath)
-      void router.push(newPath)
-    }
-
-    setGameState(newState)
-  }
-
-  const handleUpdateCards = (cards: ICard[]) => {
-    console.log('game:updateCards', cards)
-    setMyHand((prevState) => ({
-      ...prevState,
-      cards,
-    }))
-  }
+      console.log('Players NEW STATE >> ', newState.players)
+      setGameState({ ...newState })
+    },
+    [playSound]
+  )
 
   const handleNotify = (message: string) => {
     toast.info(message)
   }
 
-  const handleError = (socketError: ISocketError) => {
-    const { message, error } = socketError
-    console.log('SERVER:', message)
-    console.error('SERVER:', error)
-    toast.error(`Error: ${message}`)
+  const handleError = (errorMessage: string) => {
+    console.error('SERVER:', errorMessage)
+    toast.error(`Error: ${errorMessage}`)
   }
 
   const handleDisconnect = () => {
     toast.error('You have been disconnected from the server.')
+    setGameState({ ...initialGameState })
 
-    setRoomId('')
-    setGameState(initialGameState)
     void router.push('/')
   }
 
-  const joinRoom = (username: string, roomId: string, pictureUrl: string) => {
-    const oldSocketId = localStorage.getItem('oldSocketId') || ''
-    socket?.emit('room:joinRoom', {
+  const sendToRoom = useCallback(
+    <T extends MessageType>(type: T, payload: GameMessagePayloads[T]) => {
+      if (!room) {
+        console.error('Attempted to send message without an active room')
+        return
+      }
+
+      room.send(type, payload)
+    },
+    [room]
+  )
+
+  const joinRoom = async (username: string, roomId: string, pictureUrl: string) => {
+    const oldPlayerId = localStorage.getItem('oldPlayerId')
+    const room = await client.joinById<MyRoomState>(roomId, {
       username,
-      roomId,
       pictureUrl,
-      oldSocketId: oldSocketId,
+      oldPlayerId: oldPlayerId || undefined,
     })
+    setRoom(room)
+  }
+
+  const createRoom = async (username: string, pictureUrl: string) => {
+    try {
+      const room = await client.create<MyRoomState>('my_room', {
+        username,
+        pictureUrl,
+      })
+      setRoom(room)
+    } catch (error) {
+      const errorMessage = extractErrorMessage(error)
+      toast.error(`Error: ${errorMessage}`)
+      console.error(error)
+    }
   }
 
   const leaveRoom = () => {
-    socket?.emit('room:leaveRoom')
-    setRoomId('')
-    setGameState(initialGameState)
+    void room?.leave()
+    setGameState({ ...initialGameState })
   }
 
-  const setConfig = (config: IGameConfig) => {
-    console.log('game:setConfig', config)
+  const setConfig = (config: SetConfigPayload) => {
     setGameState((prevState) => ({
       ...prevState,
       config,
     }))
-    socket?.emit('game:setConfig', config)
+    sendToRoom(MessageType.SET_CONFIG, config)
   }
 
-  const admCommand = (command: string) => {
-    // Send an adm command message to the server -> example command: "start" || "kick" || "start-new-game"
-    socket?.emit('game:admCommand', command)
-  }
-
-  // Player Actions
-  const playerSelectCards = (cards: ICardAnswer[]) => {
-    // Ensure that the `socket` is connected before emitting the event.
-    if (!socket) return
-
-    // Emit the event to the server.
-    console.log('game:playerSelection', cards)
-    socket.emit('game:playerSelection', cards)
+  const playerSelectCards = (cards: AnswerCard[]) => {
+    const payload = {
+      selection: cards,
+    }
+    sendToRoom(MessageType.PLAYER_SELECTION, payload)
   }
 
   const gameConfig = gameState.config
 
+  const player = gameState.players.get(myId)
+
+  useEffect(() => {
+    if (room) {
+      room.onMessage('room:joinedRoom', (roomId: string) => {
+        console.log('a room:joinedRoom', roomId)
+        const myId = room.sessionId
+        localStorage.setItem('oldPlayerId', myId || '')
+      })
+
+      room.onMessage('game:error', handleError)
+      room.onMessage('game:notify', handleNotify)
+
+      room.onStateChange(handleChangeState)
+
+      room.onLeave(handleDisconnect)
+
+      return () => room && room.removeAllListeners()
+    }
+  }, [room, handleChangeState])
+
   const value = {
-    myId,
-    myStatus: gameState.players.find((p) => p.id === myId)?.status || 'none',
-    myHand,
+    myId: myId,
+    myStatus: player?.status || 'none',
     gameState,
+    room,
     roomId,
-    socket,
     gameConfig,
-    startingState,
-    isCurrentUserLeader,
-    isCurrentUserJudge,
+    isCurrentUserLeader: gameState.leader === myId,
+    isCurrentUserJudge: gameState.judge === myId,
     joinRoom,
+    createRoom,
     leaveRoom,
     setConfig,
-    admCommand,
+    sendToRoom,
     playerSelectCards,
   }
 

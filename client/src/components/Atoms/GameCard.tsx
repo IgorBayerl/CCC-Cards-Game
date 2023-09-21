@@ -1,9 +1,9 @@
 import React from 'react'
 import { classNames } from '~/lib/utils'
-import { ICard, ICardQuestion } from '~/models/Deck'
+import { type Card } from '~/types'
 
 interface IGameCardProps {
-  cardInfo: ICardQuestion | ICard
+  cardInfo: Card
   selected?: boolean
   onClick?: () => void
   number?: number

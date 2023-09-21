@@ -1,8 +1,10 @@
 {
-  "name": "client",
+  "name": "ccc-client-web",
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "copy:shared": "ncp ../shared ./src/lib/shared",
+    "prepare": "npm run copy:shared",
     "build": "next build",
     "dev": "next dev",
     "lint": "next lint",
@@ -15,6 +17,7 @@
     "@t3-oss/env-nextjs": "^0.2.1",
     "axios": "^1.4.0",
     "classnames": "^2.3.2",
+    "colyseus.js": "^0.15.10",
     "daisyui": "^2.51.6",
     "embla-carousel-autoplay": "^8.0.0-rc05",
     "embla-carousel-react": "^8.0.0-rc05",
@@ -51,6 +54,7 @@
     "autoprefixer": "^10.4.14",
     "eslint": "^8.36.0",
     "eslint-config-next": "^13.2.4",
+    "ncp": "^2.0.0",
     "postcss": "^8.4.21",
     "prettier": "^2.8.6",
     "prettier-plugin-tailwindcss": "^0.2.6",
@@ -60,5 +64,6 @@
   },
   "ct3aMetadata": {
     "initVersion": "7.12.1"
-  }
+  },
+  "packageManager": "yarn@3.6.3"
 }

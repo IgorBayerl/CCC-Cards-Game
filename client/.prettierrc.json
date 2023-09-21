@@ -1,11 +1,12 @@
 {
-	"semi": false,
-	"trailingComma": "es5",
-	"singleQuote": true,
-	"tabWidth": 2,
-	"useTabs": false,
-  "plugins": [ "prettier-plugin-tailwindcss" ],
-	"overrides": [
+  "semi": false,
+  "trailingComma": "es5",
+  "singleQuote": true,
+  "tabWidth": 2,
+  "useTabs": false,
+  "printWidth": 120,
+  "plugins": ["prettier-plugin-tailwindcss"],
+  "overrides": [
     {
       "files": "src/**/*.{ts,tsx}",
       "options": {

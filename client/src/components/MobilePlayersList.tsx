@@ -1,13 +1,13 @@
-import { type IPlayer } from '~/components/GameContext'
+import { type Player } from '~/types'
 import { MobileRoomChair } from './Atoms/RoomChair'
 
 interface IProps {
-  players: IPlayer[]
-  leader: IPlayer | null
+  players: Player[]
+  leaderId: string
   roomSize: number
 }
 
-export default function MobilePlayersList({ players, leader, roomSize }: IProps) {
+export default function MobilePlayersList({ players, leaderId, roomSize }: IProps) {
   // const sortedPlayers = [...players].sort((a, b) => b.score - a.score)
   const sortedPlayers = [...players].sort((a, b) => {
     if (a.isOffline && !b.isOffline) {
@@ -20,20 +20,15 @@ export default function MobilePlayersList({ players, leader, roomSize }: IProps)
     }
   })
 
-  const freeSpaces = Array.from(
-    { length: roomSize - players.length },
-    (_, index) => index
-  )
+  const freeSpaces = Array.from({ length: roomSize - players.length }, (_, index) => index)
 
   return (
     <div className="flex h-full w-full items-center justify-start gap-3 overflow-x-auto  scrollbar-none">
       <div className="flex w-full flex-row gap-2">
         {sortedPlayers.map((player) => (
+          // <>{JSON.stringify(player)}</>
           <div key={player.id}>
-            <MobileRoomChair
-              player={player}
-              leader={leader?.id === player.id}
-            />
+            <MobileRoomChair player={player} leader={leaderId === player.id} />
           </div>
         ))}
 

@@ -1,0 +1,307 @@
+{
+  "config": {
+    "availableDecks": [
+      {
+        "id": "9ebaf571-1c9f-488c-a134-4d01db540650",
+        "title": "Cartas Contra Tugas Base",
+        "language": "pt",
+        "description": "O baralho original, o nosso primeiro baralho",
+        "darknessLevel": 3,
+        "icon": "https://cdn.iconscout.com/icon/free/png-256/free-social-275-116309.png",
+        "questionCount": 228,
+        "answerCount": 378,
+        "selected": false
+      },
+      {
+        "id": "5c8d6825-d0e2-4563-a0be-f675f168abe8",
+        "title": "Baralho BR - Pedro Álvares Cabral",
+        "language": "pt",
+        "description": "O nosso primeiro baralho brasileiro",
+        "darknessLevel": 1,
+        "icon": "https://cdn.iconscout.com/icon/free/png-256/free-social-275-116309.png",
+        "questionCount": 148,
+        "answerCount": 332,
+        "selected": false
+      }
+    ],
+    "scoreToWin": 4,
+    "roundTime": 20,
+    "roomSize": 4
+  },
+  "players": {
+    "ugwotAoM4": {
+      "id": "ugwotAoM4",
+      "username": "Razura",
+      "pictureUrl": "/profile/profile_5.webp",
+      "score": 2,
+      "status": "pending",
+      "hasSubmittedCards": false,
+      "cards": [
+        {
+          "id": "bfd2f302-0de3-42e4-8427-168ef80dea06",
+          "text": "Viagra"
+        },
+        {
+          "id": "93f65b9b-f865-4b37-b355-c77427053808",
+          "text": "Explosões"
+        },
+        {
+          "id": "0155a44f-5d1a-4927-bfb0-568d49cebfd2",
+          "text": "Dar uns amassos"
+        },
+        {
+          "id": "bee7d934-55d7-4982-a3f6-03ba33fe4b3a",
+          "text": "Mijo"
+        },
+        {
+          "id": "dec2663c-0d22-489c-b4cf-0602c7fa3215",
+          "text": "Ciência"
+        },
+        {
+          "id": "6d14f920-c615-48e3-93d5-8b79370db9eb",
+          "text": "Um chapéu muito fixe"
+        }
+      ]
+    },
+    "HMenObcau": {
+      "id": "HMenObcau",
+      "username": "CoolNickname0461",
+      "pictureUrl": "/profile/profile_5.webp",
+      "score": 2,
+      "status": "waiting",
+      "hasSubmittedCards": false,
+      "cards": [
+        {
+          "id": "6df45dc1-1215-4167-8907-af00701a6d33",
+          "text": "Moedas"
+        },
+        {
+          "id": "b6dae77a-0b5d-4649-ba27-18e9e8ba6a47",
+          "text": "Dedé Santana"
+        },
+        {
+          "id": "9b39b99f-b6f0-42bf-b302-826f28357eff",
+          "text": "Cotas raciais"
+        },
+        {
+          "id": "0c81d0fc-5d05-4d67-baea-4bdb79276435",
+          "text": "Margem Sul"
+        },
+        {
+          "id": "94e69357-99e5-4bfa-900d-bcddea9c93d7",
+          "text": "Diarreia que nunca acaba"
+        },
+        {
+          "id": "84d903ec-1717-4749-9cee-1af1719d5990",
+          "text": "Uma sopa que está demasiado quente"
+        }
+      ]
+    }
+  },
+  "rounds": [
+    {
+      "questionCard": {
+        "id": "636579a7-f406-4476-ac68-94d568b5bb1f",
+        "text": "___ é algo que nunca se fala no primeiro encontro",
+        "spaces": 1
+      },
+      "answerCards": {
+        "ugwotAoM4": {
+          "cards": [
+            {
+              "id": "0155a44f-5d1a-4927-bfb0-568d49cebfd2",
+              "text": "Dar uns amassos"
+            }
+          ]
+        }
+      },
+      "judge": "HMenObcau",
+      "winner": "ugwotAoM4",
+      "revealedCards": [
+        "ugwotAoM4"
+      ],
+      "currentRevealedId": "ugwotAoM4",
+      "allCardsRevealed": true
+    },
+    {
+      "questionCard": {
+        "id": "9996f095-8137-42f5-8206-7d01ee54ae2a",
+        "text": "Gato Fedorento estreou-se na TV com a Série Fonseca, anos depois volta com a Série ___",
+        "spaces": 1
+      },
+      "answerCards": {
+        "HMenObcau": {
+          "cards": [
+            {
+              "id": "b6dae77a-0b5d-4649-ba27-18e9e8ba6a47",
+              "text": "Dedé Santana"
+            }
+          ]
+        }
+      },
+      "judge": "ugwotAoM4",
+      "winner": "HMenObcau",
+      "revealedCards": [
+        "HMenObcau"
+      ],
+      "currentRevealedId": "HMenObcau",
+      "allCardsRevealed": true
+    },
+    {
+      "questionCard": {
+        "id": "2c7bba36-5c5e-40e2-bcf9-719077cdcfb2",
+        "text": "Homem que é homem curte ___",
+        "spaces": 1
+      },
+      "answerCards": {
+        "ugwotAoM4": {
+          "cards": [
+            {
+              "id": "bee7d934-55d7-4982-a3f6-03ba33fe4b3a",
+              "text": "Mijo"
+            }
+          ]
+        }
+      },
+      "judge": "HMenObcau",
+      "winner": "ugwotAoM4",
+      "revealedCards": [
+        "ugwotAoM4"
+      ],
+      "currentRevealedId": "ugwotAoM4",
+      "allCardsRevealed": true
+    },
+    {
+      "questionCard": {
+        "id": "d771270a-ce66-4c01-be94-540f6b7e5a51",
+        "text": "\"Depois não venhas mexer-me no ___ e na ___ e pedir para ___ contigo\"",
+        "spaces": 3
+      },
+      "answerCards": {
+        "HMenObcau": {
+          "cards": [
+            {
+              "id": "0c81d0fc-5d05-4d67-baea-4bdb79276435",
+              "text": "Margem Sul"
+            },
+            {
+              "id": "94e69357-99e5-4bfa-900d-bcddea9c93d7",
+              "text": "Diarreia que nunca acaba"
+            },
+            {
+              "id": "84d903ec-1717-4749-9cee-1af1719d5990",
+              "text": "Uma sopa que está demasiado quente"
+            }
+          ]
+        }
+      },
+      "judge": "ugwotAoM4",
+      "winner": "HMenObcau",
+      "revealedCards": [
+        "HMenObcau"
+      ],
+      "currentRevealedId": "HMenObcau",
+      "allCardsRevealed": true
+    },
+    {
+      "questionCard": {
+        "id": "be89f28b-2f1a-4090-81c0-b5302552e550",
+        "text": "Boa tarde. Esta é a primeira vez que venho a uma reunião deste tipo. Chamo-me ___ e sou viciado em ___",
+        "spaces": 2
+      },
+      "answerCards": {},
+      "judge": "HMenObcau",
+      "winner": "",
+      "revealedCards": [],
+      "currentRevealedId": "",
+      "allCardsRevealed": false
+    }
+  ],
+  "roomStatus": "playing",
+  "judge": "HMenObcau",
+  "isJudgeSelected": false,
+  "currentQuestionCard": {
+    "id": "be89f28b-2f1a-4090-81c0-b5302552e550",
+    "text": "Boa tarde. Esta é a primeira vez que venho a uma reunião deste tipo. Chamo-me ___ e sou viciado em ___",
+    "spaces": 2
+  },
+  "isQuestionCardSelected": false,
+  "usedQuestionCards": [
+    {
+      "id": "",
+      "text": "",
+      "spaces": 1
+    },
+    {
+      "id": "636579a7-f406-4476-ac68-94d568b5bb1f",
+      "text": "___ é algo que nunca se fala no primeiro encontro",
+      "spaces": 1
+    },
+    {
+      "id": "9996f095-8137-42f5-8206-7d01ee54ae2a",
+      "text": "Gato Fedorento estreou-se na TV com a Série Fonseca, anos depois volta com a Série ___",
+      "spaces": 1
+    },
+    {
+      "id": "2c7bba36-5c5e-40e2-bcf9-719077cdcfb2",
+      "text": "Homem que é homem curte ___",
+      "spaces": 1
+    },
+    {
+      "id": "d771270a-ce66-4c01-be94-540f6b7e5a51",
+      "text": "\"Depois não venhas mexer-me no ___ e na ___ e pedir para ___ contigo\"",
+      "spaces": 3
+    }
+  ],
+  "usedAnswerCards": [
+    {
+      "id": "bfd2f302-0de3-42e4-8427-168ef80dea06",
+      "text": "Viagra"
+    },
+    {
+      "id": "93f65b9b-f865-4b37-b355-c77427053808",
+      "text": "Explosões"
+    },
+    {
+      "id": "0155a44f-5d1a-4927-bfb0-568d49cebfd2",
+      "text": "Dar uns amassos"
+    },
+    {
+      "id": "bee7d934-55d7-4982-a3f6-03ba33fe4b3a",
+      "text": "Mijo"
+    },
+    {
+      "id": "dec2663c-0d22-489c-b4cf-0602c7fa3215",
+      "text": "Ciência"
+    },
+    {
+      "id": "6d14f920-c615-48e3-93d5-8b79370db9eb",
+      "text": "Um chapéu muito fixe"
+    },
+    {
+      "id": "6df45dc1-1215-4167-8907-af00701a6d33",
+      "text": "Moedas"
+    },
+    {
+      "id": "b6dae77a-0b5d-4649-ba27-18e9e8ba6a47",
+      "text": "Dedé Santana"
+    },
+    {
+      "id": "9b39b99f-b6f0-42bf-b302-826f28357eff",
+      "text": "Cotas raciais"
+    },
+    {
+      "id": "0c81d0fc-5d05-4d67-baea-4bdb79276435",
+      "text": "Margem Sul"
+    },
+    {
+      "id": "94e69357-99e5-4bfa-900d-bcddea9c93d7",
+      "text": "Diarreia que nunca acaba"
+    },
+    {
+      "id": "84d903ec-1717-4749-9cee-1af1719d5990",
+      "text": "Uma sopa que está demasiado quente"
+    }
+  ],
+  "leader": "ugwotAoM4"
+}

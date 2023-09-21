@@ -50,7 +50,7 @@ export default function Home() {
 
   const selectYourLanguageText = t('i-select-your-language')
 
-  const { gameState, joinRoom, socket } = useGameContext()
+  const { gameState, createRoom, joinRoom } = useGameContext()
   const [pictureUrl, nextPicture] = useShuffleArray(profilePictures)
 
   const [username, setUsername] = useState('')
@@ -67,15 +67,6 @@ export default function Home() {
   }, [router.query.roomId])
 
   useEffect(() => {
-    socket?.on('join:error', () => {
-      setIsLoading(false)
-    })
-    return () => {
-      socket?.off('join:error')
-    }
-  }, [socket])
-
-  useEffect(() => {
     handleGenerateFallbackUsername()
     const username = localStorage.getItem('username') || ''
     setUsername(username)
@@ -86,8 +77,7 @@ export default function Home() {
   }
 
   const handleCreateRoom = () => {
-    const newRoomCode = uuidv4()
-    joinRoom(getName(), newRoomCode, pictureUrl)
+    createRoom(getName(), pictureUrl)
   }
 
   const handleJoinRoom = () => {
@@ -116,7 +106,8 @@ export default function Home() {
     nextPicture()
   }
 
-  const isJoiningRoom = roomCode && gameState.players.length === 0
+  const isJoiningRoom =
+    roomCode && Object.values(gameState.players).length === 0
   const buttonText = isJoiningRoom ? playText : createRoomText
   const buttonOnClick = isJoiningRoom ? handleJoinRoom : handleCreateRoom
 

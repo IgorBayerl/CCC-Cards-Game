@@ -1,23 +1,25 @@
-version: '3'
-services:
-  server:
-    build: 
-      context: ./server
-    volumes:
-      - ./server:/app
-    ports:
-      - "3000:3000"
-    environment:
-      - PORT=3000
+version: '3.7'
 
-  # client:
-  #   build: 
-  #     context: ./client
-  #   volumes:
-  #     - ./client:/app
+services:
+  # colyseus:
+  #   build:
+  #     context: ./server
+  #     dockerfile: Dockerfile
   #   ports:
-  #     - "3001:3001"
-  #   environment:
-  #     - NEXT_PUBLIC_GAME_SERVER=http://server:3000
+  #     - "2567:2567"
+  #   volumes:
+  #     - ./server:/app  # bind-mount source code
+  #     - node_modules:/app/node_modules  # named volume for node_modules
+
+  # nginx:
+  #   build:
+  #     context: ./nginx
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - "80:80"
+  #     - "443:443"
   #   depends_on:
-  #     - server
+  #     - colyseus
+
+volumes:
+  node_modules:

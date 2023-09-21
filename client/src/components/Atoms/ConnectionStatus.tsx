@@ -1,8 +1,9 @@
 import classNames from 'classnames'
-import { useSocketContext } from '~/components/SocketContext'
+// import { useSocketContext } from '~/components/SocketContext'
 
 export default function ConnectionStatus() {
-  const { status } = useSocketContext()
+  // const { status } = useSocketContext()
+  const status = 'connecting'
 
   const colorStatus = {
     connected: 'bg-info',

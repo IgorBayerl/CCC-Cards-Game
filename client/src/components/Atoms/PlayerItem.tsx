@@ -1,17 +1,14 @@
-import { IPlayer, useGameContext } from '../GameContext'
+import { useGameContext } from '../GameContext'
 import { TbCheck, TbClock, TbDots, TbGavel } from 'react-icons/tb'
 import CustomAvatar from './CustomAvatar'
-import {
-  getPlayerStatus,
-  shouldShowPlayerStatus,
-  TPlayerStatus,
-} from '~/lib/playerUtils'
+import { getPlayerStatus, shouldShowPlayerStatus, type TPlayerStatus } from '~/lib/playerUtils'
 import { CgProfile } from 'react-icons/cg'
 import { GiCrown } from 'react-icons/gi'
 import classNames from 'classnames'
+import { type Player } from '~/types'
 
 interface IPlayerItemProps {
-  player: IPlayer
+  player: Player
   leader: boolean
 }
 
@@ -23,27 +20,18 @@ export default function PlayerItem({ player, leader }: IPlayerItemProps) {
   const showStatus = shouldShowPlayerStatus(gameState)
   const score = player.score
   const isOffline = player.isOffline
+  // const isOffline = false
 
-  const styles = classNames(
-    'flex w-full max-w-full flex-row items-center gap-2',
-    {
-      'text-gray-400 opacity-40': isOffline,
-    }
-  )
+  const styles = classNames('flex w-full max-w-full flex-row items-center gap-2', {
+    'text-gray-400 opacity-40': isOffline,
+  })
 
   return (
     <div className={styles}>
-      <CustomAvatar
-        src={player.pictureUrl}
-        leader={leader}
-        player={player}
-        itsMe={itsMe}
-      />
+      <CustomAvatar src={player.pictureUrl} leader={leader} player={player} itsMe={itsMe} />
       <div className="flex w-full max-w-full items-center justify-between overflow-hidden truncate">
         <div className="w-full">
-          <div className="text-xs font-bold capitalize ">
-            {showStatus && `${score} pts`}
-          </div>
+          <div className="text-xs font-bold capitalize ">{showStatus && `${score} pts`}</div>
           <div className="truncate">{player.username}</div>
           {showStatus && <StatusIndicatorText status={status} />}
         </div>
@@ -61,23 +49,19 @@ export function MobilePlayerItem({ player, leader }: IPlayerItemProps) {
   const showStatus = shouldShowPlayerStatus(gameState)
   const score = player.score
   const isOffline = player.isOffline
+  // const isOffline = false
 
-  const styles = classNames(
-    'flex w-full max-w-full flex-col items-center gap-1',
-    {
-      'text-gray-400 opacity-40': isOffline,
-    }
-  )
+  const styles = classNames('flex w-full max-w-full flex-col items-center gap-1', {
+    'text-gray-400 opacity-40': isOffline,
+  })
 
   return (
     <div className={styles}>
       <div className="relative">
         <div className="w-14 rounded-full">
-          <img src={player.pictureUrl} className="rounded-full" />
+          <img src={player.pictureUrl} className="rounded-full" alt="profile pic" />
         </div>
-        {leader && (
-          <GiCrown color="yellow" className="leader-crown" size={25} />
-        )}
+        {leader && <GiCrown color="yellow" className="leader-crown" size={25} />}
         {itsMe && (
           <CgProfile
             title="This is you!"
@@ -110,10 +94,7 @@ interface IStatusIndicatorProps {
   status: TPlayerStatus
   mobile?: boolean
 }
-function StatusIndicatorIcon({
-  status,
-  mobile = false,
-}: IStatusIndicatorProps) {
+function StatusIndicatorIcon({ status, mobile = false }: IStatusIndicatorProps) {
   const iconSize = mobile ? 20 : 25
 
   const iconByStatus = {
@@ -127,10 +108,7 @@ function StatusIndicatorIcon({
 
   if (!iconByStatus[status]) return null
 
-  const styles = classNames(
-    'flex items-center gap-2 rounded-full',
-    mobile ? 'p-1' : 'p-2'
-  )
+  const styles = classNames('flex items-center gap-2 rounded-full', mobile ? 'p-1' : 'p-2')
   return (
     <div className={styles} title={status}>
       {iconByStatus[status]}
@@ -150,7 +128,5 @@ function StatusIndicatorText({ status }: IStatusIndicatorProps) {
 
   if (!textByStatus[status]) return null
 
-  return (
-    <div className="text-xs font-bold capitalize ">{textByStatus[status]}</div>
-  )
+  return <div className="text-xs font-bold capitalize ">{textByStatus[status]}</div>
 }

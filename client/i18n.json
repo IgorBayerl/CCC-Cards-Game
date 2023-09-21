@@ -1,6 +1,9 @@
 {
   "locales": ["en", "pt", "es"],
   "defaultLocale": "en",
+  "loader": {
+    "exclude": ["**/shared/**"]
+  },
   "pages": {
     "*": ["common"],
     "/game": ["game"],
