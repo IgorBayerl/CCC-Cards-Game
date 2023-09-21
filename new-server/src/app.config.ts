@@ -1,6 +1,7 @@
 import config from "@colyseus/tools";
 import {monitor} from "@colyseus/monitor";
 import {playground} from "@colyseus/playground";
+import logger from "./lib/loggerConfig";
 
 /**
  * Import your Room files
@@ -30,7 +31,6 @@ export default config({
 
     app.use("/decks", deckRoutes);
 
-
     /**
      * Use @colyseus/playground
      * (It is not recommended to expose this route in a production environment)
@@ -51,8 +51,8 @@ export default config({
     /**
      * Before before gameServer.listen() is called.
      */
-    console.log("🚩 Access Colyeus Monitor at http://localhost:2567/colyseus");
-    console.log("🚩 Access Colyeus Playground at http://localhost:2567/");
-    console.log("🚩 Access game client at http://localhost:3000/");
+    logger.info("Access Colyeus Monitor at http://localhost:2567/colyseus");
+    logger.info("Access Colyeus Playground at http://localhost:2567/");
+    logger.info("Access game client at http://localhost:3000/");
   },
 });

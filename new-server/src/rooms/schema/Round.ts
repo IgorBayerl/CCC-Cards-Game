@@ -29,19 +29,3 @@ export function createEmptyRound(): RoundSchema {
   round.allCardsRevealed = false;
   return round;
 }
-
-
-// const answerCards = {
-//   "zL8EgMnHq":[
-//     {
-//       "id":"5bfb3022-8729-4c7d-8f00-7d0d3c9aa8e5",
-//       "text":"Capitão Planeta"
-//     }
-//   ],
-//   "8m0XJooK5":[
-//     {
-//     "id":"b3bcd2e6-afbe-40f4-b74f-bdba03b57926",
-//     "text":"Brutalidade policial"
-//     }
-//   ]
-// }

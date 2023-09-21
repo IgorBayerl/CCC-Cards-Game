@@ -25,6 +25,7 @@ import {createEmptyRound, AnswerCardsArraySchema, RoundSchema} from "./schema/Ro
 import {parseAndHandleError} from "../lib/extractErrorMessage";
 import {getRandomAnswerCardsFromDecks, getRandomQuestionCardFromDecks} from "../lib/deckUtils";
 import {AdminOnly} from "../lib/utils";
+import logger from "../lib/loggerConfig";
 
 type HandlerFunction<T> = (client: Client, data: T) => void;
 
@@ -79,8 +80,8 @@ export class MyRoom extends Room<MyRoomState> {
       return;
     }
 
-    console.log(result.data.username, "joined!");
-    const {username, pictureUrl} = result.data;
+    logger.info(`${result.data.username} joined!`);
+    const {username, pictureUrl, oldPlayerId} = result.data;
 
     // Create a new player instance and set its properties
     const newPlayer = new PlayerSchema();
@@ -96,12 +97,20 @@ export class MyRoom extends Room<MyRoomState> {
       this.state.leader = newPlayer.id;
     }
 
+    if (oldPlayerId) {
+      this.handleReconnect(client, oldPlayerId);
+    }
+
     client.send("room:joinedRoom", this.roomId);
   }
 
   onLeave(client: Client, consented: boolean) {
-    console.log(client.sessionId, "left!");
-    console.log("consented", consented);
+    logger.info(
+      `${this.state.players.get(client.sessionId)?.username} left the room ${this.roomId} ${
+        consented ? "consented" : "unintentionally"
+      }`,
+    );
+
     if (consented) {
       this.handleConsentedLeave(client);
       return;
@@ -110,10 +119,30 @@ export class MyRoom extends Room<MyRoomState> {
   }
 
   onDispose() {
-    console.log("room", this.roomId, "disposing...");
+    logger.info(`room ${this.roomId} disposing...`);
   }
 
   /// end of colyseus lifecycle methods
+
+  /**
+   * Handles the player reconnecting in the room
+   */
+  private handleReconnect(client: Client, oldPlayerId: string) {
+    // TODO: Implement this in the frontend
+    const newPlayer = this.state.players.get(client.sessionId);
+    const oldPlayer = this.state.players.get(oldPlayerId);
+
+    if (!newPlayer || !oldPlayer) return;
+
+    // clone the old player's properties to the new player
+    newPlayer.cloneFrom(oldPlayer);
+
+    // delete the old player
+    this.state.players.delete(oldPlayerId);
+
+    // logger.info(newPlayer.username, "reconnected!");
+    logger.info(`${newPlayer.username} reconnected!`);
+  }
 
   private set roomSize(size: number) {
     this.state.config.roomSize = size;
@@ -129,14 +158,15 @@ export class MyRoom extends Room<MyRoomState> {
 
     if (!playerLeaving) return;
 
-    this.state.players.delete(client.sessionId);
+    // this.state.players.delete(client.sessionId);
+    this.state.disconnectPlayer(client.sessionId);
 
     // If the player leaving is not the current leader, nothing else needs to be done
     if (playerLeaving.id !== this.state.leader) return;
 
     // If there are still players left, assign leadership to the first player in the players map
-    if (this.state.players.size > 0) {
-      this.state.leader = this.state.players.values().next().value.id;
+    if (this.state.onlinePlayers.size > 0) {
+      this.state.leader = this.state.onlinePlayers.values().next().value.id;
       return;
     }
 
@@ -145,32 +175,80 @@ export class MyRoom extends Room<MyRoomState> {
   }
 
   private handleUnintentionalDisconnection(client: Client) {
+    //get the player
+    const playerLeaving = this.state.players.get(client.sessionId);
+
+    //set the status to disconnected
+    this.state.disconnectPlayer(client.sessionId);
+
+    // handle the game when someone disconnects
+    this.handleGamePlayerDisconnectMidGame(playerLeaving);
+
     // TODO: handle unintentional disconnection
-    this.handleConsentedLeave(client);
+    // this.handleConsentedLeave(client);
     return;
-    // const secondsToPlayerRemoval = 10;
-    // const millisecondsToPlayerRemoval = secondsToPlayerRemoval * 1000;
-
-    // const timeout = setTimeout(() => {
-    //   this.state.players.delete(client.sessionId);
-    // }, millisecondsToPlayerRemoval);
-
-    // const player = this.state.players.get(client.sessionId);
-    // if (player) {
-    //   player.timeout = timeout;
-    // }
   }
+
+  private handleGamePlayerDisconnectMidGame(player: PlayerSchema) {
+    logger.info(`>> player disconnected ${player.username}`);
+
+    const disconnectActions: Record<RoomStatus, () => void> = {
+      //TODO: change this to the appropriate action
+      playing: this.autoGoToNextRoundWhenPlayerDisconnects.bind(this, player),
+      judging: this.autoGoToNextRoundWhenPlayerDisconnects.bind(this, player),
+      results: this.autoGoToNextRoundWhenPlayerDisconnects.bind(this, player),
+      waiting: () => {},
+      finished: () => {},
+      starting: () => {},
+    };
+
+    disconnectActions[this.state.roomStatus]();
+  }
+
+  private autoGoToNextRoundWhenPlayerDisconnects(player: PlayerSchema) {
+    logger.info(">> auto going to next round when player disconnects");
+    this.sendMessageToAllPlayers(`The player ${player.username} disconnected, skipping round`);
+    this.skipToNextRound();
+  }
+
+  private handlePlayerDisconnectWhenJudging(player: PlayerSchema) {
+    this.sendMessageToAllPlayers(`The player ${player.username} disconnected, skipping round`);
+    this.skipToNextRound();
+    return;
+    logger.info(">> player disconnected when judging", player.username);
+
+    // verify if player is the judge
+    if (player.id !== this.state.judge) {
+      logger.info(">>> player is not the judge");
+      return;
+    }
+
+    //if the player is the judge null the round and go tho the next round
+
+    // send a message to the frontend explaining what happened
+    this.sendMessageToAllPlayers(`The JUDGE ${player.username} disconnected, skipping round`);
+  }
+
+  private autoSelectCardsForThePlayerDisconnecting(player: PlayerSchema) {
+    logger.info(">> auto selecting cards for the player disconnecting");
+    this.sendMessageToAllPlayers(`The player ${player.username} disconnected, skipping round`);
+    this.skipToNextRound();
+  }
+
   private throwError(client: Client, message: string) {
-    console.error(message);
+    logger.error(message);
     client.send("game:error", message);
   }
 
+  private sendMessageToAllPlayers(message: string) {
+    this.broadcast("game:notify", message);
+  }
+
   private async handleStartGame(client: Client) {
-    console.log(">> starting game...");
+    logger.info(">> starting game...");
 
     if (this.state.config.availableDecks.length < 1) {
-      console.log(">>> no decks selected");
-      this.startingStatusUpdate(">>> no decks selected");
+      logger.info(">>> no decks selected");
       this.throwError(client, "No decks selected");
       return;
     }
@@ -178,7 +256,7 @@ export class MyRoom extends Room<MyRoomState> {
     this.setStatus("starting");
 
     // this.selectJudge();
-    const firstJudge = this.returnRandomPlayerId();
+    const firstJudge = this.state.randomOnlinePlayerId;
     this.state.judge = firstJudge;
 
     const questionCard = await this.getNextQuestionCard();
@@ -193,6 +271,7 @@ export class MyRoom extends Room<MyRoomState> {
 
     // Set the player statuses to default
     for (const [_id, playerData] of this.state.players) {
+      if (playerData.isOffline) continue;
       playerData.status = playerData.id === this.state.judge ? "waiting" : "pending";
     }
 
@@ -202,7 +281,7 @@ export class MyRoom extends Room<MyRoomState> {
   @AdminOnly
   private handleAdmKickPlayer(client: Client, data: AdminKickPlayerPayload) {
     //TODO: make a button on the client to kick a player
-    console.log(">> kicking player...");
+    logger.info(">> kicking player...");
     const {playerId} = data;
 
     const player = this.state.players.get(playerId);
@@ -223,15 +302,16 @@ export class MyRoom extends Room<MyRoomState> {
     if (this.checkForWinner()) {
       return;
     }
-    console.log(">> starting next round...");
+    logger.info(">> Starting next round...");
 
     this.setStatus("starting");
 
-    this.startingStatusUpdate(">>> choosing the next judge...");
-    const newJudgeId = this.getNextJudgeId();
+    const newJudgeId = this.state.nextJudgeId;
+
     this.state.judge = newJudgeId;
 
     const questionCard = await this.getNextQuestionCard();
+
     this.state.currentQuestionCard = questionCard;
 
     await this.dealAnswerCardsForEveryoneLessTheJudge(newJudgeId, questionCard.spaces);
@@ -243,6 +323,7 @@ export class MyRoom extends Room<MyRoomState> {
 
     // Set the player statuses to default and hasSubmittedCards to false
     for (const [_id, playerData] of this.state.players) {
+      if (playerData.isOffline) continue;
       playerData.status = playerData.id === this.state.judge ? "waiting" : "pending";
       playerData.hasSubmittedCards = false;
     }
@@ -255,13 +336,14 @@ export class MyRoom extends Room<MyRoomState> {
   }
 
   private async handleWinner() {
-    console.log(">> handling winner...");
+    logger.info(">> handling winner...");
     this.setStatus("finished");
     //reset players statuses
     for (const [_id, playerData] of this.state.players) {
+      if (playerData.isOffline) continue;
       playerData.status = "pending";
     }
-    console.log(`>>> winner is ${this.state.players.get(this.state.judge)?.username}`);
+    logger.info(`>>> winner is ${this.state.players.get(this.state.judge)?.username}`);
   }
 
   private checkForWinner() {
@@ -274,47 +356,55 @@ export class MyRoom extends Room<MyRoomState> {
     return false;
   }
 
-  private async handleEndGame(client: Client, _data: null) {
-    console.log(">> ending game...");
+  private async handleEndGame(_client: Client, _data: null) {
+    logger.info(">> ending game...");
   }
 
   private async handleStartNewGame(client: Client, _data: null) {
-    console.log(">> starting new game...");
+    logger.info(">> starting new game...");
+    this.resetGame();
+    this.setStatus("waiting");
+    this.handleStartGame(client);
   }
-  private async handleBackToLobby(client: Client, _data: null) {
-    console.log(">> returning to lobby...");
+  private async handleBackToLobby(_client: Client, _data: null) {
+    logger.info(">> returning to lobby...");
+    this.resetGame();
+    this.setStatus("waiting");
+  }
+
+  /**
+   * Resets the game state to the default values
+   * The config and status still remains the same
+   */
+  private resetGame() {
+    //BUG: this is not resetting the game properly, im stuck in the winner screen
+    logger.info(">> resetting game...");
+    const newRoomState = new MyRoomState();
+    newRoomState.config = this.state.config;
+    const playersMap = this.state.players;
+
+    for (const [_id, playerData] of playersMap) {
+      playerData.score = 0;
+      playerData.status = "pending";
+    }
+
+    newRoomState.players = playersMap;
+
+    this.state = newRoomState;
   }
 
   private addRound(questionCard?: QuestionCardSchema, judge?: string): void {
+    if (!questionCard || !judge) {
+      logger.error(">>> question card or judge is missing");
+      return;
+    }
+
     const newRound = createEmptyRound();
 
-    if (questionCard) {
-      newRound.questionCard = questionCard;
-    }
-    if (judge) {
-      newRound.judge = judge;
-    }
+    newRound.questionCard = questionCard;
+    newRound.judge = judge;
 
     this.state.rounds.push(newRound);
-  }
-
-  private returnRandomPlayerId() {
-    const playersArray = Array.from(this.state.players.values());
-
-    if (playersArray.length > 0) {
-      const randomIndex = Math.floor(Math.random() * playersArray.length);
-      return playersArray[randomIndex].id;
-    }
-  }
-
-  private getNextJudgeId(): string {
-    const playersArray = Array.from(this.state.players.values());
-
-    if (playersArray.length > 0) {
-      const currentJudgeIndex = playersArray.findIndex(player => player.id === this.state.judge);
-      const nextJudgeIndex = (currentJudgeIndex + 1) % playersArray.length;
-      return playersArray[nextJudgeIndex].id;
-    }
   }
 
   /**
@@ -330,7 +420,6 @@ export class MyRoom extends Room<MyRoomState> {
 
     if (!questionCard.questionCard) {
       console.error(">>> no question card found");
-      this.startingStatusUpdate(">>> no question card found");
       return;
     }
 
@@ -346,16 +435,13 @@ export class MyRoom extends Room<MyRoomState> {
     this.state.usedAnswerCards.push(...(answerCards as AnswerCardSchema[]));
   }
 
-  private get playersCount(): number {
-    return this.state.players.size;
-  }
-
   private async dealAnswerCardsForEveryoneLessTheJudge(judgeId: string, questionSpaces: number) {
-    console.log(">>> deal cards to players: START");
-    const players = Array.from(this.state.players.values());
+    logger.info(">>> deal cards to players: START");
+    // const players = Array.from(this.state.players.values());
+    const players = this.state.onlinePlayersArray;
 
     // here is how many players are in the room
-    const playersCount = this.playersCount;
+    const playersCount = players.length - 1;
 
     const MINIMUM_CARDS_PER_PLAYER = 5;
     // how many cards the player should have in their hands
@@ -368,9 +454,11 @@ export class MyRoom extends Room<MyRoomState> {
     }, 0);
 
     // now calculate how many cards we need to request, after the players have selected the cards they need to stay with at least 5 cards in their hands
-    const cardsToRequestCount = playersCount * (shouldHaveCardsCount - cardsInHandsCount);
+    const cardsToRequestCount = shouldHaveCardsCount * playersCount - cardsInHandsCount;
 
-    console.log("<<< cardsToRequestCount", cardsToRequestCount);
+    logger.info(
+      `>>> cardsToRequestCount: ${cardsToRequestCount} = ${shouldHaveCardsCount} * ${playersCount} - ${cardsInHandsCount}`,
+    );
 
     const decksIds = this.state.config.availableDecks.map(deck => deck.id);
     const blacklistCardIds = this.state.usedAnswerCards.map(card => card.id);
@@ -379,7 +467,6 @@ export class MyRoom extends Room<MyRoomState> {
 
     if (!result.answerCards) {
       console.error(">>> no answer cards found");
-      this.startingStatusUpdate(">>> no answer cards found");
       return;
     }
 
@@ -397,6 +484,10 @@ export class MyRoom extends Room<MyRoomState> {
       // now we need to get the cards from the result
       const cardsToGive = result.answerCards.splice(0, cardsNeededCount);
 
+      logger.info(
+        `The player ${player.username}, have ${player.cards.length} and will receive ${cardsToGive.length} cards`,
+      );
+
       // now we need to add the cards to the player
       player.addCardsToPlayerHand(cardsToGive);
 
@@ -404,7 +495,7 @@ export class MyRoom extends Room<MyRoomState> {
       this.updateUsedAnswerCardsForTheRound(cardsToGive);
     });
 
-    console.log(">>> deal cards to players: END");
+    logger.info(">>> deal cards to players: END");
   }
 
   private setStatus(status: RoomStatus) {
@@ -442,7 +533,7 @@ export class MyRoom extends Room<MyRoomState> {
   }
 
   private autoGoToNextRoundOnTheResultScreen() {
-    console.log(">>> autoGoToNextRoundOnTheResultScreen");
+    logger.info(">>> autoGoToNextRoundOnTheResultScreen");
     this.skipToNextRound();
   }
 
@@ -451,11 +542,11 @@ export class MyRoom extends Room<MyRoomState> {
 
     if (!currentRound.allCardsRevealed) {
       this.setStatus("judging");
-      console.log(">>> autoPlayNextCard");
+      logger.info(">>> autoPlayNextCard");
       this.goToNextCard();
       return;
     }
-    console.log(">>> Select a Winner of the round");
+    logger.info(">>> Select a Winner of the round");
 
     const judgeClient = this.clients.find(client => client.sessionId === this.state.judge);
 
@@ -472,13 +563,13 @@ export class MyRoom extends Room<MyRoomState> {
 
   private autoSelectAnswerCardForAllPlayersLeft() {
     // BUG: The random cards sometimes are the same card multiple times. Fix this
-    console.log(">>> autoSelectAnswerCardForAllPlayersLeft");
+    logger.info(">>> autoSelectAnswerCardForAllPlayersLeft");
     // return first if the status is not playing
     if (this.state.roomStatus !== "playing") {
       return;
     }
     // get the players that not have selected yet
-    const players = Array.from(this.state.players.values()).filter(player => !player.hasSubmittedCards);
+    const players = this.state.onlinePlayersArray.filter(player => !player.hasSubmittedCards);
 
     // if there are no players left, just ignore
     if (players.length === 0) {
@@ -500,11 +591,6 @@ export class MyRoom extends Room<MyRoomState> {
       };
       this.handlePlayerSelection(playerClient, payload);
     });
-  }
-
-  private startingStatusUpdate(message: string): void {
-    console.log(">>> startingStatusUpdate");
-    this.broadcast("message:status", message);
   }
 
   @AdminOnly
@@ -604,7 +690,7 @@ export class MyRoom extends Room<MyRoomState> {
     currentRound.answerCards.set(client.sessionId, answerCardArray);
 
     player.status = "done";
-    const playersList = [...this.state.players.values()];
+    const playersList = this.state.onlinePlayersArray;
 
     const allPlayersDone = this.checkAllPlayersDone(playersList);
     if (allPlayersDone) {
@@ -624,7 +710,7 @@ export class MyRoom extends Room<MyRoomState> {
   }
 
   private handleAllPlayersDone() {
-    const playersList = [...this.state.players.values()];
+    const playersList = this.state.onlinePlayersArray;
 
     playersList.forEach(player => {
       if (player.id === this.state.judge) {
@@ -634,6 +720,7 @@ export class MyRoom extends Room<MyRoomState> {
       // get the cards the player has selected
       const selectedCards = this.state.rounds[this.state.rounds.length - 1].answerCards.get(player.id);
 
+      // const _player = this.state.players.get(player.id);
       player.removeCardsFromPlayerHand(selectedCards.cards);
     });
     this.setStatus("judging");
@@ -653,7 +740,7 @@ export class MyRoom extends Room<MyRoomState> {
    * @returns
    */
   private handleRequestNextCard(client: Client) {
-    console.log(">>> handleRequestNextCard");
+    logger.info(">>> handleRequestNextCard");
 
     // Exit early if the client is not the judge
     if (this.state.judge !== client.sessionId) {
@@ -726,18 +813,14 @@ export class MyRoom extends Room<MyRoomState> {
   }
 
   private setWinnerOfRound(winnerId: string, round: RoundSchema) {
-    // Get the winner player
     const winner = this.state.players.get(winnerId);
-
-    // Update the score for the winner
-    winner.score += 1;
-
-    // Set the round winner
+    winner.addPoint();
     round.winner = winnerId;
   }
 
   ///Util methods
   public handleDevSaveSnapshot(_client: Client, _data: null) {
+    return;
     const snapshot = this.state;
     const stringData = JSON.stringify(snapshot, null, 2); // The last two arguments add formatting to the output file
     fs.writeFileSync("snapshot.json", stringData, "utf-8"); // Writing the data to 'snapshot.json'
@@ -745,6 +828,7 @@ export class MyRoom extends Room<MyRoomState> {
   }
 
   public handleDevLoadSnapshot(_client: Client, _data: null) {
+    return;
     if (fs.existsSync("snapshot.json")) {
       const rawData = fs.readFileSync("snapshot.json", "utf-8");
       const parsedSnapshot = JSON.parse(rawData);

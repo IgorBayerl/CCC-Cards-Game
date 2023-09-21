@@ -15,8 +15,9 @@ export class PlayerSchema extends Schema {
   @type("string") status: TPlayerStatus = "pending";
   @type("boolean") hasSubmittedCards: boolean = false;
   @type([AnswerCardSchema]) cards = new ArraySchema<AnswerCardSchema>();
+  @type("boolean") isOffline: boolean = false;
 
-  private _timeout?: NodeJS.Timeout;
+  private _timeout?: NodeJS.Timeout = undefined;
 
   public addPoint() {
     this.score++;
@@ -54,39 +55,22 @@ export class PlayerSchema extends Schema {
     return randomAnswers;
   }
 
-  // /**
-  //  * In this method we will tell how many cards the player should have in the hand, and the decks he can get cards from
-  //  * We have a helper method that we can call with the decks and it returns one card from a random deck TODO: make this method
-  //  * @param targetCardsCount is the number of cards the player should have in the hand
-  //  * @param decks is the decks the player can get cards from
-  //  */
-  // public getCards(targetCardsCount: number, decks: ArraySchema<DeckSchema>) {
-  //   // If the player already has the target number of cards, return
-  //   if (this.cards.length === targetCardsCount) return;
-
-  //   // If the player has more cards than the target number, remove the extra cards
-  //   if (this.cards.length > targetCardsCount) {
-  //     this.cards.splice(targetCardsCount, this.cards.length - targetCardsCount);
-  //     return;
-  //   }
-
-  //   // If the player has less cards than the target number, add cards until the target number is reached
-  //   while (this.cards.length < targetCardsCount) {
-  //     this.cards.push(this.getRandomCard(decks));
-  //   }
-  // }
-
-  // /**
-  //  * This method returns a random card from the decks passed as argument
-  //  * And add the card id to the usedCards array
-  //  * @param decks
-  //  */
-  // private getRandomCard(decks: ArraySchema<DeckSchema>): AnswerCardSchema {
-  //   // Get a random deck from the decks array
-  // }
-
   public setStatus(status: TPlayerStatus) {
     this.status = status;
+  }
+
+  public cloneFrom(otherPlayer: PlayerSchema) {
+    this.username = otherPlayer.username;
+    this.pictureUrl = otherPlayer.pictureUrl;
+    this.score = otherPlayer.score;
+    this.status = otherPlayer.status;
+    this.hasSubmittedCards = otherPlayer.hasSubmittedCards;
+    this.cards = otherPlayer.cards;
+    this.isOffline = otherPlayer.isOffline;
+
+    if (this._timeout) {
+      clearTimeout(this._timeout);
+    }
   }
 }
 

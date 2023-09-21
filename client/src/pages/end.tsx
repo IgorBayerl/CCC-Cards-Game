@@ -22,6 +22,7 @@ export default function End() {
     status: 'pending',
     hasSubmittedCards: false,
     cards: [],
+    isOffline: false,
   }
 
   //players is a map, so we need to convert it to an array

@@ -19,8 +19,8 @@ export default function PlayerItem({ player, leader }: IPlayerItemProps) {
   const status = getPlayerStatus(player, gameState)
   const showStatus = shouldShowPlayerStatus(gameState)
   const score = player.score
-  // const isOffline = player.isOffline
-  const isOffline = false
+  const isOffline = player.isOffline
+  // const isOffline = false
 
   const styles = classNames('flex w-full max-w-full flex-row items-center gap-2', {
     'text-gray-400 opacity-40': isOffline,
@@ -48,8 +48,8 @@ export function MobilePlayerItem({ player, leader }: IPlayerItemProps) {
   const status = getPlayerStatus(player, gameState)
   const showStatus = shouldShowPlayerStatus(gameState)
   const score = player.score
-  // const isOffline = player.isOffline
-  const isOffline = false
+  const isOffline = player.isOffline
+  // const isOffline = false
 
   const styles = classNames('flex w-full max-w-full flex-col items-center gap-1', {
     'text-gray-400 opacity-40': isOffline,

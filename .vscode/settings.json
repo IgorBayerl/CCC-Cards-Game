@@ -3,6 +3,7 @@
     "colyseus",
     "lastmod",
     "loadtest",
+    "pino",
     "predev",
     "prestart",
     "urlset"

@@ -35,7 +35,6 @@ interface IGameContextValue {
   room: Room<MyRoomState> | null
   roomId: string
   gameConfig: RoomConfig
-  startingState: string
   isCurrentUserLeader: boolean
   isCurrentUserJudge: boolean
   joinRoom: (username: string, roomId: string, pictureUrl: string) => void
@@ -89,7 +88,6 @@ const GameContext = createContext<IGameContextValue>({
   room: null,
   roomId: '',
   gameConfig: defaultGameConfig,
-  startingState: '',
   isCurrentUserLeader: false,
   isCurrentUserJudge: false,
   joinRoom: () => undefined,
@@ -108,7 +106,6 @@ const client = new Client('ws://localhost:2567')
 const GameProvider: React.FC<IGameProviderProps> = ({ children }) => {
   // const { socket } = useSocketContext()
   const [gameState, setGameState] = useState(initialGameState)
-  const [startingState, setStartingState] = useState('')
   const { isMuted } = useAudio()
 
   const [room, setRoom] = useState<Room<MyRoomState> | null>(null)
@@ -149,7 +146,7 @@ const GameProvider: React.FC<IGameProviderProps> = ({ children }) => {
 
   const handleChangeState = useCallback(
     (newState: MyRoomState) => {
-      console.log('game:updateState', newState)
+      // console.log('game:updateState', newState)
 
       const newPath = statusToUrl[newState.roomStatus]
       if (newPath && router.pathname !== newPath) {
@@ -157,6 +154,7 @@ const GameProvider: React.FC<IGameProviderProps> = ({ children }) => {
         void router.push(newPath)
       }
 
+      console.log('Players NEW STATE >> ', newState.players)
       setGameState({ ...newState })
     },
     [playSound]
@@ -190,7 +188,6 @@ const GameProvider: React.FC<IGameProviderProps> = ({ children }) => {
   )
 
   const joinRoom = async (username: string, roomId: string, pictureUrl: string) => {
-    console.log('JOINING ROOM', roomId)
     const room = await client.joinById<MyRoomState>(roomId, {
       username,
       pictureUrl,
@@ -199,7 +196,6 @@ const GameProvider: React.FC<IGameProviderProps> = ({ children }) => {
   }
 
   const createRoom = async (username: string, pictureUrl: string) => {
-    console.log('CREATING ROOM')
     try {
       const room = await client.create<MyRoomState>('my_room', {
         username,
@@ -219,8 +215,6 @@ const GameProvider: React.FC<IGameProviderProps> = ({ children }) => {
   }
 
   const setConfig = (config: SetConfigPayload) => {
-    console.log('game:setConfig', config)
-    console.log('AAAA >> game:setConfig', JSON.stringify(config))
     setGameState((prevState) => ({
       ...prevState,
       config,
@@ -232,7 +226,6 @@ const GameProvider: React.FC<IGameProviderProps> = ({ children }) => {
     const payload = {
       selection: cards,
     }
-    console.log('game:playerSelection', cards)
     sendToRoom(MessageType.PLAYER_SELECTION, payload)
   }
 
@@ -265,7 +258,6 @@ const GameProvider: React.FC<IGameProviderProps> = ({ children }) => {
     room,
     roomId,
     gameConfig,
-    startingState,
     isCurrentUserLeader: gameState.leader === myId,
     isCurrentUserJudge: gameState.judge === myId,
     joinRoom,

@@ -119,6 +119,7 @@ export interface Player {
   status: PlayerStatus;
   hasSubmittedCards: boolean;
   cards: AnswerCard[];
+  isOffline: boolean;
 }
 
 // Round.ts

@@ -13,7 +13,7 @@ import useTranslation from 'next-translate/useTranslation'
 import { type Card } from '~/types'
 
 export default function Game() {
-  const { isCurrentUserJudge, gameState, startingState, myId, playerSelectCards } = useGameContext()
+  const { isCurrentUserJudge, gameState, myId, playerSelectCards } = useGameContext()
   const myCards = gameState.players.get(myId)?.cards || []
 
   const { t } = useTranslation('game')
@@ -65,7 +65,7 @@ export default function Game() {
   if (gameState.roomStatus === 'starting') {
     return (
       <Layout>
-        <h1 className="">{startingState}</h1>
+        <h1 className="">Starting</h1>
       </Layout>
     )
   }
@@ -75,6 +75,7 @@ export default function Game() {
       <TimerTitle key="Choose your cards" subtitle={t('i-choose-the-cards-that-best-fit')} time={time} />
       <div className="bg-destaque-mobile flex flex-1 flex-col overflow-y-auto py-2 text-accent md:mx-4">
         <div className="flex h-full flex-1 flex-col justify-between ">
+          {JSON.stringify(gameState.players)}
           <div className="flex flex-1 items-center justify-center px-3">
             {currentQuestionCard && (
               <GameCardResult question={currentQuestionCard.text || ''} answers={selectedCardsTextArray} />

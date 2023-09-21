@@ -38,6 +38,8 @@
     "colyseus": "^0.15.0",
     "drizzle-orm": "latest",
     "express": "latest",
+    "pino": "^8.15.1",
+    "pino-pretty": "^10.2.0",
     "sqlite3": "^5.1.6",
     "zod": "latest"
   },
@@ -48,6 +50,7 @@
     "@types/express": "^4.17.1",
     "@types/mocha": "^10.0.1",
     "@types/node": "^20.5.9",
+    "@types/pino": "^7.0.5",
     "@typescript-eslint/eslint-plugin": "^6.4.1",
     "@typescript-eslint/parser": "^6.4.1",
     "drizzle-kit": "^0.19.13",
