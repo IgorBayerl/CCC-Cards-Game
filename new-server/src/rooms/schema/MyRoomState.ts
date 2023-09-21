@@ -48,43 +48,8 @@ export class MyRoomState extends Schema {
     }, this._DISCONNECT_TIMEOUT);
   }
 
-  /**
-   * Returns a map of all the online players in the room
-   */
-  public get onlinePlayers() {
-    const onlinePlayers = new MapSchema<PlayerSchema>();
-    for (const [playerId, player] of this.players.entries()) {
-      if (player.isOffline) continue;
-      onlinePlayers.set(playerId, player);
-    }
-    return onlinePlayers; //sometimes this is undefined for some reason
-  }
-
-  public get onlinePlayersArray() {
-    return Array.from(this.onlinePlayers.values());
-  }
-
-  /**
-   * Returns a random online player id
-   * @example
-   * const randomPlayerId = this.state.randomOnlinePlayerId;
-   * const randomPlayer = this.state.players.get(randomPlayerId);
-   */
-  public get randomOnlinePlayerId() {
-    const playersArray = this.onlinePlayersArray;
-    if (playersArray.length > 0) {
-      const randomIndex = Math.floor(Math.random() * playersArray.length);
-      return playersArray[randomIndex].id;
-    }
-  }
-
-  public get nextJudgeId() {
-    const playersArray = this.onlinePlayersArray;
-    if (playersArray.length > 0) {
-      const currentJudgeIndex = playersArray.findIndex(player => player.id === this.judge);
-      const nextJudgeIndex = (currentJudgeIndex + 1) % playersArray.length;
-      return playersArray[nextJudgeIndex].id;
-    }
+  public get playersArray() {
+    return Array.from(this.players.values());
   }
 }
 

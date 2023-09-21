@@ -165,8 +165,9 @@ export class MyRoom extends Room<MyRoomState> {
     if (playerLeaving.id !== this.state.leader) return;
 
     // If there are still players left, assign leadership to the first player in the players map
-    if (this.state.onlinePlayers.size > 0) {
-      this.state.leader = this.state.onlinePlayers.values().next().value.id;
+    if (this.onlinePlayersIds.length > 0) {
+      // this.state.leader = this.state.onlinePlayers().values().next().value.id;
+      this.state.leader = this.getNextLeaderId();
       return;
     }
 
@@ -256,7 +257,7 @@ export class MyRoom extends Room<MyRoomState> {
     this.setStatus("starting");
 
     // this.selectJudge();
-    const firstJudge = this.state.randomOnlinePlayerId;
+    const firstJudge = this.randomOnlinePlayerId();
     this.state.judge = firstJudge;
 
     const questionCard = await this.getNextQuestionCard();
@@ -276,6 +277,41 @@ export class MyRoom extends Room<MyRoomState> {
     }
 
     this.setStatus("playing");
+  }
+
+  private randomOnlinePlayerId() {
+    const onlinePlayersIds = this.onlinePlayersIds();
+    const randomIndex = Math.floor(Math.random() * onlinePlayersIds.length);
+    return onlinePlayersIds[randomIndex];
+  }
+
+  /**
+   * I want to remove the onlinePlayers() from the Room class  and use the state method instead
+   */
+  private onlinePlayersIds() {
+    const playersArray = this.state.playersArray;
+    const onlinePlayers = playersArray.filter(player => !player.isOffline);
+    return onlinePlayers.map(player => player.id);
+  }
+
+  /**
+   * Gets the current judge index and adds 1 to it, if the index is bigger than the online players array length, it resets to 0
+   */
+  private getNextLeaderId() {
+    const onlinePlayersIds = this.onlinePlayersIds();
+    const currentLeaderIndex = onlinePlayersIds.indexOf(this.state.leader);
+    const nextLeaderIndex = currentLeaderIndex + 1;
+    const nextLeaderId = onlinePlayersIds[nextLeaderIndex] || onlinePlayersIds[0];
+    return nextLeaderId;
+  }
+
+  private getNextJudgeId() {
+    const onlinePlayersIds = this.onlinePlayersIds();
+    if (onlinePlayersIds.length === 0) return null;
+    const currentJudgeIdIndex = onlinePlayersIds.findIndex(id => id === this.state.judge);
+    const nextJudgeIdIndex = currentJudgeIdIndex + 1;
+    const nextJudgeId = onlinePlayersIds[nextJudgeIdIndex] || onlinePlayersIds[0];
+    return nextJudgeId;
   }
 
   @AdminOnly
@@ -306,7 +342,7 @@ export class MyRoom extends Room<MyRoomState> {
 
     this.setStatus("starting");
 
-    const newJudgeId = this.state.nextJudgeId;
+    const newJudgeId = this.getNextJudgeId();
 
     this.state.judge = newJudgeId;
 
@@ -438,7 +474,7 @@ export class MyRoom extends Room<MyRoomState> {
   private async dealAnswerCardsForEveryoneLessTheJudge(judgeId: string, questionSpaces: number) {
     logger.info(">>> deal cards to players: START");
     // const players = Array.from(this.state.players.values());
-    const players = this.state.onlinePlayersArray;
+    const players = this.state.playersArray;
 
     // here is how many players are in the room
     const playersCount = players.length - 1;
@@ -569,7 +605,7 @@ export class MyRoom extends Room<MyRoomState> {
       return;
     }
     // get the players that not have selected yet
-    const players = this.state.onlinePlayersArray.filter(player => !player.hasSubmittedCards);
+    const players = this.state.playersArray.filter(player => !player.hasSubmittedCards);
 
     // if there are no players left, just ignore
     if (players.length === 0) {
@@ -690,7 +726,7 @@ export class MyRoom extends Room<MyRoomState> {
     currentRound.answerCards.set(client.sessionId, answerCardArray);
 
     player.status = "done";
-    const playersList = this.state.onlinePlayersArray;
+    const playersList = this.state.playersArray;
 
     const allPlayersDone = this.checkAllPlayersDone(playersList);
     if (allPlayersDone) {
@@ -710,7 +746,7 @@ export class MyRoom extends Room<MyRoomState> {
   }
 
   private handleAllPlayersDone() {
-    const playersList = this.state.onlinePlayersArray;
+    const playersList = this.state.playersArray;
 
     playersList.forEach(player => {
       if (player.id === this.state.judge) {
