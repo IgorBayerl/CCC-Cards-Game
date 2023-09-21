@@ -64,9 +64,7 @@ const initialGameState: MyRoomState = {
   rounds: [],
   roomStatus: 'waiting',
   judge: '',
-  isJudgeSelected: false,
   currentQuestionCard: {} as QuestionCard,
-  isQuestionCardSelected: false,
   usedQuestionCards: [],
   usedAnswerCards: [],
   leader: '',
@@ -172,6 +170,7 @@ const GameProvider: React.FC<IGameProviderProps> = ({ children }) => {
   const handleDisconnect = () => {
     toast.error('You have been disconnected from the server.')
     setGameState({ ...initialGameState })
+
     void router.push('/')
   }
 
@@ -188,9 +187,11 @@ const GameProvider: React.FC<IGameProviderProps> = ({ children }) => {
   )
 
   const joinRoom = async (username: string, roomId: string, pictureUrl: string) => {
+    const oldPlayerId = localStorage.getItem('oldPlayerId')
     const room = await client.joinById<MyRoomState>(roomId, {
       username,
       pictureUrl,
+      oldPlayerId: oldPlayerId || undefined,
     })
     setRoom(room)
   }
@@ -237,7 +238,8 @@ const GameProvider: React.FC<IGameProviderProps> = ({ children }) => {
     if (room) {
       room.onMessage('room:joinedRoom', (roomId: string) => {
         console.log('a room:joinedRoom', roomId)
-        localStorage.setItem('oldSocketId', roomId || '')
+        const myId = room.sessionId
+        localStorage.setItem('oldPlayerId', myId || '')
       })
 
       room.onMessage('game:error', handleError)

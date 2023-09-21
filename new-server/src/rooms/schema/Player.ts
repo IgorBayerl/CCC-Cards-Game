@@ -1,9 +1,7 @@
 // src/rooms/GamePlayer.ts
 import {Schema, type, ArraySchema} from "@colyseus/schema";
-import {type Client} from "colyseus";
 import {AnswerCard} from "../../../shared/types";
 import {AnswerCardSchema} from "./Card";
-import {DeckSchema} from "./Deck";
 
 export type TPlayerStatus = "judge" | "pending" | "done" | "none" | "winner" | "waiting";
 
@@ -61,12 +59,12 @@ export class PlayerSchema extends Schema {
 
   public cloneFrom(otherPlayer: PlayerSchema) {
     this.username = otherPlayer.username;
-    this.pictureUrl = otherPlayer.pictureUrl;
+    // this.pictureUrl = otherPlayer.pictureUrl;
     this.score = otherPlayer.score;
     this.status = otherPlayer.status;
     this.hasSubmittedCards = otherPlayer.hasSubmittedCards;
     this.cards = otherPlayer.cards;
-    this.isOffline = otherPlayer.isOffline;
+    this.isOffline = false;
 
     if (this._timeout) {
       clearTimeout(this._timeout);

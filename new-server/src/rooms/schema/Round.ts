@@ -1,6 +1,5 @@
 import {Schema, type, MapSchema, ArraySchema} from "@colyseus/schema";
 import {QuestionCardSchema, AnswerCardSchema} from "./Card";
-import {PlayerSchema} from "./Player";
 
 export class AnswerCardsArraySchema extends Schema {
   @type([AnswerCardSchema]) cards = new ArraySchema<AnswerCardSchema>();

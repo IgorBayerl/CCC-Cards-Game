@@ -1,9 +1,8 @@
-import {Schema, Context, type, MapSchema, ArraySchema} from "@colyseus/schema";
+import {Schema, type, MapSchema, ArraySchema} from "@colyseus/schema";
 import {AnswerCardSchema, QuestionCardSchema} from "./Card";
 import {RoomConfigSchema} from "./Config";
 import {PlayerSchema} from "./Player";
 import {RoundSchema} from "./Round";
-
 
 type RoomStatus = "waiting" | "starting" | "playing" | "judging" | "results" | "finished";
 
@@ -18,10 +17,7 @@ export class MyRoomState extends Schema {
 
   @type("string") judge = "";
 
-  @type("boolean") isJudgeSelected = false; //TODO: Remove this
-
   @type(QuestionCardSchema) currentQuestionCard = new QuestionCardSchema();
-  @type("boolean") isQuestionCardSelected = false; //TODO: Remove this
 
   //this has no use on the client side, but is used to keep track of the used cards
   @type([QuestionCardSchema]) usedQuestionCards = new ArraySchema<QuestionCardSchema>();
@@ -29,8 +25,12 @@ export class MyRoomState extends Schema {
 
   @type("string") leader = "";
 
-  private _DISCONNECT_TIMEOUT = 10000;
+  // private _DISCONNECT_TIMEOUT = 10000;
+  private _DISCONNECT_TIMEOUT = 1000 * 60 * 2;
 
+  /**
+   * Disconnects a player from the room
+   */
   public disconnectPlayer(playerId: string) {
     // set the player to offline and after 10 seconds remove them from the room
 
@@ -48,6 +48,9 @@ export class MyRoomState extends Schema {
     }, this._DISCONNECT_TIMEOUT);
   }
 
+  /**
+   * Returns an array of players in the room
+   */
   public get playersArray() {
     return Array.from(this.players.values());
   }

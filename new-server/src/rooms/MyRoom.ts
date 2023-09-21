@@ -98,10 +98,27 @@ export class MyRoom extends Room<MyRoomState> {
     }
 
     if (oldPlayerId) {
-      this.handleReconnect(client, oldPlayerId);
+      if (this.canReconnect(client, oldPlayerId)) {
+        this.handleReconnect(client, oldPlayerId);
+      }
     }
 
     client.send("room:joinedRoom", this.roomId);
+  }
+
+  private canReconnect(client: Client, oldPlayerId: string) {
+    // verify if the old player is in the room
+    const isOldPlayerInRoom = this.state.players.has(oldPlayerId);
+    if(!isOldPlayerInRoom) return false;
+
+    // verify if the old player is offline
+    const oldPlayer = this.state.players.get(oldPlayerId)
+    if(!oldPlayer) return false;
+
+    const isOldPlayerOffline = oldPlayer.isOffline
+    if(!isOldPlayerOffline) return false;
+
+    return true
   }
 
   onLeave(client: Client, consented: boolean) {
@@ -112,7 +129,8 @@ export class MyRoom extends Room<MyRoomState> {
     );
 
     if (consented) {
-      this.handleConsentedLeave(client);
+      // this.handleConsentedLeave(client);
+      this.handleUnintentionalDisconnection(client);
       return;
     }
     this.handleUnintentionalDisconnection(client);
@@ -128,6 +146,7 @@ export class MyRoom extends Room<MyRoomState> {
    * Handles the player reconnecting in the room
    */
   private handleReconnect(client: Client, oldPlayerId: string) {
+    logger.info(`Player ${oldPlayerId} is reconnecting!`);
     // TODO: Implement this in the frontend
     const newPlayer = this.state.players.get(client.sessionId);
     const oldPlayer = this.state.players.get(oldPlayerId);
@@ -140,7 +159,9 @@ export class MyRoom extends Room<MyRoomState> {
     // delete the old player
     this.state.players.delete(oldPlayerId);
 
-    // logger.info(newPlayer.username, "reconnected!");
+    // TODO: Go trough all the rounds and replace the old player's id with the new player's id
+    
+
     logger.info(`${newPlayer.username} reconnected!`);
   }
 
@@ -736,9 +757,8 @@ export class MyRoom extends Room<MyRoomState> {
 
   private checkAllPlayersDone(playersList: PlayerSchema[]) {
     const allPlayersDone = playersList.every(player => {
-      if (player.id === this.state.judge) {
-        return true;
-      }
+      if (player.isOffline) return true;
+      if (player.id === this.state.judge) return true;
       return player.status === "done";
     });
 

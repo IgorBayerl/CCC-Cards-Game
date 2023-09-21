@@ -65,9 +65,7 @@ export interface MyRoomState {
   rounds: Round[];
   roomStatus: RoomStatus;
   judge: string;
-  isJudgeSelected: boolean;
   currentQuestionCard: QuestionCard;
-  isQuestionCardSelected: boolean;
   usedQuestionCards: QuestionCard[];
   usedAnswerCards: AnswerCard[];
   leader: string;
