@@ -28,6 +28,7 @@ const config = {
     ],
     '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
     '@next/next/no-img-element': 'off',
+    '@typescript-eslint/no-empty-interface': 'off',
   },
 }
 
