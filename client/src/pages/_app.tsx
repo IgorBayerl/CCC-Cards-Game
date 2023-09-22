@@ -4,7 +4,6 @@ import { ToastContainer } from 'react-toastify'
 import { GameProvider } from '~/components/GameContext'
 
 import Head from 'next/head'
-import { useEffect } from 'react'
 import { QueryClient, QueryClientProvider } from 'react-query'
 import { NextSeo } from 'next-seo';
 
@@ -12,26 +11,11 @@ import 'react-toastify/dist/ReactToastify.css'
 import '~/styles/globals.css'
 import { AudioProvider } from '~/components/AudioContext'
 import TrackingCode from '~/components/TrackingCode'
-import { useRouter } from 'next/router'
-import DevTools from '~/components/devTools'
 
-// import * as gtag from '~/lib/gtag'
-
-const url = process.env.NEXT_PUBLIC_GAME_SERVER || 'http://localhost:2567'
 
 const queryClient = new QueryClient()
 
 const MyApp: AppType = ({ Component, pageProps }) => {
-  const router = useRouter()
-  // useEffect(() => {
-  //   const handleRouteChange = (url: string) => {
-  //     gtag.pageview(url)
-  //   }
-  //   router.events.on('routeChangeComplete', handleRouteChange)
-  //   return () => {
-  //     router.events.off('routeChangeComplete', handleRouteChange)
-  //   }
-  // }, [router.events])
 
   return (
     <>

@@ -99,7 +99,8 @@ const GameContext = createContext<IGameContextValue>({
 const useGameContext = () => useContext(GameContext)
 
 // Initialize the Colyseus client
-const client = new Client('ws://localhost:2567')
+const URL = process.env.NEXT_PUBLIC_GAME_SOCKET_SERVER || 'ws://localhost:2567'
+const client = new Client(URL)
 
 const GameProvider: React.FC<IGameProviderProps> = ({ children }) => {
   // const { socket } = useSocketContext()

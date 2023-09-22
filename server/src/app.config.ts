@@ -2,6 +2,7 @@ import config from "@colyseus/tools";
 import {monitor} from "@colyseus/monitor";
 import {playground} from "@colyseus/playground";
 import logger from "./lib/loggerConfig";
+import cors from "cors";
 
 /**
  * Import your Room files
@@ -19,12 +20,11 @@ export default config({
      * Define your room handlers:
      */
     gameServer.define("my_room", MyRoom);
-
-    //@ts-ignore
-    global.gameServer = gameServer;
   },
 
   initializeExpress: app => {
+    app.use(cors());
+
     app.get("/hello_world", (req, res) => {
       res.send("Hello Cyber Chaos Cards!");
     });
