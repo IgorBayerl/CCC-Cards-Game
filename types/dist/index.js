@@ -1,4 +1,4 @@
-// shared/types.ts
+// types/index.ts
 export var MessageType;
 (function (MessageType) {
     MessageType["ADMIN_START"] = "admin:start";

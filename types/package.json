@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Shared types between client and server",
   "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
     "prepare": "tsc",
     "build": "tsc"
