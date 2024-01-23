@@ -1,6 +1,6 @@
 {
   "private": true,
-  "name": "ccc-server",
+  "name": "@ccc-cards-game/server",
   "version": "1.0.0",
   "description": "npm init template for bootstrapping an empty Colyseus project",
   "main": "build/index.js",
@@ -8,8 +8,7 @@
     "node": ">= 16.13.0"
   },
   "scripts": {
-    "copy:shared": "ncp ../shared ./shared",
-    "prepare": "npm run copy:shared",
+    "prepare": "pnpm prisma generate",
     "dev": "tsx watch src/index.ts",
     "loadtest": "tsx loadtest/example.ts --room my_room --numClients 2",
     "build": "npm run clean && tsc",
@@ -30,8 +29,10 @@
   },
   "homepage": "https://github.com/colyseus/create-colyseus#readme",
   "dependencies": {
+    "@colyseus/core": "^0.15.23",
     "@colyseus/monitor": "^0.15.0",
     "@colyseus/playground": "^0.15.3",
+    "@colyseus/schema": "^2.0.26",
     "@colyseus/tools": "^0.15.0",
     "@prisma/client": "^5.2.0",
     "better-sqlite3": "^8.5.1",
@@ -45,6 +46,7 @@
     "zod": "latest"
   },
   "devDependencies": {
+    "@ccc-cards-game/types": "workspace:*",
     "@colyseus/loadtest": "^0.15.0",
     "@colyseus/testing": "^0.15.0",
     "@types/better-sqlite3": "^7.6.4",
@@ -68,6 +70,5 @@
     "tsx": "^3.12.6",
     "typescript": "^5.0.4",
     "vitest": "^0.34.3"
-  },
-  "packageManager": "yarn@3.6.3"
+  }
 }

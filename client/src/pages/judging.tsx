@@ -9,7 +9,7 @@ import LoadingWithText from '~/components/Atoms/LoadingWithText'
 import { useAudio } from '~/components/AudioContext'
 import useSound from 'use-sound'
 import useTranslation from 'next-translate/useTranslation'
-import { MessageType, type AnswerCard } from '~/types'
+import { MessageType, type AnswerCard } from '@ccc-cards-game/types'
 
 export default function Judging() {
   const { isMuted } = useAudio()

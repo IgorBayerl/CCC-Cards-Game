@@ -1,4 +1,4 @@
-import { type MyRoomState, type Player } from '~/types'
+import { type MyRoomState, type Player } from '@ccc-cards-game/types'
 
 export function isPlayerLeader(player: Player, gameState: MyRoomState): boolean {
   return player.id === gameState.leader

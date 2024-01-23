@@ -1,4 +1,4 @@
-// shared/types.ts
+// types/index.ts
 
 export enum MessageType {
   ADMIN_START = "admin:start",
@@ -14,7 +14,6 @@ export enum MessageType {
   DEV_SAVE_SNAPSHOT = "dev:saveSnapshot",
   DEV_LOAD_SNAPSHOT = "dev:loadSnapshot",
 }
-
 
 export type SetConfigPayload = RoomConfig;
 

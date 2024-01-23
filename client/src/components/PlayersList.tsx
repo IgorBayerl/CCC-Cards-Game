@@ -1,6 +1,6 @@
 import RoomChair from './Atoms/RoomChair'
 import { motion, AnimatePresence } from 'framer-motion'
-import { type Player } from '~/types'
+import { type Player } from '@ccc-cards-game/types'
 interface IProps {
   players: Player[]
   leaderId: string

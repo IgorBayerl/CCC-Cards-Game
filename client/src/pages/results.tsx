@@ -7,7 +7,7 @@ import { GameCardResult } from '~/components/Atoms/GameCard'
 import Image from 'next/image'
 import TimerTitle from '~/components/Layout/TimerScreen'
 import useTranslation from 'next-translate/useTranslation'
-import { MessageType } from '~/types'
+import { MessageType } from '@ccc-cards-game/types'
 
 export default function Results() {
   const { sendToRoom, gameState, isCurrentUserLeader } = useGameContext()
