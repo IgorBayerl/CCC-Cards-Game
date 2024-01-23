@@ -10,7 +10,7 @@ import { useAudio } from '~/components/AudioContext'
 import TimerTitle from '~/components/Layout/TimerScreen'
 import LoadingWithText from '~/components/Atoms/LoadingWithText'
 import useTranslation from 'next-translate/useTranslation'
-import { type Card } from '@ccc-cards-game/shared'
+import { type Card } from '@ccc-cards-game/types'
 
 export default function Game() {
   const { isCurrentUserJudge, gameState, myId, playerSelectCards } = useGameContext()

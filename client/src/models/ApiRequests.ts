@@ -1,4 +1,4 @@
-import { type DeckData, type DeckFilters } from '@ccc-cards-game/shared'
+import { type DeckData, type DeckFilters } from '@ccc-cards-game/types'
 import { type ServerResponse } from './Generics'
 
 // export type DeckFilters = {

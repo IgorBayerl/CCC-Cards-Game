@@ -7,7 +7,7 @@ import {
   RoomStatus,
   QuestionCard,
   AnswerCard,
-} from "@ccc-cards-game/shared";
+} from "@ccc-cards-game/types";
 
 import fs from "fs";
 

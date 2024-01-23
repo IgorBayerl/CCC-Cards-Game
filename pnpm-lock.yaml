@@ -102,9 +102,9 @@ importers:
         specifier: ^3.21.4
         version: 3.22.4
     devDependencies:
-      '@ccc-cards-game/shared':
+      '@ccc-cards-game/types':
         specifier: workspace:*
-        version: link:../shared
+        version: link:../types
       '@types/eslint':
         specifier: ^8.21.3
         version: 8.56.2
@@ -211,9 +211,9 @@ importers:
         specifier: latest
         version: 3.22.4
     devDependencies:
-      '@ccc-cards-game/shared':
+      '@ccc-cards-game/types':
         specifier: workspace:*
-        version: link:../shared
+        version: link:../types
       '@colyseus/loadtest':
         specifier: ^0.15.0
         version: 0.15.2
@@ -284,7 +284,7 @@ importers:
         specifier: ^0.34.3
         version: 0.34.6
 
-  shared:
+  types:
     devDependencies:
       typescript:
         specifier: ^4.0.0

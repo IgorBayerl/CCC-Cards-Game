@@ -1,9 +1,10 @@
 {
-  "name": "@ccc-cards-game/shared",
+  "name": "@ccc-cards-game/types",
   "version": "1.0.0",
   "description": "Shared types between client and server",
   "main": "dist/index.js",
   "scripts": {
+    "prepare": "tsc",
     "build": "tsc"
   },
   "devDependencies": {

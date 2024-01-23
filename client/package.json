@@ -41,7 +41,7 @@
     "zod": "^3.21.4"
   },
   "devDependencies": {
-    "@ccc-cards-game/shared": "workspace:*",
+    "@ccc-cards-game/types": "workspace:*",
     "@types/eslint": "^8.21.3",
     "@types/next-pwa": "^5.6.4",
     "@types/node": "^18.15.5",

@@ -1,6 +1,6 @@
 import { GiCrown } from 'react-icons/gi'
 import { CgProfile } from 'react-icons/cg'
-import { type Player } from '@ccc-cards-game/shared'
+import { type Player } from '@ccc-cards-game/types'
 
 interface ICustomAvatarProps {
   src: string

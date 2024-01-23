@@ -1,6 +1,6 @@
 import React from 'react'
 import { classNames } from '~/lib/utils'
-import { type Card } from '@ccc-cards-game/shared'
+import { type Card } from '@ccc-cards-game/types'
 
 interface IGameCardProps {
   cardInfo: Card

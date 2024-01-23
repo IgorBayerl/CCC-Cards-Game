@@ -47,7 +47,7 @@
     "zod": "latest"
   },
   "devDependencies": {
-    "@ccc-cards-game/shared": "workspace:*",
+    "@ccc-cards-game/types": "workspace:*",
     "@colyseus/loadtest": "^0.15.0",
     "@colyseus/testing": "^0.15.0",
     "@types/better-sqlite3": "^7.6.4",
