@@ -8,7 +8,6 @@
     "node": ">= 16.13.0"
   },
   "scripts": {
-    "copy:shared": "ncp ../shared ./shared",
     "prepare": "pnpm prisma generate",
     "dev": "tsx watch src/index.ts",
     "loadtest": "tsx loadtest/example.ts --room my_room --numClients 2",
