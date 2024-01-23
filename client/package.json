@@ -1,10 +1,9 @@
 {
-  "name": "ccc-client-web",
+  "name": "@ccc-cards-game/client",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "copy:shared": "ncp ../shared ./src/lib/shared",
-    "prepare": "npm run copy:shared",
     "build": "next build",
     "dev": "next dev",
     "lint": "next lint",
@@ -42,6 +41,7 @@
     "zod": "^3.21.4"
   },
   "devDependencies": {
+    "@ccc-cards-game/shared": "workspace:*",
     "@types/eslint": "^8.21.3",
     "@types/next-pwa": "^5.6.4",
     "@types/node": "^18.15.5",
@@ -64,6 +64,5 @@
   },
   "ct3aMetadata": {
     "initVersion": "7.12.1"
-  },
-  "packageManager": "yarn@3.6.3"
+  }
 }

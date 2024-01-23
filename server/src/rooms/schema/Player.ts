@@ -1,6 +1,6 @@
 // src/rooms/GamePlayer.ts
 import {Schema, type, ArraySchema} from "@colyseus/schema";
-import {AnswerCard} from "../../../shared/types";
+import {AnswerCard} from "@ccc-cards-game/shared";
 import {AnswerCardSchema} from "./Card";
 
 export type TPlayerStatus = "judge" | "pending" | "done" | "none" | "winner" | "waiting";

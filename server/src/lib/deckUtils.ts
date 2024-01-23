@@ -1,4 +1,4 @@
-import {AnswerCard} from "../../shared/types";
+import {AnswerCard} from "@ccc-cards-game/shared";
 import {AnswerCardSchema, QuestionCardSchema, TAnswerCard, TQuestionCard} from "../rooms/schema";
 import {TDeckFilters} from "../routes/schemas/deckSchemas";
 import db from "./database";

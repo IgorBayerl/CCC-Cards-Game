@@ -1,4 +1,4 @@
-import { type Player } from '~/types'
+import { type Player } from '@ccc-cards-game/shared'
 import { MobileRoomChair } from './Atoms/RoomChair'
 
 interface IProps {

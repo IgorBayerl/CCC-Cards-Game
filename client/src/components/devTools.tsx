@@ -1,4 +1,4 @@
-import { MessageType } from '~/types'
+import { MessageType } from '@ccc-cards-game/shared'
 import { useGameContext } from './GameContext'
 
 export default function DevTools() {
