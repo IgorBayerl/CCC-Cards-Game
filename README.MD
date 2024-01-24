@@ -1,4 +1,3 @@
-
 # Cyber Chaos Cards - CCC
 
 A Cards against Humanity clone online game.
@@ -13,9 +12,19 @@ This project is divided into two primary sections:
 Additionally, there's a `types` folder which contains shared types and utilities that both the `client` and `server` might need access to.
 
 
+
+## Pre requisites
+
+Before starting, ensure you have the following installed:
+
+1. [NodeJS](https://nodejs.org/en/download/) (version 20 or higher)
+2. [pnpm](https://pnpm.io/installation) (Performance-focused package manager)
+
 ## Setting up the Project
 
 1. **Clone the Repository**
+
+   Use the following command to clone the repository:
 
    ```bash
    git clone https://github.com/IgorBayerl/CCC-Cards-Game.git
@@ -23,7 +32,7 @@ Additionally, there's a `types` folder which contains shared types and utilities
 
 2. **Install Dependencies**
 
-   Install the dependencies with `pnpm`
+   After cloning, navigate to the project directory and install the dependencies using pnpm:
 
    ```bash
    pnpm install
@@ -31,31 +40,32 @@ Additionally, there's a `types` folder which contains shared types and utilities
 
 3. **Start the Development Servers**
 
-   To start the dev server of both, `client` and `server`:
+   To start the development servers:
 
-   ```bash
-   pnpm dev
-   ```
+   - For both `client` and `server`:
 
-   to start just the `server`:
+     ```bash
+     pnpm dev
+     ```
 
-   ```bash
-   pnpm dev-server
-   ```
+   - For only the `server`:
 
-   to start just the `client`:
+     ```bash
+     pnpm dev-server
+     ```
 
-   ```bash
-   pnpm dev-client
-   ```
+   - For only the `client`:
 
-----
-
-Happy coding! 
+     ```bash
+     pnpm dev-client
+     ```
 
 
 
-https://app.eraser.io/workspace/Ed3ELXiY8HcClWlghpb0?origin=share
+**Happy coding!**
 
+---
 
-https://app.eraser.io/workspace/eFF7QvJCcRnCGMfL7Oc1?origin=share
+## Game Flow Diagram
+
+![Game Flow Diagram](./docs/game_flow.svg)
