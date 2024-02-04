@@ -23,6 +23,8 @@ export default function End() {
     hasSubmittedCards: false,
     cards: [],
     isOffline: false,
+    isBot: false,
+    isWaitingForNextRound: false,
   }
 
   //players is a map, so we need to convert it to an array
