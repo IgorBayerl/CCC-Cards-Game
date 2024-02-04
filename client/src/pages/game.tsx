@@ -13,7 +13,7 @@ import useTranslation from 'next-translate/useTranslation'
 import { type Card } from '@ccc-cards-game/types'
 
 export default function Game() {
-  const { isCurrentUserJudge, gameState, myId, playerSelectCards } = useGameContext()
+  const { isCurrentUserJudge, gameState, myId, playerSelectCards, player } = useGameContext()
   const myCards = gameState.players.get(myId)?.cards || []
 
   const { t } = useTranslation('game')
@@ -26,8 +26,8 @@ export default function Game() {
 
   const { currentQuestionCard } = gameState
 
-  const player = gameState.players.get(myId)
   const myStatus = player?.status
+  const isWaiting = player?.isWaitingForNextRound || false
 
   const handleCardClick = (card: Card) => {
     if (myStatus !== 'pending') return
@@ -83,6 +83,7 @@ export default function Game() {
           </div>
 
           {isCurrentUserJudge && <LoadingWithText text="You are the Judge of the round, wait the others to play." />}
+          {isWaiting && <LoadingWithText text="You connected mid-game, please wait next round." />}
           {!isCurrentUserJudge && (
             <div className="grid grid-cols-1 gap-2 overflow-y-auto lg:grid-cols-2">
               {myCards.map((card, index) => {

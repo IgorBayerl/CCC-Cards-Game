@@ -3,8 +3,12 @@ import { ColyseusTestServer, boot } from "@colyseus/testing";
 
 import appConfig from "../src/app.config";
 import { MyRoomState } from "../src/rooms/schema/MyRoomState";
-import { countOnlinePlayers, generateNewInvalidPlayer, generateNewPlayer, generateReconnectingPlayer, generateStringWithLength } from './lib/utils';
+import { countOnlinePlayers, generateNewInvalidPlayer, generateNewPlayer, generateRadomAnswerCard, generateReconnectingPlayer, generateStringWithLength } from './lib/utils';
 import { faker } from '@faker-js/faker';
+import { AnswerCardSchema, PlayerSchema } from '../src/rooms/schema';
+import { ArraySchema } from '@colyseus/schema';
+import { AnswerCard } from '@ccc-cards-game/types';
+import { TPlayerStatus } from '../src/rooms/schema/Player';
 
 describe("Join, Leave, Reconnect and Change rooms", () => {
   let colyseus: ColyseusTestServer;
@@ -340,5 +344,246 @@ describe("Join, Leave, Reconnect and Change rooms", () => {
     const totalPlayersInRoom1 = countOnlinePlayers(room1.state.players);
     expect(totalPlayersInRoom1).toBe(2);
   });
-  
+
+  describe.only('PlayerSchema', () => {
+    test('addPoint increases the score by 1', () => {
+      const player = new PlayerSchema();
+      player.score = 0;
+      player.addPoint();
+      expect(player.score).toBe(1);
+    });
+
+    test('setCards correctly sets the cards', () => {
+      const player = new PlayerSchema();
+
+      const newCard1 = generateRadomAnswerCard()
+      const newCard2 = generateRadomAnswerCard()
+
+      const newCards = new ArraySchema<AnswerCardSchema>()
+
+      newCards.push(newCard1);
+      newCards.push(newCard2);
+
+      expect(player.cards.length).toBe(0)
+
+      player.setCards(newCards);
+
+      expect(player.cards.length).toBe(2);
+
+      expect(player.cards[0].id).toBe(newCard1.id);
+      expect(player.cards[0].text).toBe(newCard1.text);
+
+      expect(player.cards[1].id).toBe(newCard2.id);
+      expect(player.cards[1].text).toBe(newCard2.text);
+
+    });
+
+    test('setCards set other group of cards', () => {
+      const player = new PlayerSchema();
+
+      const newCard1 = generateRadomAnswerCard()
+
+      const newCards1 = new ArraySchema<AnswerCardSchema>()
+
+      newCards1.push(newCard1);
+
+      const newCard2 = generateRadomAnswerCard()
+      const newCard3 = generateRadomAnswerCard()
+      const newCard4 = generateRadomAnswerCard()
+
+      const newCards2 = new ArraySchema<AnswerCardSchema>()
+
+      newCards2.push(newCard2);
+      newCards2.push(newCard3);
+      newCards2.push(newCard4);
+
+      expect(player.cards.length).toBe(0)
+
+      player.setCards(newCards1);
+      expect(player.cards.length).toBe(1)
+
+      player.setCards(newCards2);
+      expect(player.cards.length).toBe(3)
+      
+      player.setCards(newCards1);
+      expect(player.cards.length).toBe(1)
+    });
+
+    test('addCardsToPlayerHand adds a single card to the player hand', () => {
+      const player = new PlayerSchema();
+      const initialCard = generateRadomAnswerCard();
+      player.setCards(new ArraySchema<AnswerCardSchema>(initialCard));
+    
+      const newCard = generateRadomAnswerCard();
+      player.addCardsToPlayerHand([newCard]);
+    
+      expect(player.cards.length).toBe(2);
+      expect(player.cards).toContainEqual(newCard);
+    });
+    
+    test('addCardsToPlayerHand adds multiple cards to the player hand', () => {
+      const player = new PlayerSchema();
+      const initialCards = new ArraySchema<AnswerCardSchema>(
+        generateRadomAnswerCard(),
+        generateRadomAnswerCard()
+      );
+      player.setCards(initialCards);
+    
+      const newCards = [generateRadomAnswerCard(), generateRadomAnswerCard()];
+      player.addCardsToPlayerHand(newCards);
+    
+      expect(player.cards.length).toBe(4);
+      newCards.forEach(card => {
+        expect(player.cards).toContainEqual(card);
+      });
+    });
+
+    test('addCardsToPlayerHand adds cards to an initially empty hand', () => {
+      const player = new PlayerSchema();
+      player.setCards(new ArraySchema<AnswerCardSchema>());
+    
+      const newCards = [generateRadomAnswerCard(), generateRadomAnswerCard()];
+      player.addCardsToPlayerHand(newCards);
+    
+      expect(player.cards.length).toBe(2);
+      newCards.forEach(card => {
+        expect(player.cards).toContainEqual(card);
+      });
+    });
+        
+
+    test('removeCardsFromPlayerHand removes a single specified card', () => {
+      const player = new PlayerSchema();
+      const cardToRemove = generateRadomAnswerCard();
+      const otherCard = generateRadomAnswerCard();
+      player.setCards(new ArraySchema<AnswerCardSchema>(cardToRemove, otherCard));
+    
+      player.removeCardsFromPlayerHand(new ArraySchema<AnswerCardSchema>(cardToRemove));
+    
+      expect(player.cards.length).toBe(1);
+      expect(player.cards).not.toContainEqual(cardToRemove);
+      expect(player.cards).toContainEqual(otherCard);
+    });
+    
+    test('removeCardsFromPlayerHand removes multiple specified cards', () => {
+      const player = new PlayerSchema();
+      const cardsToRemove = new ArraySchema<AnswerCardSchema>(
+        generateRadomAnswerCard(),
+        generateRadomAnswerCard()
+      );
+      const remainingCard = generateRadomAnswerCard();
+      player.setCards(new ArraySchema<AnswerCardSchema>(...cardsToRemove, remainingCard));
+    
+      player.removeCardsFromPlayerHand(cardsToRemove);
+    
+      expect(player.cards.length).toBe(1);
+      cardsToRemove.forEach(card => {
+        expect(player.cards).not.toContainEqual(card);
+      });
+      expect(player.cards).toContainEqual(remainingCard);
+    });
+    
+    test('removeCardsFromPlayerHand does not change hand if cards to remove are not present', () => {
+      const player = new PlayerSchema();
+      const existingCards = new ArraySchema<AnswerCardSchema>(
+        generateRadomAnswerCard(),
+        generateRadomAnswerCard()
+      );
+      player.setCards(existingCards);
+    
+      const nonExistingCards = new ArraySchema<AnswerCardSchema>(
+        generateRadomAnswerCard(),
+        generateRadomAnswerCard()
+      );
+      player.removeCardsFromPlayerHand(nonExistingCards);
+    
+      expect(player.cards.length).toBe(2);
+      existingCards.forEach(card => {
+        expect(player.cards).toContainEqual(card);
+      });
+    });
+    
+    test('getRandomAnswers returns random cards when enough cards are available', () => {
+      const player = new PlayerSchema();
+      for (let i = 0; i < 10; i++) {
+        player.cards.push(generateRadomAnswerCard());
+      }
+    
+      const randomAnswers1 = player.getRandomAnswers(5);
+      const randomAnswers2 = player.getRandomAnswers(5);
+    
+      expect(randomAnswers1.length).toBe(5);
+      expect(randomAnswers2.length).toBe(5);
+      expect(randomAnswers1).not.toEqual(randomAnswers2); // This might fail occasionally due to random chance
+    });
+    test('getRandomAnswers returns all cards when requested more than available', () => {
+      const player = new PlayerSchema();
+      for (let i = 0; i < 3; i++) {
+        player.cards.push(generateRadomAnswerCard());
+      }
+    
+      const randomAnswers = player.getRandomAnswers(5);
+    
+      expect(randomAnswers.length).toBe(3);
+    });
+
+    test('getRandomAnswers returns empty array when no cards are available', () => {
+      const player = new PlayerSchema();
+      const randomAnswers = player.getRandomAnswers(5);
+    
+      expect(randomAnswers.length).toBe(0);
+    });
+
+    test('getRandomAnswers returns specified number of random cards', () => {
+      const player = new PlayerSchema();
+      for (let i = 0; i < 10; i++) {
+        player.cards.push(generateRadomAnswerCard());
+      }
+    
+      const count = 4;
+      const randomAnswers = player.getRandomAnswers(count);
+    
+      expect(randomAnswers.length).toBe(count);
+    });
+
+    describe('setStatus Method', () => {
+      let player: PlayerSchema;
+    
+      beforeEach(() => {
+        player = new PlayerSchema();
+      });
+    
+      const statusValues: TPlayerStatus[] = ["judge", "pending", "done", "none", "winner", "waiting"];
+    
+      statusValues.forEach(status => {
+        test(`setStatus correctly sets status to ${status}`, () => {
+          player.setStatus(status);
+          expect(player.status).toBe(status);
+        });
+      });
+    });
+
+    test('cloneFrom correctly clones properties from another PlayerSchema', () => {
+      const originalPlayer = new PlayerSchema();
+      originalPlayer.username = 'OriginalPlayer';
+      originalPlayer.score = 10;
+      originalPlayer.status = 'judge';
+      originalPlayer.hasSubmittedCards = true;
+      originalPlayer.cards = new ArraySchema<AnswerCardSchema>(
+        generateRadomAnswerCard(),
+        generateRadomAnswerCard(),
+      );
+      originalPlayer.isOffline = true;
+    
+      const clonedPlayer = new PlayerSchema();
+      clonedPlayer.cloneFrom(originalPlayer);
+    
+      expect(clonedPlayer.username).toBe(originalPlayer.username);
+      expect(clonedPlayer.score).toBe(originalPlayer.score);
+      expect(clonedPlayer.status).toBe(originalPlayer.status);
+      expect(clonedPlayer.hasSubmittedCards).toBe(originalPlayer.hasSubmittedCards);
+      expect(clonedPlayer.cards).toEqual(originalPlayer.cards);
+      expect(clonedPlayer.isOffline).toBe(false);
+    });
+  })
 });

@@ -117,6 +117,8 @@ export interface Player {
   hasSubmittedCards: boolean;
   cards: AnswerCard[];
   isOffline: boolean;
+  isBot: boolean;
+  isWaitingForNextRound: boolean;
 }
 
 // Round.ts

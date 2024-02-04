@@ -13,6 +13,35 @@ export class RoundSchema extends Schema {
   @type(["string"]) revealedCards = new ArraySchema<string>();
   @type("string") currentRevealedId = "";
   @type("boolean") allCardsRevealed = false;
+
+  /**
+   * Replaces a player's ID in the answerCards map with a new ID.
+   * This method is used to handle the case where a player reconnects to the game and is assigned a new ID,
+   * ensuring that their previously submitted answer cards are preserved and associated with their new ID.
+   * 
+   * @param oldId The player's old ID.
+   * @param newId The player's new ID.
+   */
+  public replacePlayerId(oldId: string, newId: string): void {
+    // Replace the id on judge
+    if (this.judge === oldId) {
+      this.judge = newId;
+    }
+
+    // Replace the id on winner
+    if (this.winner === oldId) {
+      this.winner = newId;
+    }
+
+    // Replace the id on answerCards
+    const playerCards = this.answerCards.get(oldId);
+    if (playerCards) {
+      // Remove the entry with the old ID
+      this.answerCards.delete(oldId);
+      // Add a new entry with the new ID and the previously submitted answer cards
+      this.answerCards.set(newId, playerCards);
+    }
+  }
 }
 
 export type TRound = typeof RoundSchema.prototype;

@@ -37,6 +37,7 @@ interface IGameContextValue {
   gameConfig: RoomConfig
   isCurrentUserLeader: boolean
   isCurrentUserJudge: boolean
+  player: Player | null
   joinRoom: (username: string, roomId: string, pictureUrl: string) => void
   createRoom: (username: string, pictureUrl: string) => void
   leaveRoom: () => void
@@ -88,6 +89,7 @@ const GameContext = createContext<IGameContextValue>({
   gameConfig: defaultGameConfig,
   isCurrentUserLeader: false,
   isCurrentUserJudge: false,
+  player: null,
   joinRoom: () => undefined,
   createRoom: () => undefined,
   leaveRoom: () => undefined,
@@ -263,6 +265,7 @@ const GameProvider: React.FC<IGameProviderProps> = ({ children }) => {
     gameConfig,
     isCurrentUserLeader: gameState.leader === myId,
     isCurrentUserJudge: gameState.judge === myId,
+    player: player || null, 
     joinRoom,
     createRoom,
     leaveRoom,

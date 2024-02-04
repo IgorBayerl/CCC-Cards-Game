@@ -1,6 +1,7 @@
 import { MapSchema } from '@colyseus/schema';
 import { faker } from '@faker-js/faker';
 import { PlayerSchema } from '../../src/rooms/schema/Player';
+import { AnswerCardSchema } from '../../src/rooms/schema';
 
 export function generateUsernameWithMaxChar(maxChar: number) {
   const username = faker.internet.userName();
@@ -44,4 +45,11 @@ export function countOnlinePlayers(players: MapSchema<PlayerSchema>): number {
     }
   });
   return onlineCount;
+}
+
+export function generateRadomAnswerCard():AnswerCardSchema {
+  return {
+    id: faker.string.alpha(10),
+    text: faker.string.alpha(30)
+  } as AnswerCardSchema;
 }
