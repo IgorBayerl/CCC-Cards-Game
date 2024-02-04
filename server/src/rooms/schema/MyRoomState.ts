@@ -22,10 +22,9 @@ export class MyRoomState extends Schema {
 
   @type("string") leader = "";
 
-
   //this has no use on the client side, but is used to keep track of the used cards
-  public usedQuestionCards:ArraySchema<QuestionCardSchema> = new ArraySchema<QuestionCardSchema>();
-  public usedAnswerCards:ArraySchema<AnswerCardSchema> = new ArraySchema<AnswerCardSchema>();
+  public usedQuestionCards: ArraySchema<QuestionCardSchema> = new ArraySchema<QuestionCardSchema>();
+  public usedAnswerCards: ArraySchema<AnswerCardSchema> = new ArraySchema<AnswerCardSchema>();
 
   // private _DISCONNECT_TIMEOUT = 10000;
   private _DISCONNECT_TIMEOUT = 1000 * 15;
@@ -38,12 +37,12 @@ export class MyRoomState extends Schema {
     }, this._DISCONNECT_TIMEOUT);
   }
 
-  private setNewLeader(){
+  private setNewLeader() {
     const newLeader = this.getNextLeaderId;
     this.leader = newLeader;
     logger.info(`New leader is ${newLeader}`);
   }
-  
+
   private handleDisconnectInGame(player: PlayerSchema) {
     player.transformIntoBot();
   }
@@ -52,19 +51,19 @@ export class MyRoomState extends Schema {
    * Updates the player ID across all rounds in the game.
    * This method is necessary to handle the scenario where a player reconnects with a new ID,
    * ensuring that their participation and contributions in previous rounds are correctly associated with their new ID.
-   * 
+   *
    * @param oldId The player's old ID.
    * @param newId The player's new ID.
    */
   public updatePlayerIdInRounds(oldId: string, newId: string): void {
     const newPlayer = this.players.get(newId);
-    if(!newPlayer) return;
+    if (!newPlayer) return;
 
     this.rounds.forEach(round => {
       round.replacePlayerId(oldId, newId);
     });
   }
-  
+
   /**
    * - When disconnecting mid game the player will became a bot until the end of the round (results/waiting/finished) - `isBot = true` and `isOffline = true`
    * - When the end of the round arrives, the player will be set as `isBot = false` and `isOffline = true`
@@ -75,10 +74,10 @@ export class MyRoomState extends Schema {
     const player = this.players.get(playerId);
     if (!player) return;
 
-    if(player.id === this.leader) {
+    if (player.id === this.leader) {
       this.setNewLeader();
     }
-  
+
     // Define the actions for each room status
     const disconnectActions: Record<RoomStatus, () => void> = {
       waiting: () => this.handleDisconnectInLobby(player),
@@ -88,7 +87,7 @@ export class MyRoomState extends Schema {
       judging: () => this.handleDisconnectInGame(player),
       results: () => this.handleDisconnectInGame(player),
     };
-  
+
     // Execute the action based on the current room status
     disconnectActions[this.roomStatus]();
   }
@@ -147,8 +146,8 @@ export class MyRoomState extends Schema {
     this.clearBotPlayers();
     // reset players points
     this.players.forEach(player => {
-      player.resetPlayer()
-    })
+      player.resetPlayer();
+    });
 
     // reset rounds to empty array
     this.rounds.clear();
@@ -167,15 +166,14 @@ export class MyRoomState extends Schema {
 
     // reset usedAnswerCards
     this.usedAnswerCards.clear();
-
   }
 
   public clearBotPlayers() {
     this.players.forEach(player => {
-      if(player.isBot && player.isOffline && !player.isWaitingForNextRound) {
+      if (player.isBot && player.isOffline && !player.isWaitingForNextRound) {
         this.players.delete(player.id);
       }
-    })
+    });
   }
 }
 

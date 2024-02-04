@@ -30,11 +30,7 @@ function extractUnionErrors(unionErrors: ZodUnionError[]): string[] {
   let messages: string[] = [];
   for (const error of unionErrors) {
     if (error.issues) {
-      messages = messages.concat(
-        error.issues.map(
-          issue => `Path: ${issue.path.join(".")}, ${issue.message}`,
-        ),
-      );
+      messages = messages.concat(error.issues.map(issue => `Path: ${issue.path.join(".")}, ${issue.message}`));
     }
   }
   return messages;

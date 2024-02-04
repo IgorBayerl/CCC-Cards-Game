@@ -24,8 +24,7 @@ export const DeckWithCardsSchema = z.object({
 export const DeckFiltersSchema = z.object({
   darknessLevel: z.array(
     z.number().refine(value => [1, 2, 3, 4, 5].includes(value), {
-      message:
-        "Invalid value for darknessLevel, expected values are [1, 2, 3, 4, 5]",
+      message: "Invalid value for darknessLevel, expected values are [1, 2, 3, 4, 5]",
     }),
   ),
   language: z.array(z.string()),

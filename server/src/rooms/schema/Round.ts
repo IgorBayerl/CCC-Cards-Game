@@ -7,7 +7,7 @@ export class AnswerCardsArraySchema extends Schema {
 
 export class RoundSchema extends Schema {
   @type(QuestionCardSchema) questionCard = new QuestionCardSchema();
-  @type({ map: AnswerCardsArraySchema }) answerCards = new MapSchema<AnswerCardsArraySchema>();
+  @type({map: AnswerCardsArraySchema}) answerCards = new MapSchema<AnswerCardsArraySchema>();
   @type("string") judge = "";
   @type("string") winner = "";
   @type(["string"]) revealedCards = new ArraySchema<string>();
@@ -18,7 +18,7 @@ export class RoundSchema extends Schema {
    * Replaces a player's ID in the answerCards map with a new ID.
    * This method is used to handle the case where a player reconnects to the game and is assigned a new ID,
    * ensuring that their previously submitted answer cards are preserved and associated with their new ID.
-   * 
+   *
    * @param oldId The player's old ID.
    * @param newId The player's new ID.
    */

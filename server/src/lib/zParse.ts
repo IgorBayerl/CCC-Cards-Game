@@ -11,10 +11,7 @@ import {z} from "zod";
  * @throws {ZodError} - Thrown if the request body does not match the Zod schema.
  * @throws {Error} - Thrown for other unknown errors during parsing.
  */
-export default async function zParse<T extends z.ZodType<any, any>>(
-  schema: T,
-  req: Request,
-): Promise<z.infer<T>> {
+export default async function zParse<T extends z.ZodType<any, any>>(schema: T, req: Request): Promise<z.infer<T>> {
   try {
     return await schema.parseAsync(req);
   } catch (error) {

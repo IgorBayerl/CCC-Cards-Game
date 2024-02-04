@@ -11,7 +11,7 @@
     "experimentalDecorators": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "useDefineForClassFields": false
+    "useDefineForClassFields": false,
   },
-  "include": ["src"]
+  "include": ["src"],
 }

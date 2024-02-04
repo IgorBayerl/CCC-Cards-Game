@@ -3,9 +3,4 @@ export {RoomConfigSchema, TRoomConfig} from "./Config";
 export {PlayerSchema, TPlayer} from "./Player";
 3;
 export {MyRoomState, TMyRoomState} from "./MyRoomState";
-export {
-  AnswerCardSchema,
-  QuestionCardSchema,
-  TAnswerCard,
-  TQuestionCard,
-} from "./Card";
+export {AnswerCardSchema, QuestionCardSchema, TAnswerCard, TQuestionCard} from "./Card";

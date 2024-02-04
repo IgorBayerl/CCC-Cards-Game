@@ -80,10 +80,8 @@ export class MyRoom extends Room<MyRoomState> {
       return;
     }
 
-
     logger.info(`${result.data.username} joined!`);
     const {username, pictureUrl, oldPlayerId} = result.data;
-
 
     // Create a new player instance and set its properties
     const newPlayer = new PlayerSchema();
@@ -91,9 +89,9 @@ export class MyRoom extends Room<MyRoomState> {
     newPlayer.username = username;
     newPlayer.pictureUrl = pictureUrl;
 
-    const isMidGame = this.state.roomStatus !== 'waiting'
-    if(isMidGame){
-      newPlayer.isWaitingForNextRound = true
+    const isMidGame = this.state.roomStatus !== "waiting";
+    if (isMidGame) {
+      newPlayer.isWaitingForNextRound = true;
     }
 
     // Add the player to the players list
@@ -103,8 +101,6 @@ export class MyRoom extends Room<MyRoomState> {
     if (this.state.players.size === 1) {
       this.state.leader = newPlayer.id;
     }
-
-
 
     if (oldPlayerId) {
       if (this.canReconnect(client, oldPlayerId)) {
@@ -118,16 +114,16 @@ export class MyRoom extends Room<MyRoomState> {
   private canReconnect(client: Client, oldPlayerId: string) {
     // verify if the old player is in the room
     const isOldPlayerInRoom = this.state.players.has(oldPlayerId);
-    if(!isOldPlayerInRoom) return false;
+    if (!isOldPlayerInRoom) return false;
 
     // verify if the old player is offline
-    const oldPlayer = this.state.players.get(oldPlayerId)
-    if(!oldPlayer) return false;
+    const oldPlayer = this.state.players.get(oldPlayerId);
+    if (!oldPlayer) return false;
 
-    const isOldPlayerOffline = oldPlayer.isOffline
-    if(!isOldPlayerOffline) return false;
+    const isOldPlayerOffline = oldPlayer.isOffline;
+    if (!isOldPlayerOffline) return false;
 
-    return true
+    return true;
   }
 
   onLeave(client: Client, consented: boolean) {
@@ -156,7 +152,7 @@ export class MyRoom extends Room<MyRoomState> {
     // if the player has quited in the beguinning of a round, was set as bot, and returned at the same round, it will just reconnect normaly
     // the player can only reconnect when the room status is "waiting" | "judging" | "results" | "finished"
     // if the room status is "playing" the player will be "on hold" untill the status change to a status that can be connected
-    
+
     logger.info(`Player ${oldPlayerId} is reconnecting!`);
     // TODO: Implement this in the frontend
     const newPlayer = this.state.players.get(client.sessionId);
@@ -184,7 +180,6 @@ export class MyRoom extends Room<MyRoomState> {
   }
 
   private handleUnintentionalDisconnection(client: Client) {
-
     //set the status to disconnected
     this.state.disconnectPlayer(client.sessionId);
 
@@ -196,7 +191,7 @@ export class MyRoom extends Room<MyRoomState> {
 
   /**
    * When the player disconnects mid game, he will become a bot, until the end of the round, so the other players will not fell bored with the round skipping.
-   * @param player 
+   * @param player
    */
   private setPlayerAsBot(player: PlayerSchema) {
     player.isBot = true;
@@ -266,18 +261,17 @@ export class MyRoom extends Room<MyRoomState> {
   }
 
   private async skipToNextRound() {
-
     if (this.state.thereIsAWinner) {
       this.handleWinner();
       return;
     }
 
-    this.state.clearBotPlayers()
-    if(this.state.players.size < 2) {
+    this.state.clearBotPlayers();
+    if (this.state.players.size < 2) {
       logger.info(">>> not enough players");
       this.state.resetGame();
       this.broadcast("game:notify", "Not enough players, at least 2 players are required");
-      return
+      return;
     }
 
     logger.info(">> Starting next round...");
@@ -305,12 +299,10 @@ export class MyRoom extends Room<MyRoomState> {
       playerData.isWaitingForNextRound = false;
     }
 
-
     this.setStatus("playing");
   }
 
   private async handleNextRound(client: Client, _data: null) {
-
     await this.skipToNextRound();
   }
 
@@ -490,7 +482,7 @@ export class MyRoom extends Room<MyRoomState> {
       this.setStatus("judging");
       logger.info(">>> autoPlayNextCard");
       this.goToNextCard();
-      
+
       return;
     }
     logger.info(">>> Select a Winner of the round");
@@ -530,7 +522,6 @@ export class MyRoom extends Room<MyRoomState> {
       }));
 
       // const playerClient = this.clients.find(client => client.sessionId === player.id);
-      
 
       const payload: PlayerSelectionPayload = {
         selection: cardsPayload,
@@ -593,8 +584,8 @@ export class MyRoom extends Room<MyRoomState> {
 
   /**
    * This comes from the handlers
-   * @param client 
-   * @param selectedCards 
+   * @param client
+   * @param selectedCards
    */
   private handlePlayerSelection(client: Client, selectedCards: PlayerSelectionPayload) {
     this.handlePlayerSelectionWithId(client.sessionId, selectedCards);
@@ -627,7 +618,7 @@ export class MyRoom extends Room<MyRoomState> {
     if (!validationResult.success) {
       // TODO: FInd a way to do this in the future
       // this.throwError(client, `Invalid selection data: ${validationResult.errorMessage}`);
-      return ;
+      return;
     }
 
     // get the player
@@ -665,7 +656,7 @@ export class MyRoom extends Room<MyRoomState> {
 
   private checkAllPlayersDone(playersList: PlayerSchema[]) {
     const allPlayersDone = playersList.every(player => {
-      if (!player.isPlayerPlaying ) return true;
+      if (!player.isPlayerPlaying) return true;
       if (player.id === this.state.judge) return true;
       return player.status === "done";
     });
@@ -677,7 +668,7 @@ export class MyRoom extends Room<MyRoomState> {
     const playersList = this.state.playersArray;
 
     playersList.forEach(player => {
-      console.log(player)
+      console.log(player);
       if (player.id === this.state.judge) {
         return;
       }
@@ -685,7 +676,7 @@ export class MyRoom extends Room<MyRoomState> {
       // get the cards the player has selected
       const selectedCards = this.state.rounds[this.state.rounds.length - 1].answerCards.get(player.id);
 
-      if(selectedCards) player.removeCardsFromPlayerHand(selectedCards.cards);
+      if (selectedCards) player.removeCardsFromPlayerHand(selectedCards.cards);
     });
     this.setStatus("judging");
   }
@@ -748,8 +739,8 @@ export class MyRoom extends Room<MyRoomState> {
     try {
       this.handleJudgeDecisionWithId(client.sessionId, data);
     } catch (error) {
-      if(!(error instanceof Error)) return
-      this.throwError(client, error.message || 'Error while handling judge decision');
+      if (!(error instanceof Error)) return;
+      this.throwError(client, error.message || "Error while handling judge decision");
     }
   }
 
@@ -790,18 +781,18 @@ export class MyRoom extends Room<MyRoomState> {
 
   private setRoundWinner(winnerId: string, round: RoundSchema) {
     const winner = this.state.players.get(winnerId);
-    if(!winner) return; //BUG: when the player selects a card, disconnects and reconnects, the id is not the same anymore
+    if (!winner) return; //BUG: when the player selects a card, disconnects and reconnects, the id is not the same anymore
     winner.addPoint();
     round.winner = winnerId;
   }
 
   /**
-   * # Save game state snapshot 
+   * # Save game state snapshot
    * This is a helper method to be used only in development to facilitate testing
-   * 
+   *
    * @todo Implement it
-   * @param _client 
-   * @param _data 
+   * @param _client
+   * @param _data
    */
   public handleDevSaveSnapshot(_client: Client, _data: null) {
     return;
@@ -812,12 +803,12 @@ export class MyRoom extends Room<MyRoomState> {
   }
 
   /**
-   * # Save game state snapshot 
+   * # Save game state snapshot
    * This is a helper method to be used only in development to facilitate testing
-   * 
+   *
    * @todo Implement it
-   * @param _client 
-   * @param _data 
+   * @param _client
+   * @param _data
    */
   public handleDevLoadSnapshot(_client: Client, _data: null) {
     return;

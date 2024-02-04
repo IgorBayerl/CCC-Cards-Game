@@ -45,7 +45,7 @@ export class PlayerSchema extends Schema {
     this.isOffline = true;
     this.isBot = false;
     this.isWaitingForNextRound = false;
-    
+
     logger.info(`Player ${this.username} is offline`);
   }
 
@@ -57,7 +57,7 @@ export class PlayerSchema extends Schema {
     logger.info(`Player ${this.username} is bot`);
   }
 
-  public transformFromBot(){
+  public transformFromBot() {
     this.isOffline = false;
     this.isBot = false;
     this.isWaitingForNextRound = false;
@@ -65,7 +65,7 @@ export class PlayerSchema extends Schema {
     logger.info(`Player ${this.username} is back online`);
   }
 
-  public reconnectAndWait(){
+  public reconnectAndWait() {
     this.isBot = false;
     this.isOffline = false;
     this.isWaitingForNextRound = true;
@@ -76,10 +76,10 @@ export class PlayerSchema extends Schema {
   public get isPlayerPlaying(): boolean {
     return (!this.isOffline || this.isBot) && !this.isWaitingForNextRound;
   }
-  
+
   /**
    * Overwrite the cards that the player has in the hands
-   * @param cards 
+   * @param cards
    */
   public setCards(cards: ArraySchema<AnswerCardSchema>) {
     this.cards = cards;
@@ -87,7 +87,7 @@ export class PlayerSchema extends Schema {
 
   /**
    * Add new cards to player hands, maintaining the ones that he already has
-   * @param cardsToAdd 
+   * @param cardsToAdd
    */
   public addCardsToPlayerHand(cardsToAdd: AnswerCard[]) {
     const newCards: ArraySchema<AnswerCardSchema> = this.cards.concat(cardsToAdd as AnswerCardSchema[]);
@@ -97,7 +97,7 @@ export class PlayerSchema extends Schema {
   /**
    * Remove specific cards from player hands
    * When the player make the choice of setting the cards, those cards should be removed from his hand.
-   * @param cardsToRemove 
+   * @param cardsToRemove
    */
   public removeCardsFromPlayerHand(cardsToRemove: ArraySchema<AnswerCardSchema>) {
     const cardsToRemoveIds = cardsToRemove.map(card => card.id);
@@ -108,8 +108,8 @@ export class PlayerSchema extends Schema {
   /**
    * Used for the autoplay, when the of the round ends and you need to select some cards for the game to proceed.
    * Or when the player is in bot mode
-   * @param count 
-   * @returns 
+   * @param count
+   * @returns
    */
   public getRandomAnswers(count: number): ArraySchema<AnswerCardSchema> {
     const randomAnswers: ArraySchema<AnswerCardSchema> = new ArraySchema<AnswerCardSchema>();

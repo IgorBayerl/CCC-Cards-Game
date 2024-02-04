@@ -24,7 +24,6 @@ export const setConfigData = z
 
 export type ISetConfigData = z.infer<typeof setConfigData>;
 
-
 // Card.ts
 const cardSchema = z.object({
   id: z.string(),
@@ -45,4 +44,3 @@ export const playerSelectionPayloadSchema = z.object({
 export const judgeDecisionPayloadSchema = z.object({
   winner: z.string(),
 });
-

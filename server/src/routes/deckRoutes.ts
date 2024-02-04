@@ -83,8 +83,7 @@ router.post(
     const validatedData = await zParse(DeckWithCardsSchema, req.body);
 
     // Destructure validated data
-    const {title, description, darknessLevel, icon, language, cards} =
-      validatedData;
+    const {title, description, darknessLevel, icon, language, cards} = validatedData;
 
     // Create new deck
     const newDeck = await db.deck.create({
