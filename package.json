@@ -9,7 +9,9 @@
   "scripts": {
     "dev-server": "pnpm --filter server dev",
     "dev-client": "pnpm --filter client dev",
-    "dev": "npm-run-all --parallel dev-server dev-client"
+    "dev-client-electron": "pnpm --filter client dev-electron",
+    "dev": "npm-run-all --parallel dev-server dev-client",
+    "dev-electron": "npm-run-all --parallel dev-server dev-client-electron"
   },
   "devDependencies": {
     "npm-run-all": "^4.1.5"

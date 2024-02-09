@@ -28,7 +28,6 @@
     "**/*.tsx",
     "**/*.cjs",
     "**/*.mjs",
-    "../shared/**/*.ts"
   ],
   "exclude": ["node_modules"]
 }

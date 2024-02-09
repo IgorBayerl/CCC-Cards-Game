@@ -9,7 +9,7 @@ import withPWA from 'next-pwa'
 /** @type {import("next").NextConfig} */
 const config = {
   reactStrictMode: true,
-  ...nextTranslate(),
+  // ...nextTranslate(),
 
   ...withPWA({
     dest: 'public',
@@ -17,8 +17,10 @@ const config = {
     skipWaiting: true,
     disable: process.env.NODE_ENV === 'development',
   }),
+  output: "export",
   images: {
     domains: ['github.com'],
+    unoptimized: true,
   },
 }
 export default config;
