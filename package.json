@@ -9,6 +9,7 @@
   "scripts": {
     "dev-server": "pnpm --filter server dev",
     "dev-client": "pnpm --filter client dev",
+    "build-client": "pnpm --filter client build",
     "dev": "npm-run-all --parallel dev-server dev-client"
   },
   "devDependencies": {

@@ -42,8 +42,8 @@ export default function Footer(): JSX.Element {
           {aboutText}
         </button>
       </Link> */}
-      <div className="divider divider-horizontal" />
-      <ConnectionStatus />
+      {/* <div className="divider divider-horizontal" /> */}
+      {/* <ConnectionStatus /> */}
     </footer>
   )
 }
