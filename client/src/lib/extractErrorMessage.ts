@@ -47,7 +47,6 @@ function extractUnionErrors(unionErrors: ZodUnionError[]): string[] {
  * @returns {string} - A formatted error message suitable for user display.
  */
 export default function extractErrorMessage(error: unknown): string {
-  console.log("extractErrorMessage", error);
 
   if (error instanceof ZodError) {
     let errors: string[] = [];

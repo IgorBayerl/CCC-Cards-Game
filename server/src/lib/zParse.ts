@@ -15,7 +15,7 @@ export default async function zParse<T extends z.ZodType<any, any>>(schema: T, r
   try {
     return await schema.parseAsync(req);
   } catch (error) {
-    console.log("zParse Error: ", error);
+    console.error("zParse Error: ", error);
     throw error;
   }
 }

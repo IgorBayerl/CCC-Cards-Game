@@ -147,7 +147,6 @@ const GameProvider: React.FC<IGameProviderProps> = ({ children }) => {
 
   const handleChangeState = useCallback(
     (newState: MyRoomState) => {
-      // console.log('game:updateState', newState)
 
       const newPath = statusToUrl[newState.roomStatus]
       if (newPath && router.pathname !== newPath) {
@@ -155,7 +154,6 @@ const GameProvider: React.FC<IGameProviderProps> = ({ children }) => {
         void router.push(newPath)
       }
 
-      console.log('Players NEW STATE >> ', newState.players)
       setGameState({ ...newState })
     },
     [playSound]
@@ -240,7 +238,6 @@ const GameProvider: React.FC<IGameProviderProps> = ({ children }) => {
   useEffect(() => {
     if (room) {
       room.onMessage('room:joinedRoom', (roomId: string) => {
-        console.log('a room:joinedRoom', roomId)
         const myId = room.sessionId
         localStorage.setItem('oldPlayerId', myId || '')
       })

@@ -668,7 +668,6 @@ export class MyRoom extends Room<MyRoomState> {
     const playersList = this.state.playersArray;
 
     playersList.forEach(player => {
-      console.log(player);
       if (player.id === this.state.judge) {
         return;
       }

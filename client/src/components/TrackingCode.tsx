@@ -11,13 +11,13 @@ export default function TrackingCode(): JSX.Element {
         src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3354864508700429"
         crossOrigin="anonymous"
       />
-      {/* <Script
+      <Script
         strategy="lazyOnload"
         id="google-tag-manager"
         async
         src={`https://www.googletagmanager.com/gtag/js?id=${GA_TRACKING_ID}`}
-      /> */}
-      {/* <Script
+      />
+      <Script
         id="google-tag-manager-init"
         dangerouslySetInnerHTML={{
           __html: `
@@ -27,7 +27,7 @@ export default function TrackingCode(): JSX.Element {
             gtag('config', ${GA_TRACKING_ID});
             `,
         }}
-      /> */}
+      />
     </>
   )
 }

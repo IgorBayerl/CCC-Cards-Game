@@ -11,13 +11,11 @@ const useShare = () => {
     try {
       if (navigator.share) {
         await navigator.share(data)
-        console.log('Shared successfully')
       } else if (navigator.clipboard) {
         console.error(
           'Share API is not supported in your browser. Copying to clipboard instead.'
         )
         await navigator.clipboard.writeText(data.url)
-        console.log('URL copied to clipboard')
       } else {
         console.error(
           'Clipboard and Share API are not supported in your browser.'

@@ -70,7 +70,6 @@ export default function Judging() {
   }
   const handleConfirm = () => {
     if (selectedGroup) {
-      console.log('Confirming selection of group:', selectedGroup.cards, 'from player:', selectedGroup.playerId)
       sendDecision()
       setSelectedGroup(null) // Clear the selection
     } else {
@@ -79,7 +78,6 @@ export default function Judging() {
   }
 
   const handleNextCard = () => {
-    console.log('>> next card')
     sendToRoom(MessageType.REQUEST_NEXT_CARD, null)
   }
 
