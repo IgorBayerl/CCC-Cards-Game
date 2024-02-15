@@ -7,17 +7,30 @@ import { GameCardResult } from '~/components/Atoms/GameCard'
 import Image from 'next/image'
 import TimerTitle from '~/components/Layout/TimerScreen'
 import useTranslation from 'next-translate/useTranslation'
-import { MessageType } from '@ccc-cards-game/types'
+import { AnswerCardCollection, MessageType, Round } from '@ccc-cards-game/types'
 
-export default function Results() {
-  const { sendToRoom, gameState, isCurrentUserLeader } = useGameContext()
+export default function MockResults() {
   const { t } = useTranslation('game')
 
-  const handleGoToNextRound = () => {
-    sendToRoom(MessageType.ADMIN_NEXT_ROUND, null)
-  }
 
-  const lastRound = gameState.rounds[gameState.rounds.length - 1]
+
+  const lastRound: Round = {
+    winner: '3',
+    questionCard: {
+      text: 'qaaaen ___ gekreuzt ___ gekreuzt',
+      spaces: 2,
+      id: 'batata'
+    },
+    answerCards: new Map<string, AnswerCardCollection>([
+      ['1', { cards: [{ id: '1a', text: 'Singing in the shower' }, { id: '1b', text: 'Singing in the shower' }] }], 
+      ['2', { cards: [{ id: '2a', text: 'Juggling apples' }, { id: '2b', text: 'Juggling apples' }] }], 
+      ['3', { cards: [{ id: '3a', text: 'Singing apples' }, { id: '3b', text: 'apples apples' }] }], 
+    ]),
+    judge: '',
+    revealedCards: [],
+    currentRevealedId: '',
+    allCardsRevealed: false
+  }
 
   const time = 10 //|| gameState.config.time // 10 seconds on the screen before going to the next round
 
@@ -31,8 +44,13 @@ export default function Results() {
     )
   }
 
+  const isCurrentUserLeader = false
+
   const winnerId = lastRound.winner
-  const winner = gameState.players.get(winnerId)
+  const winner = {
+    username: 'winner',
+    pictureUrl: 'https://avatars.githubusercontent.com/u/52197833?v=4',
+  }
   const questionCard = lastRound.questionCard
   const winnerAnswerCollection = lastRound.answerCards?.get(winnerId)
   const winnerAnswers = winnerAnswerCollection?.cards || []
@@ -73,7 +91,7 @@ export default function Results() {
       </div>
       {isCurrentUserLeader && (
         <div className="flex items-center justify-center px-4 py-2">
-          <button className="btn flex-1" onClick={handleGoToNextRound}>
+          <button className="btn flex-1">
             {t('i-next-round')}
           </button>
         </div>

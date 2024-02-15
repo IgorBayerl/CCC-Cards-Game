@@ -97,10 +97,10 @@ export default function NotFoundPage() {
             />
           </svg>
           <div className=" mt-4 tracking-widest">
-            <span className="block text-6xl text-gray-500">
+            <span className="block text-6xl text-gray-100">
               <span>4 0 4</span>
             </span>
-            <span className="text-xl text-gray-500">
+            <span className="text-xl text-gray-100">
               {`Sorry, We couldn't find what you are looking for!`}
             </span>
           </div>
@@ -108,7 +108,7 @@ export default function NotFoundPage() {
         <center className="mt-6">
           <Link
             href="/"
-            className="rounded-md bg-gray-200 p-3 font-mono text-xl text-gray-500 hover:shadow-md"
+            className="rounded-md bg-gray-200 p-3 font-mono text-xl text-gray-700 hover:shadow-md"
           >
             Go back
           </Link>

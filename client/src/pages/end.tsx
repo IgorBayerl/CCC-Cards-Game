@@ -91,21 +91,8 @@ export default function End() {
         </div>
         <div className="mx-5 flex flex-1 flex-col overflow-y-auto scrollbar-none">
           {winnerHistory().map((item, index) => (
-            <div key={index} className="chat chat-end ">
-              <div className="avatar chat-image">
-                <div className="w-10 rounded-full">
-                  <Image
-                    src={winner?.pictureUrl || ''}
-                    alt={winner?.username || ''}
-                    width={100}
-                    height={100}
-                    className="rounded-full"
-                  />
-                </div>
-              </div>
-              <div className="chat-bubble bg-neutral text-gray-200">
-                <GameCardResult question={item.question} answers={item.answer.map((answer) => answer.text)} />
-              </div>
+            <div key={index} className="chat-bubble bg-neutral text-gray-200">
+              <GameCardResult question={item.question} answers={item.answer.map((answer) => answer.text)} />
             </div>
           ))}
         </div>
