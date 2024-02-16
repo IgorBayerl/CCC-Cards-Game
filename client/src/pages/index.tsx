@@ -30,6 +30,7 @@ const profilePictures = [
   '/profile/profile_8.webp',
   '/profile/profile_9.webp',
   '/profile/profile_10.webp',
+  '/profile/profile_11.webp',
 ]
 
 export default function Home() {
