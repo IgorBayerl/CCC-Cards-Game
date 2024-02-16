@@ -21,6 +21,10 @@ import LoadingFullScreen from '~/components/Atoms/LoadingFullScreen'
 
 import { toggleInArray } from '~/lib/utils'
 import { MessageType, type Deck } from '@ccc-cards-game/types'
+import { ShareQrCode } from '~/components/Atoms/ShareQrCode'
+import { Drawer } from '~/components/Atoms/Drawer'
+import { DrawerTrigger, DrawerOverlay, DrawerContent, DrawerClose } from '~/components/Atoms/Drawer'
+import QRCode from 'react-qr-code'
 
 export default function LobbyPage() {
   const { roomId, gameState, isCurrentUserLeader, gameConfig, leaveRoom, setConfig, sendToRoom } = useGameContext()
@@ -44,6 +48,9 @@ export default function LobbyPage() {
   const tabs = Object.keys(tabsNames) as (keyof typeof tabsNames)[]
 
   const [activeTab, setActiveTab] = useState(tabs[0])
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+
+  const toggleDrawer = () => setIsDrawerOpen(!isDrawerOpen);
 
   const handleLeaveRoom = useCallback(() => {
     void router.push('/')
@@ -100,6 +107,26 @@ export default function LobbyPage() {
 
   return (
     <div className="min-h-screen-safe flex flex-col justify-between md:justify-center md:p-5">
+      <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
+        <DrawerTrigger />
+        <DrawerOverlay />
+        <DrawerContent>
+          <DrawerClose />
+          <div className=' items-center flex justify-center p-10'>
+            <QRCode 
+              value={roomInviteLink} 
+              bgColor='#ffffff'
+              fgColor='#202020'
+              style={{ 
+                height: "auto", 
+                maxWidth: "100%", 
+                width: "100%",
+                maxHeight: "80vh",
+              }}
+            />
+          </div>
+        </DrawerContent>
+      </Drawer>
       <div className="flex items-center justify-center">
         <div className="hidden md:block">{/* <BannerVertical /> */}</div>
         <div className="game-container-border flex h-[100svh] flex-col justify-between gap-3 md:h-[80vh] ">
@@ -156,10 +183,11 @@ export default function LobbyPage() {
               <div className="bg-destaque-mobile flex-1 overflow-y-clip ">{renderTabContent()}</div>
               {isCurrentUserLeader && (
                 <div className="flex justify-center gap-5 px-4 py-2">
-                  <div className="hidden flex-1 md:flex">
+                  <div className="hidden flex-1 md:flex gap-1">
                     <CopyToClipboard text={t('i-invite')} content={roomInviteLink} />
+                    <ShareQrCode content={roomInviteLink} onOpenDrawer={toggleDrawer} />
                   </div>
-                  <div className="flex flex-1 md:hidden">
+                  <div className="flex flex-1 md:hidden gap-1">
                     <button
                       className="btn-outline btn btn-accent flex w-full flex-1 items-center justify-between gap-3 md:hidden"
                       onClick={handleShareClicked}
@@ -168,6 +196,7 @@ export default function LobbyPage() {
                       <div>{t('i-invite')}</div>
                       <div />
                     </button>
+                    <ShareQrCode content={roomInviteLink} onOpenDrawer={toggleDrawer} />
                   </div>
                   <button
                     className=" btn flex w-full flex-1 flex-nowrap items-center justify-between gap-3 whitespace-nowrap"
