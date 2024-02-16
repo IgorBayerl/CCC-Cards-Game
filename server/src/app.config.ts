@@ -29,6 +29,13 @@ export default config({
       res.send("Hello Cyber Chaos Cards!");
     });
 
+    /**
+     * Used to check if the game server is online.
+     */
+    app.get("/ping", (req, res) => {
+      res.send("pong");
+    });
+
     app.use("/decks", deckRoutes);
 
     /**
@@ -54,5 +61,6 @@ export default config({
     logger.info("Access Colyeus Monitor at http://localhost:2567/colyseus");
     logger.info("Access Colyeus Playground at http://localhost:2567/");
     logger.info("Access game client at http://localhost:3000/");
+    logger.info("Access Rest API at http://localhost:2567/");
   },
 });
