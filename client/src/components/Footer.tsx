@@ -6,6 +6,7 @@ export default function Footer(): JSX.Element {
   const { t } = useTranslation('common')
 
   const howToPlayText = t('i-how-to-play')
+  const homeText = t('i-home')
   const termsOfServiceText = t('i-terms-of-service')
   const privacyText = t('i-privacy-policy')
   const contactText = t('i-contact')
@@ -13,12 +14,12 @@ export default function Footer(): JSX.Element {
 
   return (
     <footer className=" mt-5 hidden items-center justify-center text-gray-100 md:flex">
-      {/* <Link href="howToPlay">
+      <Link href="/">
         <button className="btn-ghost btn-block btn-sm btn text-xs font-bold hover:bg-white hover:bg-opacity-50">
-          {howToPlayText}
+          {homeText}
         </button>
       </Link>
-      <div className="divider divider-horizontal" /> */}
+      <div className="divider divider-horizontal" />
       <Link href="/terms">
         <button className="btn-ghost btn-block btn-sm btn text-xs font-bold hover:bg-white hover:bg-opacity-30">
           {termsOfServiceText}
