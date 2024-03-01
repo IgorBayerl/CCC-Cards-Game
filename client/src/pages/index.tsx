@@ -168,9 +168,9 @@ export default function Home() {
               </button>
             </div>
           </div>
-          <div className=" hidden aspect-[8/10] border-gray-200 p-2 md:h-full md:w-1/3 md:rounded-xl md:border-2 lg:block lg:h-96 lg:w-auto">
-            {/* <TutorialCarousel /> */}
-          </div>
+          {/* <div className=" hidden aspect-[8/10] border-gray-200 p-2 md:h-full md:w-1/3 md:rounded-xl md:border-2 lg:block lg:h-96 lg:w-auto">
+            <TutorialCarousel />
+          </div> */}
         </div>
         <div className="flex flex-col overflow-clip">
           <button
