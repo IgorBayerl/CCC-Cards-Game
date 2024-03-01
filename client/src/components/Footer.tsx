@@ -37,12 +37,6 @@ export default function Footer(): JSX.Element {
           {contactText}
         </button>
       </Link>
-      {/* <div className="divider divider-horizontal" />
-      <Link href="/about">
-        <button className="btn-ghost btn-block btn-sm btn text-xs font-bold hover:bg-white hover:bg-opacity-50">
-          {aboutText}
-        </button>
-      </Link> */}
       <div className="divider divider-horizontal" />
       <ConnectionStatus />
     </footer>

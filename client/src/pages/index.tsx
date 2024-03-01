@@ -157,7 +157,7 @@ export default function Home() {
               </div>
 
               <button
-                className="btn hidden items-center text-white  md:flex"
+                className="btn hidden items-center md:flex"
                 disabled={isLoading}
                 onClick={handleButtonClick}
               >

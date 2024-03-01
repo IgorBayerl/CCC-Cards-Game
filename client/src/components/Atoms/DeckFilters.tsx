@@ -115,6 +115,9 @@ const DeckFiltersSection: React.FC<DeckFiltersProps> = ({ setFilters, filters })
             </form>
           </div>
         </div>
+        <form method="dialog" className="modal-backdrop">
+          <button>close</button>
+        </form>
       </dialog>
       <dialog ref={selectDarknessLevelModal} className="modal modal-bottom sm:modal-middle text-gray-800">
         <div className="modal-box">
@@ -136,6 +139,9 @@ const DeckFiltersSection: React.FC<DeckFiltersProps> = ({ setFilters, filters })
             </form>
           </div>
         </div>
+        <form method="dialog" className="modal-backdrop">
+          <button>close</button>
+        </form>
       </dialog>
     </div>
   )
