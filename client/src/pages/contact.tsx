@@ -83,7 +83,7 @@ export default function Contact() {
 
   return (
     <InfoPageLayout>
-      <div className="flex w-full flex-col gap-5 md:flex-row">
+      <div className="flex w-full flex-col gap-5 md:flex-row text-white">
         <div className="flex flex-1 flex-col items-center gap-5 sm:flex-row md:flex-col ">
           <div className="flex flex-col gap-5 md:items-center">
             <ConfettiExplosion key={keyTest} />
@@ -157,7 +157,7 @@ export default function Contact() {
                 {submitError && <div>{submitError}</div>}
                 <div className="form-control w-full">
                   <label className="label" htmlFor="name">
-                    <span className="label-text text-white   md:text-gray-800">
+                    <span className="label-text text-white">
                       {t('i-what-is-your-name')}
                     </span>
                   </label>
@@ -191,7 +191,7 @@ export default function Contact() {
 
                 <div className="form-control w-full">
                   <label className="label" htmlFor="email">
-                    <span className="label-text text-white md:text-gray-800">
+                    <span className="label-text text-white">
                       Email
                     </span>
                   </label>
@@ -224,7 +224,7 @@ export default function Contact() {
                 </div>
                 <div className="form-control w-full">
                   <label className="label" htmlFor="message">
-                    <span className="label-text text-white md:text-gray-800">
+                    <span className="label-text text-white">
                       {t('i-message')}
                     </span>
                   </label>

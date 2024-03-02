@@ -68,8 +68,8 @@ export default function InfoPageLayout({
             <DiscordLogo size={25} weight="bold" />
           </Link>
         </div>
-        <div className="flex-1 gap-5 py-10 md:flex">
-          <div className="w-full flex-1 gap-5  text-white  md:flex md:rounded-xl md:p-5 md:text-gray-800 lg:flex lg:flex-row">
+        <div className="flex-1 gap-5 flex py-10 max-h-[calc(100%_-_10rem)]">
+          <div className="w-full gap-5 text-white md:flex md:rounded-xl md:p-5 md:text-gray-800 lg:flex lg:flex-row">
             {children}
           </div>
         </div>

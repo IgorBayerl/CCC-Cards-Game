@@ -115,17 +115,26 @@ export default function Home() {
   return (
     <>
       <InfoPageLayout>
-        <div className="gap-5 py-10 md:flex flex-1">
+        <div className="gap-5 sm:py-10 md:flex flex-1">
           <div className="w-full gap-5 md:flex  md:rounded-xl md:p-5 lg:flex lg:flex-row">
             <div className="flex justify-center">
               <div className=" flex items-center justify-center">
                 <div className="relative aspect-square rounded-full border-4 border-gray-200 shadow-lg">
                   <Image
+                    key='1'
                     src={pictureUrl || '/profile_1.jpg'}
                     alt="profile_picture"
-                    className="aspect-square rounded-full"
+                    className="aspect-square rounded-full sm:block hidden"
                     width={200}
                     height={200}
+                  />
+                  <Image
+                    key='2'
+                    src={pictureUrl || '/profile_1.jpg'}
+                    alt="profile_picture"
+                    className="aspect-square rounded-full block sm:hidden"
+                    width={130}
+                    height={130}
                   />
                   <button
                     name="change-picture"
@@ -139,7 +148,7 @@ export default function Home() {
               </div>
             </div>
             <div className="flex w-full flex-1 flex-col justify-center gap-3 ">
-              <div className="form-control w-full text-2xl text-white">
+              <div className="form-control w-full text-xl sm:text-2xl text-white">
                 <label className="label font-bold">{instructionText}</label>
                 <label className="label">
                   <span className="label-text text-gray-200">

@@ -3,7 +3,7 @@ import InfoPageLayout from '~/components/Layout/InfoPageLayout'
 export default function Privacy() {
   return (
     <InfoPageLayout>
-      <div className="max-h-[70svh] w-full overflow-y-scroll bg-white bg-opacity-70 p-5 md:max-h-80 md:flex-row md:bg-transparent 2xl:mx-auto 2xl:w-[1300px]">
+      <div className="overflow-auto bg-white text-black p-3 rounded-md">
         <h1 className="text-2xl font-bold">
           Privacy Policy for Cyber Chaos Cards
         </h1>
@@ -229,6 +229,7 @@ export default function Privacy() {
           not hesitate to contact us.
         </p>
       </div>
+
     </InfoPageLayout>
   )
 }
