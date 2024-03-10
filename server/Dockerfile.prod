@@ -1,0 +1,24 @@
+# Base image with Node.js and PNPM
+FROM node:20-slim AS server
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+RUN corepack enable
+
+# Install OpenSSL
+RUN apt-get update -y && apt-get install -y openssl libssl-dev
+
+# Copy the entire monorepo
+COPY . /app
+WORKDIR /app
+
+# Install dependencies for the entire workspace
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
+
+# Set the working directory to the server package
+WORKDIR /app/server
+
+# Expose the port the server runs on
+EXPOSE 2567
+
+# Start the server using the pnpm start script
+CMD ["pnpm", "start"]

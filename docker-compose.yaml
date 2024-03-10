@@ -1,0 +1,28 @@
+version: '3.8'
+services:
+  server:
+    build:
+      context: .
+      dockerfile: server/Dockerfile
+    ports:
+      - "2567:2567"
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/server/node_modules
+    environment:
+      - NODE_ENV=development
+  client:
+    build:
+      context: .
+      dockerfile: client/Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/client/node_modules
+    environment:
+      - NODE_ENV=development
+      - NEXT_PUBLIC_GAME_SOCKET_SERVER=ws://localhost:2567
+      - NEXT_PUBLIC_GAME_SERVER=http://localhost:2567

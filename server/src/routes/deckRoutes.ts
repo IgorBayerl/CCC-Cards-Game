@@ -34,31 +34,39 @@ router.post(
 router.post(
   "/questions/new",
   asyncHandler(async (req: Request, res: Response) => {
-    const validatedData: TQuestion = await zParse(QuestionSchema, req.body);
+    const validatedData: Omit<TQuestion, "deckId"> = await zParse(QuestionSchema, req.body);
     const newQuestion = await db.question.create({
-      data: validatedData,
+      data: {
+        ...validatedData,
+        deckId: req.body.deckId
+      }
     });
     res.status(201).json({
       message: "Question created successfully",
-      data: newQuestion,
+      data: newQuestion
     });
-  }),
+  })
 );
+
 
 // Endpoint to add a new Answer
 router.post(
   "/answers/new",
   asyncHandler(async (req: Request, res: Response) => {
-    const validatedData: TAnswer = await zParse(AnswerSchema, req.body);
+    const validatedData: Omit<TAnswer, "deckId"> = await zParse(AnswerSchema, req.body);
     const newAnswer = await db.answer.create({
-      data: validatedData,
+      data: {
+        ...validatedData,
+        deckId: req.body.deckId
+      }
     });
     res.status(201).json({
       message: "Answer created successfully",
-      data: newAnswer,
+      data: newAnswer
     });
-  }),
+  })
 );
+
 
 // Endpoint to add a new Deck
 router.post(

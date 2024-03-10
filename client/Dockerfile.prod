@@ -1,0 +1,34 @@
+# Start with Node.js 20 Alpine for a lightweight image
+FROM node:20-alpine AS client
+
+# Set the working directory in the Docker container
+WORKDIR /app
+
+# Enable Corepack to use PNPM
+RUN corepack enable
+
+# Copy the pnpm lock file and other necessary files for dependency installation
+COPY pnpm-lock.yaml* package.json ./
+
+# Copy the entire monorepo to properly resolve internal dependencies
+COPY . .
+
+# Install dependencies using PNPM
+RUN pnpm install --frozen-lockfile
+
+# Add ARG directives for environment variables
+ARG NEXT_PUBLIC_GAME_SOCKET_SERVER
+ARG NEXT_PUBLIC_GAME_SERVER
+
+# Use the environment variables for the build
+ENV NEXT_PUBLIC_GAME_SOCKET_SERVER=$NEXT_PUBLIC_GAME_SOCKET_SERVER
+ENV NEXT_PUBLIC_GAME_SERVER=$NEXT_PUBLIC_GAME_SERVER
+
+# Build the Next.js application
+RUN pnpm build-client
+
+# The command to run your app in production mode
+CMD ["pnpm", "start-client"]
+
+# Expose the port your app runs on
+EXPOSE 3000
