@@ -1,0 +1,22 @@
+version: '3.8'
+services:
+  server:
+    build:
+      context: .
+      dockerfile: server/Dockerfile.prod
+    ports:
+      - "2567:2567"
+    environment:
+      - NODE_ENV=production
+  # The client will probably be deployed on a Vercel server
+  client:
+    build:
+      context: .
+      dockerfile: client/Dockerfile.prod
+      args:
+        - NEXT_PUBLIC_GAME_SOCKET_SERVER=ws://localhost:2567
+        - NEXT_PUBLIC_GAME_SERVER=http://localhost:2567
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
