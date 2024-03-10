@@ -72,7 +72,7 @@ describe("Join, Leave, Reconnect and Change rooms", () => {
     // Config Validation
     expect(client1.state.config.scoreToWin).toBe(8);
     expect(client1.state.config.roundTime).toBe(20);
-    expect(client1.state.config.roomSize).toBe(4);
+    expect(client1.state.config.roomSize).toBe(14);
     expect(Array.from(client1.state.config.availableDecks)).toEqual([]);
 
     // Round and Card State

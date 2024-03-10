@@ -28,7 +28,7 @@ export default function LobbyPage() {
 
   const playersList = Array.from(gameState.players.values())
 
-  const roomSize = gameConfig?.roomSize?.toString() || '4'
+  const roomSize = gameConfig?.roomSize?.toString() || '14'
 
   const share = useShare()
 

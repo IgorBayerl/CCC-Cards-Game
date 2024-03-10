@@ -15,7 +15,7 @@ export default function InGameLayout({ children }: IInGameLayoutProps) {
 
   const playersList = Array.from(gameState.players.values())
 
-  const roomSize = gameConfig?.roomSize?.toString() || '4'
+  const roomSize = gameConfig?.roomSize?.toString() || '14'
 
   const handleLeaveRoom = useCallback(() => {
     void router.push('/')

@@ -87,7 +87,7 @@ const DeckFiltersSection: React.FC<DeckFiltersProps> = ({ setFilters, filters })
         className="btn-outline btn btn-accent justify-between gap-2"
       >
         <Globe size={25} weight="bold" />
-        <FilterLabel length={1} label={t('i-all')} />
+        <FilterLabel length={filters.language.length} label={t('i-languages')} />
       </button>
       <button
         onClick={showDarknessLevelModal}

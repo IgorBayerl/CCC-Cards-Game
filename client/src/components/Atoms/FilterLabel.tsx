@@ -5,6 +5,12 @@ const FilterLabel = ({ length, label }: { length: number; label: string }) => {
 
   return (
     <span className="flex gap-2">
+      <span>{label}</span>
+    </span>
+  )
+
+  return (
+    <span className="flex gap-2">
       <span>{length > 0 ? `${length} ${t('i-selected')}` : label}</span>
     </span>
   )

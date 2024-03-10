@@ -34,7 +34,7 @@ type MessageHandlers = {
 };
 
 export class MyRoom extends Room<MyRoomState> {
-  maxClients = 4;
+  maxClients = 14;
 
   private timer: NodeJS.Timeout | null = null;
 
