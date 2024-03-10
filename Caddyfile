@@ -1,0 +1,4 @@
+api.cyberchaoscards.com {
+  tls dev.igorbayerl@gmail.com
+  reverse_proxy server:2567
+}

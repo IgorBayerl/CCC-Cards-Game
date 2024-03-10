@@ -1,6 +1,7 @@
 version: '3.8'
 services:
   server:
+    container_name: ccc-server
     build:
       context: .
       dockerfile: server/Dockerfile.prod
@@ -10,6 +11,7 @@ services:
       - NODE_ENV=production
   # The client will probably be deployed on a Vercel server
   client:
+    container_name: ccc-client
     build:
       context: .
       dockerfile: client/Dockerfile.prod
@@ -20,3 +22,18 @@ services:
       - "3000:3000"
     environment:
       - NODE_ENV=production
+  caddy:
+    container_name: caddy
+    image: caddy:2
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - server
+volumes:
+  caddy_data:
+  caddy_config:
