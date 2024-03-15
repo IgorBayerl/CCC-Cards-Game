@@ -8,6 +8,7 @@ import Image from 'next/image'
 import TimerTitle from '~/components/Layout/TimerScreen'
 import useTranslation from 'next-translate/useTranslation'
 import { MessageType } from '@ccc-cards-game/types'
+import LoadingFullScreen from '~/components/Atoms/LoadingFullScreen'
 
 export default function Results() {
   const { sendToRoom, gameState, isCurrentUserLeader } = useGameContext()
@@ -19,13 +20,13 @@ export default function Results() {
 
   const lastRound = gameState.rounds[gameState.rounds.length - 1]
 
-  const time = 10 //|| gameState.config.time // 10 seconds on the screen before going to the next round
+  const time = gameState.config.roundTime || 10 // 10 seconds on the screen before going to the next round
 
   if (!lastRound) {
     return (
       <Layout>
         <InGameLayout>
-          <div>Loading</div>
+          <LoadingFullScreen />
         </InGameLayout>
       </Layout>
     )
@@ -51,7 +52,7 @@ export default function Results() {
 
   return (
     <InGameLayout>
-      <TimerTitle key="roundWinner" subtitle={t('i-round-winner')} time={time} />
+      <TimerTitle key="roundWinner" title={t('i-round-winner')} time={time} />
       <div className="bg-destaque-mobile flex flex-1 flex-col py-2 text-accent md:mx-4">
         <div className="flex flex-1 items-center ">
           <div className="flex flex-1 flex-col items-center gap-3">

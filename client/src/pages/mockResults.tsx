@@ -7,12 +7,10 @@ import { GameCardResult } from '~/components/Atoms/GameCard'
 import Image from 'next/image'
 import TimerTitle from '~/components/Layout/TimerScreen'
 import useTranslation from 'next-translate/useTranslation'
-import { AnswerCardCollection, MessageType, Round } from '@ccc-cards-game/types'
+import { type AnswerCardCollection, type Round } from '@ccc-cards-game/types'
 
 export default function MockResults() {
-  const { t } = useTranslation('game')
-
-
+  const { t } = useTranslation('*')
 
   const lastRound: Round = {
     winner: '3',
@@ -68,8 +66,8 @@ export default function MockResults() {
   }
 
   return (
-    <InGameLayout>
-      <TimerTitle key="roundWinner" subtitle={t('i-round-winner')} time={time} />
+    <>
+      <TimerTitle key="roundWinner" title='round winner' time={time} />
       <div className="bg-destaque-mobile flex flex-1 flex-col py-2 text-accent md:mx-4">
         <div className="flex flex-1 items-center ">
           <div className="flex flex-1 flex-col items-center gap-3">
@@ -96,6 +94,6 @@ export default function MockResults() {
           </button>
         </div>
       )}
-    </InGameLayout>
+    </>
   )
 }

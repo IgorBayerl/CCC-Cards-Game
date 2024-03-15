@@ -50,7 +50,8 @@ interface IGameProviderProps {
   children: ReactNode
 }
 
-type SoundPage = '/lobby' | '/game' | '/judging' | '/results' | '/end'
+export type GamePage = '/lobby' | '/game' | '/judging' | '/results' | '/end'
+
 
 const defaultGameConfig: RoomConfig = {
   availableDecks: [],
@@ -71,7 +72,7 @@ const initialGameState: MyRoomState = {
   leader: '',
 }
 
-const statusToUrl: Record<RoomStatus, SoundPage> = {
+const statusToUrl: Record<RoomStatus, GamePage> = {
   waiting: '/lobby',
   starting: '/game',
   playing: '/game',
@@ -136,7 +137,7 @@ const GameProvider: React.FC<IGameProviderProps> = ({ children }) => {
 
   //playSound to useCallback
   const playSound = useCallback(
-    (url: SoundPage) => {
+    (url: GamePage) => {
       if (isMuted) return
       setTimeout(() => {
         soundsPerPage[url]?.()
@@ -149,6 +150,7 @@ const GameProvider: React.FC<IGameProviderProps> = ({ children }) => {
     (newState: MyRoomState) => {
 
       const newPath = statusToUrl[newState.roomStatus]
+      console.log('New path:', newPath)
       if (newPath && router.pathname !== newPath) {
         void playSound(newPath)
         void router.push(newPath)

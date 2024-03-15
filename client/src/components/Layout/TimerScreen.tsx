@@ -1,4 +1,4 @@
-import { CountdownCircleTimer } from 'react-countdown-circle-timer'
+import CountdownTimer from '../Atoms/CountdownBar'
 
 interface ITimerScreenProps {
   title?: string
@@ -10,26 +10,21 @@ interface ITimerScreenProps {
 export default function TimerTitle({
   title = '',
   subtitle = '',
-  time,
+  time = 10,
   timerKey = 'timer_1',
 }: ITimerScreenProps) {
+
   return (
-    <div className="bg-destaque-mobile flex flex-col font-bold text-white">
-      <div className=" flex w-full justify-between  p-3">
-        <div className="flex flex-col font-bold text-accent ">
-          <h2 className="m-0 p-0 text-xl">{title}</h2>
-          <h3 className="m-0 p-0 text-lg">{subtitle}</h3>
+    <div className="flex flex-col text-white md:pl-4 pl-0">
+      <CountdownTimer
+        key={timerKey}
+        time={time - 1}
+      />
+      <div className="flex w-full justify-between py-3 md:pl-0 pl-3">
+        <div className="flex flex-col text-accent ">
+          <h2 className="m-0 p-0 text-xl text-white font-bold">{title}</h2>
+          <h3 className="m-0 p-0 text-lg text-slate-300 font-regular">{subtitle}</h3>
         </div>
-        <CountdownCircleTimer
-          isPlaying
-          size={70}
-          key={timerKey}
-          duration={time}
-          colors={['#004777', '#F7B801', '#A30000', '#A30000']}
-          colorsTime={[7, 5, 2, 0]}
-        >
-          {({ remainingTime }) => remainingTime}
-        </CountdownCircleTimer>
       </div>
     </div>
   )

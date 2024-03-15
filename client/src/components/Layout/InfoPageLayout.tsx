@@ -128,6 +128,14 @@ export default function InfoPageLayout({
                 {contactText}
               </button>
             </Link>
+            <Link
+              href="https://discord.gg/eZsFkPuADE"
+              target="_blank"
+            >
+              <button className="btn-ghost btn-block btn-sm btn font-bold hover:bg-white hover:bg-opacity-30">
+                <DiscordLogo size={25} weight="bold" />
+              </button>
+            </Link>
             <div className="divider divider-horizontal" />
             <div className='flex justify-center'>
               <ConnectionStatus />

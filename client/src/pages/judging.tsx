@@ -36,9 +36,7 @@ export default function Judging() {
 
   
   useEffect(() => {
-    if (allCardsRevealed) {
-      setResetKey((prev) => prev + 1)
-    }
+    setResetKey((prev) => prev + 1)
   }, [allCardsRevealed, currentRevealedCardId])
 
 
@@ -97,7 +95,7 @@ export default function Judging() {
 
   return (
     <InGameLayout>
-      <TimerTitle key={resetKey} subtitle={t('i-judging')} time={time} />
+      <TimerTitle key={resetKey} title={t('i-judging')} time={time} />
       <div className="bg-destaque-mobile flex flex-1 flex-col overflow-y-auto py-2 text-accent md:mx-4">
         <div className="flex flex-1 flex-col">
           <div className="flex flex-1 flex-col justify-between">

@@ -10,6 +10,15 @@ interface IInGameLayoutProps {
   children: React.ReactNode
 }
 
+export const gamePageArray: string[] = [
+  '/lobby',
+  '/game',
+  '/judging',
+  '/results',
+  '/end',
+  '/',
+]
+
 export default function InGameLayout({ children }: IInGameLayoutProps) {
   const { roomId, gameState, gameConfig, leaveRoom } = useGameContext()
 
@@ -18,7 +27,11 @@ export default function InGameLayout({ children }: IInGameLayoutProps) {
   const roomSize = gameConfig?.roomSize?.toString() || '14'
 
   const handleLeaveRoom = useCallback(() => {
-    void router.push('/')
+    const currentPath = router.pathname
+    const inGamePage = gamePageArray.includes(currentPath)
+    if (inGamePage) {
+      void router.push('/')
+    }
     leaveRoom()
   }, [leaveRoom])
 

@@ -72,7 +72,7 @@ export default function Game() {
 
   return (
     <InGameLayout>
-      <TimerTitle key="Choose your cards" subtitle={t('i-choose-the-cards-that-best-fit')} time={time} />
+      <TimerTitle key="Choose your cards" title={t('i-choose-the-cards-that-best-fit')} time={time} />
       <div className="bg-destaque-mobile flex flex-1 flex-col overflow-y-auto py-2 text-accent md:mx-4">
         <div className="flex h-full flex-1 flex-col justify-between ">
 
