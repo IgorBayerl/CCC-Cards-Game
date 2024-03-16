@@ -8,9 +8,12 @@ import Image from 'next/image'
 import TimerTitle from '~/components/Layout/TimerScreen'
 import useTranslation from 'next-translate/useTranslation'
 import { type AnswerCardCollection, type Round } from '@ccc-cards-game/types'
+import { useState } from 'react'
 
 export default function MockResults() {
   const { t } = useTranslation('*')
+
+  const [timeKey, setTimeKey] = useState(0)
 
   const lastRound: Round = {
     winner: '3',
@@ -67,7 +70,12 @@ export default function MockResults() {
 
   return (
     <>
-      <TimerTitle key="roundWinner" title='round winner' time={time} />
+      <TimerTitle key={timeKey} title='round winner' time={time} />
+      <button
+        onClick={() => setTimeKey((timeKey) => timeKey + 1)}
+      >
+        RESET TIMER
+      </button>
       <div className="bg-destaque-mobile flex flex-1 flex-col py-2 text-accent md:mx-4">
         <div className="flex flex-1 items-center ">
           <div className="flex flex-1 flex-col items-center gap-3">

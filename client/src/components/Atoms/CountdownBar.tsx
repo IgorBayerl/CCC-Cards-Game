@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
-
 interface CountdownTimerProps {
   time: number;
   onCountdownFinish?: () => void;
@@ -15,6 +14,10 @@ const CountdownTimer: React.FC<CountdownTimerProps> = ({
 }) => {
   const [remainingTime, setRemainingTime] = useState<number>(time);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
+
+  const calculateNinetyPercentOfTotalTime = useCallback(() => {
+    return (90 / 100) * time;
+  }, [time]);
 
   useEffect(() => {
     const startTimer = () => {
@@ -36,10 +39,14 @@ const CountdownTimer: React.FC<CountdownTimerProps> = ({
       }, 1000);
     };
 
+    if (remainingTime == time) {
+      setRemainingTime(calculateNinetyPercentOfTotalTime());
+    }
+
     startTimer();
 
     return () => clearInterval(intervalRef.current as NodeJS.Timeout);
-  }, [remainingTime, onCountdownFinish]);
+  }, [remainingTime, onCountdownFinish, calculateNinetyPercentOfTotalTime, time]);
 
   const resetTimer = () => {
     clearInterval(intervalRef.current as NodeJS.Timeout);
@@ -54,7 +61,7 @@ const CountdownTimer: React.FC<CountdownTimerProps> = ({
     <div className={`w-full ${backgroundColor} h-2 rounded-full overflow-hidden`}>
       <div
         className={`${foregroundColor} h-full transition-all ease-linear duration-1000`}
-        style={{ width: `${calculateWidth()}%` }}
+        style={{ width: `${calculateWidth() - 1}%` }}
       ></div>
       <button
         className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700 transition duration-300"
@@ -65,5 +72,6 @@ const CountdownTimer: React.FC<CountdownTimerProps> = ({
     </div>
   );
 };
+
 
 export default CountdownTimer;
