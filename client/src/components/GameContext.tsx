@@ -27,6 +27,11 @@ import {
   type GameMessagePayloads,
 } from '@ccc-cards-game/types'
 import extractErrorMessage from '~/lib/extractErrorMessage'
+import { useDiscordAuthenticatedContext } from '~/hooks/useDiscordAuthenticatedContext'
+import isRunningInDiscord from '~/lib/isDiscord'
+import { getWsUrl } from '~/services/api'
+import useDiscordSdk from '~/hooks/useDiscordSdk'
+
 
 interface IGameContextValue {
   myId: string
@@ -45,6 +50,12 @@ interface IGameContextValue {
   sendToRoom: (type: MessageType, payload: GameMessagePayloads[MessageType]) => void
   playerSelectCards: (cards: AnswerCard[]) => void
 }
+
+
+interface RoomMetadata {
+  channelId: string;
+}
+
 
 interface IGameProviderProps {
   children: ReactNode
@@ -102,15 +113,19 @@ const GameContext = createContext<IGameContextValue>({
 const useGameContext = () => useContext(GameContext)
 
 // Initialize the Colyseus client
-const URL = process.env.NEXT_PUBLIC_GAME_SOCKET_SERVER || 'ws://localhost:2567'
+
+const URL = getWsUrl()
 const client = new Client(URL)
 
 const GameProvider: React.FC<IGameProviderProps> = ({ children }) => {
-  // const { socket } = useSocketContext()
   const [gameState, setGameState] = useState(initialGameState)
   const { isMuted } = useAudio()
+  const discordSdk = useDiscordSdk();
+
 
   const [room, setRoom] = useState<Room<MyRoomState> | null>(null)
+  const discordAuthenticatedContext = useDiscordAuthenticatedContext();
+  const { user_parsed_info, isDiscordAuthenticated } = discordAuthenticatedContext
 
   const myId = room?.sessionId || ''
   const roomId = room?.id || ''
@@ -213,6 +228,31 @@ const GameProvider: React.FC<IGameProviderProps> = ({ children }) => {
     }
   }
 
+  async function joinOrCreateByChannelId(username: string, channelId: string, pictureUrl: string): Promise<void> {
+    // Attempt to find a room with the matching channelId
+    const rooms = await client.getAvailableRooms<RoomMetadata>('my_room')
+      .then(rooms => rooms.filter(room => room?.metadata?.channelId === channelId));
+
+    if (rooms.length > 0) {
+      // If a matching room is found, attempt to join it
+      try {
+        const targetRoom = rooms[0];
+        if (targetRoom) {
+          await joinRoom(username, targetRoom.roomId, pictureUrl)
+          return
+        }
+      } catch (error) {
+        console.error("Error joining the room:", error);
+      }
+    }
+
+    // If no room with the desired channelId exists, create a new one
+    await createRoom(username, pictureUrl)
+  }
+
+
+
+
   const leaveRoom = () => {
     void room?.leave()
     setGameState({ ...initialGameState })
@@ -238,8 +278,21 @@ const GameProvider: React.FC<IGameProviderProps> = ({ children }) => {
   const player = gameState.players.get(myId)
 
   useEffect(() => {
+    if (!discordAuthenticatedContext.user_parsed_info.userId) {
+      console.warn("Discord client or user data is not available.");
+      return;
+    }
+    const { username, picture } = discordAuthenticatedContext.user_parsed_info
+    const channelId = discordSdk?.channelId || 'unknown'
+
+    // BUG This is running twice for some reason just on dev- it ends with two clients connected with the same user
+    void joinOrCreateByChannelId(username, channelId, picture);
+  }, [discordAuthenticatedContext]); 
+
+  useEffect(() => {
     if (room) {
-      room.onMessage('room:joinedRoom', (roomId: string) => {
+      room.onMessage('room:joinedRoom', (_roomId: string) => {
+      // TODO save this room id to auto reconnect in the future
         const myId = room.sessionId
         localStorage.setItem('oldPlayerId', myId || '')
       })

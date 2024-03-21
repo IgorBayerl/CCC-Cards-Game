@@ -1,5 +1,10 @@
 # Base image with Node.js and PNPM
 FROM node:20-slim AS server
+
+# Create a non-root user and switch to it
+RUN groupadd -r appuser && useradd -r -g appuser appuser
+USER appuser
+
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 RUN corepack enable

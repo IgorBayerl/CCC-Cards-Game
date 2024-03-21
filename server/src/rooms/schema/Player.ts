@@ -17,6 +17,7 @@ export class PlayerSchema extends Schema {
   @type("boolean") isOffline: boolean = false;
   @type("boolean") isBot: boolean = false;
   @type("boolean") isWaitingForNextRound: boolean = false;
+  @type("boolean") isTalking: boolean = false;
 
   /**
    * Timeout will only be used when disconnecting in the lobby, not mid game.

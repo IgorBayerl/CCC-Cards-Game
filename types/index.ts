@@ -13,6 +13,8 @@ export enum MessageType {
   JUDGE_DECISION = "game:judgeDecision",
   DEV_SAVE_SNAPSHOT = "dev:saveSnapshot",
   DEV_LOAD_SNAPSHOT = "dev:loadSnapshot",
+  DISCORD_PLAYER_START_TALKING = "discord:playerStartTalking",
+  DISCORD_PLAYER_STOP_TALKING = "discord:playerStopTalking"
 }
 
 export type SetConfigPayload = RoomConfig;
@@ -51,6 +53,8 @@ export type GameMessagePayloads = {
   [MessageType.JUDGE_DECISION]: JudgeDecisionPayload;
   [MessageType.DEV_SAVE_SNAPSHOT]: null;
   [MessageType.DEV_LOAD_SNAPSHOT]: null;
+  [MessageType.DISCORD_PLAYER_START_TALKING]: null;
+  [MessageType.DISCORD_PLAYER_STOP_TALKING]: null;
 };
 
 
@@ -119,6 +123,7 @@ export interface Player {
   isOffline: boolean;
   isBot: boolean;
   isWaitingForNextRound: boolean;
+  isTalking: boolean;
 }
 
 // Round.ts

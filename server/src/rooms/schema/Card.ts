@@ -16,3 +16,5 @@ export class QuestionCardSchema extends CardSchema {
 }
 
 export type TQuestionCard = typeof QuestionCardSchema.prototype;
+
+

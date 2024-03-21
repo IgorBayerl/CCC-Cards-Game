@@ -13,6 +13,7 @@ import {MyRoom} from "./rooms/MyRoom";
  * Import your API endpoint handlers:
  */
 import deckRoutes from "./routes/deckRoutes";
+import discordRoutes from "./routes/discordRoutes";
 
 export default config({
   initializeGameServer: gameServer => {
@@ -37,6 +38,8 @@ export default config({
     });
 
     app.use("/decks", deckRoutes);
+
+    app.use("/ds", discordRoutes);
 
     /**
      * Use @colyseus/playground

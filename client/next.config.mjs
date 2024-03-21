@@ -20,5 +20,8 @@ const config = {
   images: {
     domains: ['github.com','avatars.githubusercontent.com'],
   },
+  env: {
+    NEXT_PUBLIC_DISCORD_CLIENT_ID: 'NEXT_PUBLIC_DISCORD_CLIENT_ID',
+  }
 }
 export default config;

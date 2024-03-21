@@ -7,6 +7,11 @@ import logger from "../../lib/loggerConfig";
 
 type RoomStatus = "waiting" | "starting" | "playing" | "judging" | "results" | "finished";
 
+export interface IMyRoomConstructor {
+  roomName: string;
+  channelId: string;
+}
+
 export class MyRoomState extends Schema {
   //lobby config states
   @type(RoomConfigSchema) config = new RoomConfigSchema();
@@ -28,6 +33,7 @@ export class MyRoomState extends Schema {
 
   // private _DISCONNECT_TIMEOUT = 10000;
   private _DISCONNECT_TIMEOUT = 1000 * 15;
+
 
   private handleDisconnectInLobby(player: PlayerSchema) {
     player.setAsOffline();
@@ -168,12 +174,30 @@ export class MyRoomState extends Schema {
     this.usedAnswerCards.clear();
   }
 
+  private _getPlayer(sessionId: string): PlayerSchema | undefined {
+    return Array.from(this.players.values()).find((p) => p.id === sessionId);
+  }
+
   public clearBotPlayers() {
     this.players.forEach(player => {
       if (player.isBot && player.isOffline && !player.isWaitingForNextRound) {
         this.players.delete(player.id);
       }
     });
+  }
+
+  public startTalking(sessionId: string) {
+    const player = this._getPlayer(sessionId);
+    if (player != null) {
+      player.isTalking = true;
+    }
+  }
+
+  public stopTalking(sessionId: string) {
+    const player = this._getPlayer(sessionId);
+    if (player != null) {
+      player.isTalking = false;
+    }
   }
 }
 

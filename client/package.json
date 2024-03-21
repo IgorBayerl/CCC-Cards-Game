@@ -10,6 +10,7 @@
     "start": "next start"
   },
   "dependencies": {
+    "@discord/embedded-app-sdk": "^1.0.0",
     "@emailjs/browser": "^3.11.0",
     "@mantine/hooks": "^6.0.11",
     "@phosphor-icons/react": "^2.0.9",
@@ -39,6 +40,7 @@
     "react-toastify": "^9.1.2",
     "socket.io-client": "^4.6.1",
     "tailwind-merge": "^2.2.1",
+    "type-fest": "^4.13.0",
     "use-sound": "^4.0.1",
     "uuid": "^9.0.0",
     "vaul": "^0.9.0",

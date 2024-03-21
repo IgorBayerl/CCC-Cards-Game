@@ -25,6 +25,7 @@ export default function End() {
     isOffline: false,
     isBot: false,
     isWaitingForNextRound: false,
+    isTalking: false,
   }
 
   //players is a map, so we need to convert it to an array

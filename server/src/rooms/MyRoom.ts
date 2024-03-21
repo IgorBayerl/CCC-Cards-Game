@@ -26,6 +26,7 @@ import {parseAndHandleError} from "../lib/extractErrorMessage";
 import {getRandomAnswerCardsFromDecks, getRandomQuestionCardFromDecks} from "../lib/deckUtils";
 import {AdminOnly} from "../lib/utils";
 import logger from "../lib/loggerConfig";
+import { IMyRoomConstructor } from "./schema/MyRoomState";
 
 type HandlerFunction<T> = (client: Client, data: T) => void;
 
@@ -51,6 +52,8 @@ export class MyRoom extends Room<MyRoomState> {
     [MessageType.JUDGE_DECISION]: this.handleJudgeDecision.bind(this),
     [MessageType.DEV_SAVE_SNAPSHOT]: this.handleDevSaveSnapshot.bind(this),
     [MessageType.DEV_LOAD_SNAPSHOT]: this.handleDevLoadSnapshot.bind(this),
+    [MessageType.DISCORD_PLAYER_START_TALKING]: this.handleDiscordPlayerStartTalking.bind(this),
+    [MessageType.DISCORD_PLAYER_STOP_TALKING]: this.handleDiscordPlayerStopTalking.bind(this),
   };
 
   private bindHandlerToMessage<T extends MessageType>(key: T) {
@@ -62,7 +65,8 @@ export class MyRoom extends Room<MyRoomState> {
     return client.sessionId === this.state.leader;
   }
 
-  onCreate(_options: any) {
+  onCreate(options: IMyRoomConstructor) {
+    this.setMetadata({ channelId: options.channelId });
     this.setState(new MyRoomState());
 
     this.roomSize = this.maxClients;
@@ -812,4 +816,16 @@ export class MyRoom extends Room<MyRoomState> {
   public handleDevLoadSnapshot(_client: Client, _data: null) {
     return;
   }
+
+
+  // START Discord integration methods
+  private handleDiscordPlayerStartTalking(client: Client, _data: null) {
+    this.state.startTalking(client.sessionId);
+  }
+
+  private handleDiscordPlayerStopTalking(client: Client, _data: null) {
+    this.state.stopTalking(client.sessionId);
+  }
+  // END Discord integration methods
+
 }

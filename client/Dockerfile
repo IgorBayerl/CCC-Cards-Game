@@ -1,6 +1,10 @@
 # Starting with Node.js 18 Alpine for a lightweight image
 FROM node:20-alpine AS client
 
+# Create a non-root user and switch to it
+RUN groupadd -r appuser && useradd -r -g appuser appuser
+USER appuser
+
 # Enable Corepack to use PNPM
 RUN corepack enable
 

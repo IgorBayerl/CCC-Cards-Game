@@ -3,23 +3,23 @@ import { CgProfile } from 'react-icons/cg'
 import { type Player } from '@ccc-cards-game/types'
 
 interface ICustomAvatarProps {
-  src: string
   player: Player
   leader: boolean
   itsMe: boolean
 }
 
 export default function CustomAvatar({
-  src,
   player,
   leader,
   itsMe,
   ...props
 }: ICustomAvatarProps) {
+  const borderColor = player.isTalking ? 'border-green-400 ' : 'border-transparent'
+  //TODO: change border to 4 when is talking starts to work
   return (
     <div className="avatar">
-      <div className="w-16 rounded-full">
-        <img src={player.pictureUrl} {...props} />
+      <div className={`w-16 rounded-full border-0 relative ${borderColor}`}>
+        <img alt='avatar_img' src={player.pictureUrl} {...props} />
       </div>
       {leader && <GiCrown color="yellow" className="leader-crown" size={25} />}
       {itsMe && (

@@ -28,7 +28,7 @@ export default function PlayerItem({ player, leader }: IPlayerItemProps) {
 
   return (
     <div className={styles}>
-      <CustomAvatar src={player.pictureUrl} leader={leader} player={player} itsMe={itsMe} />
+      <CustomAvatar leader={leader} player={player} itsMe={itsMe} />
       <div className="flex w-full max-w-full items-center justify-between overflow-hidden truncate">
         <div className="w-full">
           <div className="text-xs font-bold capitalize ">{showStatus && `${score} pts`}</div>

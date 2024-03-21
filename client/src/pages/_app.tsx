@@ -10,7 +10,8 @@ import { NextSeo } from 'next-seo';
 import 'react-toastify/dist/ReactToastify.css'
 import '~/styles/globals.css'
 import { AudioProvider } from '~/components/AudioContext'
-import TrackingCode from '~/components/TrackingCode'
+import { DiscordAuthenticatedContextProvider } from '~/hooks/useDiscordAuthenticatedContext'
+// import TrackingCode from '~/components/TrackingCode'
 
 
 const queryClient = new QueryClient()
@@ -19,7 +20,7 @@ const MyApp: AppType = ({ Component, pageProps }) => {
 
   return (
     <>
-      <TrackingCode />
+      {/* <TrackingCode /> */}
       <NextSeo
         title="Cyber Chaos Cards"
         description="Join Cyber Chaos Cards - the edgy online adaptation of Cards Against Humanity. Make friends, create hilarity, challenge norms."
@@ -60,10 +61,12 @@ const MyApp: AppType = ({ Component, pageProps }) => {
       <ToastContainer />
       <QueryClientProvider client={queryClient}>
         <AudioProvider>
-          <GameProvider>
-            {/* <DevTools /> */}
-            <Component {...pageProps} />
-          </GameProvider>
+          <DiscordAuthenticatedContextProvider>
+            <GameProvider>
+              {/* <DevTools /> */}
+              <Component {...pageProps} />
+            </GameProvider>
+          </DiscordAuthenticatedContextProvider>
         </AudioProvider>
         {/* <ReactQueryDevtools /> */}
       </QueryClientProvider>

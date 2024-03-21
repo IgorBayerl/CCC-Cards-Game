@@ -28,19 +28,14 @@ const profilePictures = [
 export default function Home() {
   const router = useRouter()
 
+
+
   const { t } = useTranslation('common')
   const playText = t('i-join')
   const createRoomText = t('i-create-room')
 
   const instructionText = t('i-select-picture-and-nickname')
   const nicknameText = t('i-nickname')
-
-  const termsOfServiceText = t('i-terms-of-service')
-  const privacyText = t('i-privacy-policy')
-  const contactText = t('i-contact')
-  const homeText = t('i-home')
-
-  const selectYourLanguageText = t('i-select-your-language')
 
   const { gameState, createRoom, joinRoom } = useGameContext()
   const [pictureUrl, nextPicture] = useShuffleArray(profilePictures)
