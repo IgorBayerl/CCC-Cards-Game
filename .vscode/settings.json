@@ -20,4 +20,5 @@
     "reloadButton": "↻",
     "loadNpmCommands": true
   },
+  "explorer.excludeGitIgnore": true,
 }

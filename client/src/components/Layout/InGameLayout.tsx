@@ -52,7 +52,7 @@ export default function InGameLayout({ children }: IInGameLayoutProps) {
               <MobilePlayersList players={playersList} leaderId={gameState.leader} roomSize={parseInt(roomSize)} />
             </div>
           </div>
-          <div className="flex h-full overflow-clip">
+          <div className="flex h-full overflow-hidden">
             <div className="hidden flex-col gap-2 md:flex">
               <PlayersList players={playersList} leaderId={gameState.leader} roomSize={parseInt(roomSize)} />
             </div>
