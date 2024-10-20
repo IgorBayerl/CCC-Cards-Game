@@ -117,7 +117,7 @@ export default function LobbyPage() {
       </Drawer>
       <div className="flex items-center justify-center">
         <div className="hidden md:block">{/* <BannerVertical /> */}</div>
-        <div className="game-container-border flex h-[100svh] flex-col justify-between gap-3 md:h-[80vh] ">
+        <div className="game-container-border flex h-[100svh] flex-col justify-between gap-3 md:h-[80vh] overflow-hidden">
           <div className="px-1">
             <ContainerHeader />
           </div>
@@ -138,7 +138,7 @@ export default function LobbyPage() {
               </select>
             </div>
           </div>
-          <div className="flex h-full overflow-clip">
+          <div className="flex h-full overflow-hidden">
             <div className="hidden flex-col gap-2 p-1 md:flex">
               <select
                 className="select select-bordered w-full"
